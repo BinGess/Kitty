@@ -1,0 +1,62 @@
+{
+  "@@locale": "en",
+  "appTitle": "MeowTalk",
+
+  "tabSounds": "Sounds",
+  "tabTest": "Test",
+  "tabHealth": "Health",
+  "tabGames": "Games",
+  "tabMore": "More",
+
+  "soundsTitle": "Cat Sound Simulator",
+  "soundCategoryCalling": "Calling",
+  "soundCategoryEmotion": "Emotion",
+  "soundCategoryEnvironment": "Environment",
+
+  "testTitle": "16 Cat Personalities",
+  "testBasicMode": "Basic (12 questions)",
+  "testAdvancedMode": "Advanced (24 questions)",
+  "testSubtitle": "Discover your cat's hidden personality",
+  "testAnalyzing": "Analyzing cat personality...",
+  "testProgressLabel": "Question {current} / {total}",
+  "@testProgressLabel": {
+    "placeholders": {
+      "current": { "type": "int" },
+      "total": { "type": "int" }
+    }
+  },
+
+  "healthTitle": "Health Tracking",
+  "healthWeight": "Weight",
+  "healthWater": "Water",
+  "healthDiet": "Diet",
+  "healthExcretion": "Excretion",
+  "healthWeightAlert": "Weight changed more than {percent}% in 30 days",
+  "@healthWeightAlert": {
+    "placeholders": {
+      "percent": { "type": "String" }
+    }
+  },
+
+  "gamesTitle": "Interactive Games",
+  "gameLaser": "Laser Dot",
+  "gameMouseHunt": "Mouse Hunt",
+  "gameRainbow": "Rainbow Chase",
+  "gameExitHint": "Long press corner for 3s to exit",
+
+  "moreTitle": "More",
+  "moreCatProfile": "Cat Profiles",
+  "moreTheater": "Cat Theater",
+  "moreAI": "AI Recognition",
+  "moreSettings": "Settings",
+
+  "catProfileEmpty": "No cats yet",
+  "catProfileAddFirst": "Tap to add your first cat",
+  "catProfileManage": "Manage your cat profiles",
+
+  "commonSave": "Save",
+  "commonCancel": "Cancel",
+  "commonDelete": "Delete",
+  "commonConfirm": "Confirm",
+  "commonEdit": "Edit"
+}

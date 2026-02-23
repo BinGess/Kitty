@@ -1,0 +1,33 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(brew install:*)",
+      "Bash(pdftoppm:*)",
+      "Bash(pdftotext:*)",
+      "Bash(flutter --version:*)",
+      "Bash(flutter create:*)",
+      "Bash(flutter pub get:*)",
+      "Bash(dart run build_runner build:*)",
+      "Bash(flutter pub upgrade:*)",
+      "Bash(flutter analyze:*)",
+      "Bash(flutter gen-l10n:*)",
+      "Bash(flutter test:*)",
+      "Bash(flutter build:*)",
+      "Bash(export PATH=\"$HOME/development/flutter/bin:$HOME/.pub-cache/bin:$HOME/fvm/default/bin:/opt/homebrew/bin:$PATH\")",
+      "Bash(python3:*)",
+      "Bash(export PATH=\"/opt/homebrew/bin:$PATH\")",
+      "Bash(xcrun simctl list:*)",
+      "Bash(export PATH=\"/opt/homebrew/bin:/usr/bin:$PATH\")",
+      "Bash(open:*)",
+      "Bash(xcrun simctl boot:*)",
+      "Bash(flutter run:*)",
+      "Bash(xcrun simctl io:*)",
+      "Bash(xcrun simctl launch:*)",
+      "Bash(export PATH=\"$HOME/flutter/bin:$HOME/fvm/default/bin:$HOME/.pub-cache/bin:$PATH\")",
+      "Bash(/opt/homebrew/bin/flutter analyze:*)",
+      "Bash(/opt/homebrew/bin/flutter build:*)",
+      "Bash(/opt/homebrew/bin/flutter devices:*)",
+      "Bash(xcrun simctl install:*)"
+    ]
+  }
+}
