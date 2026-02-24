@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../../core/constants/app_colors.dart';
+import '../../../../core/widgets/centered_page_title.dart';
 import '../../data/models/sound_item.dart';
 import '../providers/sounds_provider.dart';
 import '../widgets/sound_card.dart';
@@ -24,39 +25,28 @@ class SoundsScreen extends ConsumerWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               // ── 顶部标题栏 ──
-              Row(
-                children: [
-                  const Spacer(),
-                  const Text(
-                    '🐱 猫咪语言',
-                    style: TextStyle(
-                      fontSize: 18,
-                      fontWeight: FontWeight.w700,
-                      color: AppColors.onBackground,
-                    ),
-                  ),
-                  const Spacer(),
-                  if (isPlaying)
-                    GestureDetector(
-                      onTap: () =>
-                          ref.read(soundPlaybackProvider.notifier).stopAll(),
-                      child: Container(
-                        width: 32,
-                        height: 32,
-                        decoration: BoxDecoration(
-                          color: AppColors.primary.withValues(alpha: 0.12),
-                          borderRadius: BorderRadius.circular(10),
+              CenteredPageTitle(
+                title: '猫咪语言',
+                padding: EdgeInsets.zero,
+                trailing: isPlaying
+                    ? GestureDetector(
+                        onTap: () =>
+                            ref.read(soundPlaybackProvider.notifier).stopAll(),
+                        child: Container(
+                          width: 32,
+                          height: 32,
+                          decoration: BoxDecoration(
+                            color: AppColors.primary.withValues(alpha: 0.12),
+                            borderRadius: BorderRadius.circular(10),
+                          ),
+                          child: const Icon(
+                            Icons.stop_rounded,
+                            size: 18,
+                            color: AppColors.primary,
+                          ),
                         ),
-                        child: const Icon(
-                          Icons.stop_rounded,
-                          size: 18,
-                          color: AppColors.primary,
-                        ),
-                      ),
-                    )
-                  else
-                    const SizedBox(width: 32),
-                ],
+                      )
+                    : null,
               ),
               const SizedBox(height: 20),
 

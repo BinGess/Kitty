@@ -660,7 +660,7 @@ class _ShadowPeekPainter extends CustomPainter {
     textPainter.layout();
     textPainter.paint(
       canvas,
-      Offset(size.width - textPainter.width - 20, 56),
+      const Offset(68, 56),
     );
   }
 

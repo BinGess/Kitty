@@ -4,6 +4,7 @@ import '../../../../core/constants/app_colors.dart';
 import '../../../../core/database/app_database.dart';
 import '../../../../core/providers/current_cat_provider.dart';
 import '../../../../core/providers/database_provider.dart';
+import '../../../../core/widgets/centered_page_title.dart';
 import '../../data/models/health_record.dart';
 import '../providers/health_provider.dart';
 import '../widgets/diet_record_sheet.dart';
@@ -84,27 +85,34 @@ class _HealthDashboardScreenState
             CustomScrollView(
               slivers: [
                 SliverToBoxAdapter(
-                  child: Padding(
-                    padding: const EdgeInsets.fromLTRB(20, 16, 20, 0),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        _buildHeader(cat),
-                        const SizedBox(height: 20),
-                        summaryAsync.when(
-                          data: (s) => SummaryCards(summary: s),
-                          loading: () => const SizedBox(
-                              height: 100,
-                              child: Center(
-                                  child: CircularProgressIndicator(
-                                      color: AppColors.primary))),
-                          error: (_, __) => const SizedBox(height: 100),
+                  child: Column(
+                    children: [
+                      CenteredPageTitle(
+                        title: '猫咪健康',
+                        trailing: _CatSwitcher(),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.fromLTRB(20, 8, 20, 0),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            const SizedBox(height: 20),
+                            summaryAsync.when(
+                              data: (s) => SummaryCards(summary: s),
+                              loading: () => const SizedBox(
+                                  height: 100,
+                                  child: Center(
+                                      child: CircularProgressIndicator(
+                                          color: AppColors.primary))),
+                              error: (_, __) => const SizedBox(height: 100),
+                            ),
+                            const SizedBox(height: 24),
+                            _sectionTitle(),
+                            const SizedBox(height: 12),
+                          ],
                         ),
-                        const SizedBox(height: 24),
-                        _sectionTitle(),
-                        const SizedBox(height: 12),
-                      ],
-                    ),
+                      ),
+                    ],
                   ),
                 ),
                 SliverPadding(
@@ -141,47 +149,6 @@ class _HealthDashboardScreenState
           ],
         ),
       ),
-    );
-  }
-
-  Widget _buildHeader(Cat? cat) {
-    return Row(
-      children: [
-        Container(
-          width: 44,
-          height: 44,
-          decoration: BoxDecoration(
-            color: AppColors.primaryLight,
-            borderRadius: BorderRadius.circular(14),
-          ),
-          child: const Icon(Icons.monitor_heart_outlined,
-              color: AppColors.primaryDark, size: 24),
-        ),
-        const SizedBox(width: 12),
-        Expanded(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                cat != null ? '${cat.name}的健康' : '健康记录',
-                style: const TextStyle(
-                  fontSize: 20,
-                  fontWeight: FontWeight.w700,
-                  color: AppColors.onBackground,
-                ),
-              ),
-              const Text(
-                '体重 · 饮食 · 饮水 · 排泄',
-                style: TextStyle(
-                  fontSize: 12,
-                  color: AppColors.textSecondary,
-                ),
-              ),
-            ],
-          ),
-        ),
-        _CatSwitcher(),
-      ],
     );
   }
 

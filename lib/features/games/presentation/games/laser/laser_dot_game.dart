@@ -278,7 +278,7 @@ class _LaserDotPainter extends CustomPainter {
   }
 
   void _paintScore(Canvas canvas, Size size) {
-    // 右上角分数
+    // 左上角分数（避开右上角设置按钮）
     final textPainter = TextPainter(
       text: TextSpan(
         children: [
@@ -306,7 +306,7 @@ class _LaserDotPainter extends CustomPainter {
     textPainter.layout();
     textPainter.paint(
       canvas,
-      Offset(size.width - textPainter.width - 20, 56),
+      const Offset(68, 56),
     );
   }
 

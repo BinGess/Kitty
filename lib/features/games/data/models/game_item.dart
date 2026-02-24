@@ -56,8 +56,9 @@ enum GameMode {
   rainbow(
     id: 'rainbow',
     title: '彩虹追逐',
-    subtitle: '缤纷色彩流动效果',
-    description: '屏幕上出现缓慢移动的彩虹光带，配合柔和的颜色过渡，适合长时间安抚或吸引注意力。',
+    subtitle: '光带会被猫爪吸引',
+    description:
+        '彩虹光带在屏幕上流动，触碰屏幕会吸引彩虹靠近并产生闪烁光点与波纹，适合猫咪追逐和拍打互动。',
     icon: Icons.auto_awesome,
     previewIcon: Icons.blur_on,
     color: AppColors.gameRainbow,
@@ -67,7 +68,7 @@ enum GameMode {
     cardGradientEnd: Color(0xFF0D001A),
     difficulty: '简单',
     difficultyLevel: 1,
-    tips: '适合安静时刻，帮助猫咪放松心情',
+    tips: '轻触屏幕可引导彩虹靠近，适合互动和放松',
     emoji: '🌈',
   );
 

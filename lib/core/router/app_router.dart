@@ -9,6 +9,7 @@ import '../../features/games/presentation/screens/game_menu_screen.dart';
 import '../../features/games/presentation/screens/game_play_screen.dart';
 import '../../features/profile/presentation/screens/more_screen.dart';
 import '../../features/profile/presentation/screens/cat_list_screen.dart';
+import '../../features/profile/presentation/screens/about_screen.dart';
 import '../../features/theater/presentation/screens/theater_screen.dart';
 import 'scaffold_with_nav_bar.dart';
 
@@ -102,6 +103,11 @@ final appRouter = GoRouter(
                   path: 'cats',
                   name: 'cats',
                   builder: (context, state) => const CatListScreen(),
+                ),
+                GoRoute(
+                  path: 'about',
+                  name: 'about',
+                  builder: (context, state) => const AboutScreen(),
                 ),
               ],
             ),
