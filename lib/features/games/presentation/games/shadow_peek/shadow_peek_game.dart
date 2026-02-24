@@ -14,10 +14,7 @@ import 'shadow_peek_logic.dart';
 class ShadowPeekGame extends StatefulWidget {
   final GameConfig config;
 
-  const ShadowPeekGame({
-    super.key,
-    required this.config,
-  });
+  const ShadowPeekGame({super.key, required this.config});
 
   @override
   State<ShadowPeekGame> createState() => _ShadowPeekGameState();
@@ -82,6 +79,9 @@ class _ShadowPeekGameState extends State<ShadowPeekGame> {
     return LayoutBuilder(
       builder: (context, constraints) {
         final size = constraints.biggest;
+        final overlayTop = MediaQuery.of(context).padding.top + 12;
+        const overlaySize = 48.0;
+        const overlayLeft = 12.0;
         if (size.width > 0 && size.height > 0) {
           if (_logic == null || _logic!.bounds.size != size) {
             _initLogic(size);
@@ -95,7 +95,12 @@ class _ShadowPeekGameState extends State<ShadowPeekGame> {
           onPointerDown: (e) => _onTap(e.localPosition),
           child: CustomPaint(
             size: Size(constraints.maxWidth, constraints.maxHeight),
-            painter: _ShadowPeekPainter(logic: _logic!),
+            painter: _ShadowPeekPainter(
+              logic: _logic!,
+              overlayTop: overlayTop,
+              overlaySize: overlaySize,
+              overlayLeft: overlayLeft,
+            ),
           ),
         );
       },
@@ -105,8 +110,16 @@ class _ShadowPeekGameState extends State<ShadowPeekGame> {
 
 class _ShadowPeekPainter extends CustomPainter {
   final ShadowPeekLogic logic;
+  final double overlayTop;
+  final double overlaySize;
+  final double overlayLeft;
 
-  _ShadowPeekPainter({required this.logic});
+  _ShadowPeekPainter({
+    required this.logic,
+    required this.overlayTop,
+    required this.overlaySize,
+    required this.overlayLeft,
+  });
 
   @override
   void paint(Canvas canvas, Size size) {
@@ -130,14 +143,23 @@ class _ShadowPeekPainter extends CustomPainter {
 
     // 5. 露出的生物
     if (logic.creatureVisible) {
-      _paintCreature(canvas, logic.creatureType, logic.creaturePeekRect,
-          logic.creaturePeekProgress);
+      _paintCreature(
+        canvas,
+        logic.creatureType,
+        logic.creaturePeekRect,
+        logic.creaturePeekProgress,
+      );
     }
 
     // 6. 逃窜动画
     if (logic.isEscaping) {
-      _paintEscapingCreature(canvas, logic.creatureType, logic.escapeFrom,
-          logic.escapeTo, logic.escapeProgress);
+      _paintEscapingCreature(
+        canvas,
+        logic.creatureType,
+        logic.escapeFrom,
+        logic.escapeTo,
+        logic.escapeProgress,
+      );
     }
 
     // 7. 粒子
@@ -173,10 +195,8 @@ class _ShadowPeekPainter extends CustomPainter {
     for (int i = 0; i < 30; i++) {
       final x = rng.nextDouble() * bounds.width;
       final y = rng.nextDouble() * bounds.height * 0.5;
-      final twinkle =
-          sin(logic.globalTime / 1000 + i * 1.7) * 0.5 + 0.5;
-      starPaint.color =
-          Colors.white.withValues(alpha: 0.2 + twinkle * 0.4);
+      final twinkle = sin(logic.globalTime / 1000 + i * 1.7) * 0.5 + 0.5;
+      starPaint.color = Colors.white.withValues(alpha: 0.2 + twinkle * 0.4);
       final starSize = 1.0 + rng.nextDouble() * 1.5;
       canvas.drawCircle(Offset(x, y), starSize, starPaint);
     }
@@ -184,32 +204,40 @@ class _ShadowPeekPainter extends CustomPainter {
 
   void _paintClouds(Canvas canvas, Rect bounds) {
     // 缓慢飘动的云朵
-    final cloudPaint = Paint()
-      ..color = Colors.white.withValues(alpha: 0.06);
+    final cloudPaint = Paint()..color = Colors.white.withValues(alpha: 0.06);
     final t = (logic.globalTime / 30000) % 1.0;
 
     for (int i = 0; i < 3; i++) {
       final baseX =
           ((t * bounds.width + i * bounds.width / 3) % (bounds.width + 200)) -
-              100;
+          100;
       final y = 40.0 + i * 50;
       final w = 80.0 + i * 30;
 
       canvas.drawOval(
-          Rect.fromCenter(center: Offset(baseX, y), width: w, height: 24),
-          cloudPaint);
+        Rect.fromCenter(center: Offset(baseX, y), width: w, height: 24),
+        cloudPaint,
+      );
       canvas.drawOval(
-          Rect.fromCenter(
-              center: Offset(baseX + 20, y - 8), width: w * 0.6, height: 18),
-          cloudPaint);
+        Rect.fromCenter(
+          center: Offset(baseX + 20, y - 8),
+          width: w * 0.6,
+          height: 18,
+        ),
+        cloudPaint,
+      );
     }
   }
 
   void _paintGround(Canvas canvas, Rect bounds) {
     // 草地渐变
     final groundTop = bounds.height * 0.55;
-    final groundRect =
-        Rect.fromLTWH(0, groundTop, bounds.width, bounds.height - groundTop);
+    final groundRect = Rect.fromLTWH(
+      0,
+      groundTop,
+      bounds.width,
+      bounds.height - groundTop,
+    );
     final groundPaint = Paint()
       ..shader = LinearGradient(
         begin: Alignment.topCenter,
@@ -233,7 +261,8 @@ class _ShadowPeekPainter extends CustomPainter {
 
     for (int i = 0; i < 40; i++) {
       final x = rng.nextDouble() * bounds.width;
-      final baseY = groundTop + rng.nextDouble() * (bounds.height - groundTop) * 0.3;
+      final baseY =
+          groundTop + rng.nextDouble() * (bounds.height - groundTop) * 0.3;
       final h = 10 + rng.nextDouble() * 15;
       final sway = sin(logic.globalTime / 1500 + x / 50) * 4 + windOffset;
 
@@ -241,18 +270,26 @@ class _ShadowPeekPainter extends CustomPainter {
         const Color(0xFF4CAF50),
         const Color(0xFF81C784),
         rng.nextDouble(),
-      )!
-          .withValues(alpha: 0.5);
+      )!.withValues(alpha: 0.5);
 
       final path = Path()
         ..moveTo(x, baseY)
-        ..quadraticBezierTo(x + sway * 0.5, baseY - h * 0.5, x + sway, baseY - h);
+        ..quadraticBezierTo(
+          x + sway * 0.5,
+          baseY - h * 0.5,
+          x + sway,
+          baseY - h,
+        );
       canvas.drawPath(path, grassPaint);
     }
   }
 
   void _paintShelter(
-      Canvas canvas, Shelter shelter, int index, bool isShaking) {
+    Canvas canvas,
+    Shelter shelter,
+    int index,
+    bool isShaking,
+  ) {
     final r = shelter.rect;
 
     canvas.save();
@@ -313,7 +350,11 @@ class _ShadowPeekPainter extends CustomPainter {
       final path = Path()
         ..moveTo(cx, baseY)
         ..quadraticBezierTo(
-            cx + sway * 0.6, baseY - h * 0.6, cx + sway, baseY - h);
+          cx + sway * 0.6,
+          baseY - h * 0.6,
+          cx + sway,
+          baseY - h,
+        );
       canvas.drawPath(path, bladePaint);
     }
 
@@ -379,18 +420,24 @@ class _ShadowPeekPainter extends CustomPainter {
     canvas.drawPath(flapPath2, Paint()..color = const Color(0xFF795548));
 
     // 胶带
-    final tapePaint = Paint()..color = const Color(0xFFBCAAA4).withValues(alpha: 0.6);
+    final tapePaint = Paint()
+      ..color = const Color(0xFFBCAAA4).withValues(alpha: 0.6);
     canvas.drawRRect(
       RRect.fromRectAndRadius(
         Rect.fromLTWH(
-            r.left + r.width * 0.1, r.top + r.height * 0.42, r.width * 0.8, 5),
+          r.left + r.width * 0.1,
+          r.top + r.height * 0.42,
+          r.width * 0.8,
+          5,
+        ),
         const Radius.circular(2),
       ),
       tapePaint,
     );
 
     // 纸箱上的猫咪贴纸（小装饰）
-    final stickerPaint = Paint()..color = const Color(0xFFFFCC80).withValues(alpha: 0.3);
+    final stickerPaint = Paint()
+      ..color = const Color(0xFFFFCC80).withValues(alpha: 0.3);
     canvas.drawCircle(
       Offset(r.left + r.width * 0.75, r.top + r.height * 0.65),
       8,
@@ -399,7 +446,11 @@ class _ShadowPeekPainter extends CustomPainter {
   }
 
   void _paintCreature(
-      Canvas canvas, CreatureType type, Rect rect, double progress) {
+    Canvas canvas,
+    CreatureType type,
+    Rect rect,
+    double progress,
+  ) {
     if (progress <= 0) return;
 
     canvas.save();
@@ -431,7 +482,10 @@ class _ShadowPeekPainter extends CustomPainter {
       ..style = PaintingStyle.fill;
     canvas.drawOval(
       Rect.fromCenter(
-          center: Offset(cx, cy), width: 30 * scale, height: 26 * scale),
+        center: Offset(cx, cy),
+        width: 30 * scale,
+        height: 26 * scale,
+      ),
       bodyPaint,
     );
 
@@ -457,9 +511,15 @@ class _ShadowPeekPainter extends CustomPainter {
       canvas.drawCircle(Offset(cx + 5, cy - 4), 3.5, eyePaint);
       // 眼睛高光
       canvas.drawCircle(
-          Offset(cx - 4, cy - 5), 1.5, Paint()..color = Colors.white);
+        Offset(cx - 4, cy - 5),
+        1.5,
+        Paint()..color = Colors.white,
+      );
       canvas.drawCircle(
-          Offset(cx + 6, cy - 5), 1.5, Paint()..color = Colors.white);
+        Offset(cx + 6, cy - 5),
+        1.5,
+        Paint()..color = Colors.white,
+      );
 
       // 喙
       final beakPath = Path()
@@ -512,15 +572,15 @@ class _ShadowPeekPainter extends CustomPainter {
     // 蛇头
     final headPaint = Paint()
       ..shader = RadialGradient(
-        colors: [
-          const Color(0xFF81C784),
-          const Color(0xFF4CAF50),
-        ],
+        colors: [const Color(0xFF81C784), const Color(0xFF4CAF50)],
       ).createShader(Rect.fromCircle(center: Offset(cx, cy), radius: 14))
       ..style = PaintingStyle.fill;
     canvas.drawOval(
       Rect.fromCenter(
-          center: Offset(cx, cy), width: 22 * scale, height: 18 * scale),
+        center: Offset(cx, cy),
+        width: 22 * scale,
+        height: 18 * scale,
+      ),
       headPaint,
     );
 
@@ -528,31 +588,26 @@ class _ShadowPeekPainter extends CustomPainter {
       // 眼睛（黄色带竖瞳）
       final eyeBgPaint = Paint()..color = const Color(0xFFFFEB3B);
       canvas.drawOval(
-        Rect.fromCenter(
-            center: Offset(cx - 5, cy - 3), width: 7, height: 8),
+        Rect.fromCenter(center: Offset(cx - 5, cy - 3), width: 7, height: 8),
         eyeBgPaint,
       );
       canvas.drawOval(
-        Rect.fromCenter(
-            center: Offset(cx + 5, cy - 3), width: 7, height: 8),
+        Rect.fromCenter(center: Offset(cx + 5, cy - 3), width: 7, height: 8),
         eyeBgPaint,
       );
       // 竖瞳
       final pupilPaint = Paint()..color = const Color(0xFF212121);
       canvas.drawOval(
-        Rect.fromCenter(
-            center: Offset(cx - 5, cy - 3), width: 2.5, height: 6),
+        Rect.fromCenter(center: Offset(cx - 5, cy - 3), width: 2.5, height: 6),
         pupilPaint,
       );
       canvas.drawOval(
-        Rect.fromCenter(
-            center: Offset(cx + 5, cy - 3), width: 2.5, height: 6),
+        Rect.fromCenter(center: Offset(cx + 5, cy - 3), width: 2.5, height: 6),
         pupilPaint,
       );
 
       // 分叉舌头（动画）
-      final tongueFlick =
-          sin(logic.globalTime / 200) * 0.5 + 0.5;
+      final tongueFlick = sin(logic.globalTime / 200) * 0.5 + 0.5;
       if (tongueFlick > 0.3) {
         final tonguePaint = Paint()
           ..color = const Color(0xFFE91E63)
@@ -594,14 +649,16 @@ class _ShadowPeekPainter extends CustomPainter {
     if (t > 0.1 && t < 0.9) {
       canvas.save();
       final blurPaint = Paint()
-        ..color = (type == CreatureType.bird
-                ? const Color(0xFFFFEB3B)
-                : const Color(0xFF4CAF50))
-            .withValues(alpha: 0.3);
+        ..color =
+            (type == CreatureType.bird
+                    ? const Color(0xFFFFEB3B)
+                    : const Color(0xFF4CAF50))
+                .withValues(alpha: 0.3);
       canvas.drawCircle(
-          Offset(x - (to.center.dx - from.center.dx) * 0.05, y + arc),
-          12,
-          blurPaint);
+        Offset(x - (to.center.dx - from.center.dx) * 0.05, y + arc),
+        12,
+        blurPaint,
+      );
       canvas.restore();
     }
 
@@ -623,9 +680,10 @@ class _ShadowPeekPainter extends CustomPainter {
       canvas.rotate(p.vx * p.life * 2);
       canvas.drawOval(
         Rect.fromCenter(
-            center: Offset.zero,
-            width: p.size * p.life,
-            height: p.size * p.life * 0.6),
+          center: Offset.zero,
+          width: p.size * p.life,
+          height: p.size * p.life * 0.6,
+        ),
         paint,
       );
       canvas.restore();
@@ -660,7 +718,7 @@ class _ShadowPeekPainter extends CustomPainter {
     textPainter.layout();
     textPainter.paint(
       canvas,
-      const Offset(68, 56),
+      Offset(overlayLeft, overlayTop + (overlaySize - textPainter.height) / 2),
     );
   }
 
@@ -678,10 +736,7 @@ class _ShadowPeekPainter extends CustomPainter {
     textPainter.layout();
     textPainter.paint(
       canvas,
-      Offset(
-        bounds.center.dx - textPainter.width / 2,
-        bounds.height * 0.48,
-      ),
+      Offset(bounds.center.dx - textPainter.width / 2, bounds.height * 0.48),
     );
   }
 

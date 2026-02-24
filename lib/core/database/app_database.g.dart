@@ -65,6 +65,53 @@ class $CatsTable extends Cats with TableInfo<$CatsTable, Cat> {
     type: DriftSqlType.string,
     requiredDuringInsert: false,
   );
+  static const VerificationMeta _sexMeta = const VerificationMeta('sex');
+  @override
+  late final GeneratedColumn<String> sex = GeneratedColumn<String>(
+    'sex',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+    defaultValue: const Constant('unknown'),
+  );
+  static const VerificationMeta _isNeuteredMeta = const VerificationMeta(
+    'isNeutered',
+  );
+  @override
+  late final GeneratedColumn<bool> isNeutered = GeneratedColumn<bool>(
+    'is_neutered',
+    aliasedName,
+    false,
+    type: DriftSqlType.bool,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'CHECK ("is_neutered" IN (0, 1))',
+    ),
+    defaultValue: const Constant(false),
+  );
+  static const VerificationMeta _weightGoalMinKgMeta = const VerificationMeta(
+    'weightGoalMinKg',
+  );
+  @override
+  late final GeneratedColumn<double> weightGoalMinKg = GeneratedColumn<double>(
+    'weight_goal_min_kg',
+    aliasedName,
+    true,
+    type: DriftSqlType.double,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _weightGoalMaxKgMeta = const VerificationMeta(
+    'weightGoalMaxKg',
+  );
+  @override
+  late final GeneratedColumn<double> weightGoalMaxKg = GeneratedColumn<double>(
+    'weight_goal_max_kg',
+    aliasedName,
+    true,
+    type: DriftSqlType.double,
+    requiredDuringInsert: false,
+  );
   static const VerificationMeta _targetWaterMlMeta = const VerificationMeta(
     'targetWaterMl',
   );
@@ -120,6 +167,10 @@ class $CatsTable extends Cats with TableInfo<$CatsTable, Cat> {
     breed,
     birthDate,
     photoPath,
+    sex,
+    isNeutered,
+    weightGoalMinKg,
+    weightGoalMaxKg,
     targetWaterMl,
     targetMealsPerDay,
     createdAt,
@@ -164,6 +215,36 @@ class $CatsTable extends Cats with TableInfo<$CatsTable, Cat> {
       context.handle(
         _photoPathMeta,
         photoPath.isAcceptableOrUnknown(data['photo_path']!, _photoPathMeta),
+      );
+    }
+    if (data.containsKey('sex')) {
+      context.handle(
+        _sexMeta,
+        sex.isAcceptableOrUnknown(data['sex']!, _sexMeta),
+      );
+    }
+    if (data.containsKey('is_neutered')) {
+      context.handle(
+        _isNeuteredMeta,
+        isNeutered.isAcceptableOrUnknown(data['is_neutered']!, _isNeuteredMeta),
+      );
+    }
+    if (data.containsKey('weight_goal_min_kg')) {
+      context.handle(
+        _weightGoalMinKgMeta,
+        weightGoalMinKg.isAcceptableOrUnknown(
+          data['weight_goal_min_kg']!,
+          _weightGoalMinKgMeta,
+        ),
+      );
+    }
+    if (data.containsKey('weight_goal_max_kg')) {
+      context.handle(
+        _weightGoalMaxKgMeta,
+        weightGoalMaxKg.isAcceptableOrUnknown(
+          data['weight_goal_max_kg']!,
+          _weightGoalMaxKgMeta,
+        ),
       );
     }
     if (data.containsKey('target_water_ml')) {
@@ -225,6 +306,22 @@ class $CatsTable extends Cats with TableInfo<$CatsTable, Cat> {
         DriftSqlType.string,
         data['${effectivePrefix}photo_path'],
       ),
+      sex: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}sex'],
+      )!,
+      isNeutered: attachedDatabase.typeMapping.read(
+        DriftSqlType.bool,
+        data['${effectivePrefix}is_neutered'],
+      )!,
+      weightGoalMinKg: attachedDatabase.typeMapping.read(
+        DriftSqlType.double,
+        data['${effectivePrefix}weight_goal_min_kg'],
+      ),
+      weightGoalMaxKg: attachedDatabase.typeMapping.read(
+        DriftSqlType.double,
+        data['${effectivePrefix}weight_goal_max_kg'],
+      ),
       targetWaterMl: attachedDatabase.typeMapping.read(
         DriftSqlType.double,
         data['${effectivePrefix}target_water_ml'],
@@ -256,6 +353,10 @@ class Cat extends DataClass implements Insertable<Cat> {
   final String? breed;
   final DateTime? birthDate;
   final String? photoPath;
+  final String sex;
+  final bool isNeutered;
+  final double? weightGoalMinKg;
+  final double? weightGoalMaxKg;
   final double targetWaterMl;
   final int targetMealsPerDay;
   final DateTime createdAt;
@@ -266,6 +367,10 @@ class Cat extends DataClass implements Insertable<Cat> {
     this.breed,
     this.birthDate,
     this.photoPath,
+    required this.sex,
+    required this.isNeutered,
+    this.weightGoalMinKg,
+    this.weightGoalMaxKg,
     required this.targetWaterMl,
     required this.targetMealsPerDay,
     required this.createdAt,
@@ -284,6 +389,14 @@ class Cat extends DataClass implements Insertable<Cat> {
     }
     if (!nullToAbsent || photoPath != null) {
       map['photo_path'] = Variable<String>(photoPath);
+    }
+    map['sex'] = Variable<String>(sex);
+    map['is_neutered'] = Variable<bool>(isNeutered);
+    if (!nullToAbsent || weightGoalMinKg != null) {
+      map['weight_goal_min_kg'] = Variable<double>(weightGoalMinKg);
+    }
+    if (!nullToAbsent || weightGoalMaxKg != null) {
+      map['weight_goal_max_kg'] = Variable<double>(weightGoalMaxKg);
     }
     map['target_water_ml'] = Variable<double>(targetWaterMl);
     map['target_meals_per_day'] = Variable<int>(targetMealsPerDay);
@@ -305,6 +418,14 @@ class Cat extends DataClass implements Insertable<Cat> {
       photoPath: photoPath == null && nullToAbsent
           ? const Value.absent()
           : Value(photoPath),
+      sex: Value(sex),
+      isNeutered: Value(isNeutered),
+      weightGoalMinKg: weightGoalMinKg == null && nullToAbsent
+          ? const Value.absent()
+          : Value(weightGoalMinKg),
+      weightGoalMaxKg: weightGoalMaxKg == null && nullToAbsent
+          ? const Value.absent()
+          : Value(weightGoalMaxKg),
       targetWaterMl: Value(targetWaterMl),
       targetMealsPerDay: Value(targetMealsPerDay),
       createdAt: Value(createdAt),
@@ -323,6 +444,10 @@ class Cat extends DataClass implements Insertable<Cat> {
       breed: serializer.fromJson<String?>(json['breed']),
       birthDate: serializer.fromJson<DateTime?>(json['birthDate']),
       photoPath: serializer.fromJson<String?>(json['photoPath']),
+      sex: serializer.fromJson<String>(json['sex']),
+      isNeutered: serializer.fromJson<bool>(json['isNeutered']),
+      weightGoalMinKg: serializer.fromJson<double?>(json['weightGoalMinKg']),
+      weightGoalMaxKg: serializer.fromJson<double?>(json['weightGoalMaxKg']),
       targetWaterMl: serializer.fromJson<double>(json['targetWaterMl']),
       targetMealsPerDay: serializer.fromJson<int>(json['targetMealsPerDay']),
       createdAt: serializer.fromJson<DateTime>(json['createdAt']),
@@ -338,6 +463,10 @@ class Cat extends DataClass implements Insertable<Cat> {
       'breed': serializer.toJson<String?>(breed),
       'birthDate': serializer.toJson<DateTime?>(birthDate),
       'photoPath': serializer.toJson<String?>(photoPath),
+      'sex': serializer.toJson<String>(sex),
+      'isNeutered': serializer.toJson<bool>(isNeutered),
+      'weightGoalMinKg': serializer.toJson<double?>(weightGoalMinKg),
+      'weightGoalMaxKg': serializer.toJson<double?>(weightGoalMaxKg),
       'targetWaterMl': serializer.toJson<double>(targetWaterMl),
       'targetMealsPerDay': serializer.toJson<int>(targetMealsPerDay),
       'createdAt': serializer.toJson<DateTime>(createdAt),
@@ -351,6 +480,10 @@ class Cat extends DataClass implements Insertable<Cat> {
     Value<String?> breed = const Value.absent(),
     Value<DateTime?> birthDate = const Value.absent(),
     Value<String?> photoPath = const Value.absent(),
+    String? sex,
+    bool? isNeutered,
+    Value<double?> weightGoalMinKg = const Value.absent(),
+    Value<double?> weightGoalMaxKg = const Value.absent(),
     double? targetWaterMl,
     int? targetMealsPerDay,
     DateTime? createdAt,
@@ -361,6 +494,14 @@ class Cat extends DataClass implements Insertable<Cat> {
     breed: breed.present ? breed.value : this.breed,
     birthDate: birthDate.present ? birthDate.value : this.birthDate,
     photoPath: photoPath.present ? photoPath.value : this.photoPath,
+    sex: sex ?? this.sex,
+    isNeutered: isNeutered ?? this.isNeutered,
+    weightGoalMinKg: weightGoalMinKg.present
+        ? weightGoalMinKg.value
+        : this.weightGoalMinKg,
+    weightGoalMaxKg: weightGoalMaxKg.present
+        ? weightGoalMaxKg.value
+        : this.weightGoalMaxKg,
     targetWaterMl: targetWaterMl ?? this.targetWaterMl,
     targetMealsPerDay: targetMealsPerDay ?? this.targetMealsPerDay,
     createdAt: createdAt ?? this.createdAt,
@@ -373,6 +514,16 @@ class Cat extends DataClass implements Insertable<Cat> {
       breed: data.breed.present ? data.breed.value : this.breed,
       birthDate: data.birthDate.present ? data.birthDate.value : this.birthDate,
       photoPath: data.photoPath.present ? data.photoPath.value : this.photoPath,
+      sex: data.sex.present ? data.sex.value : this.sex,
+      isNeutered: data.isNeutered.present
+          ? data.isNeutered.value
+          : this.isNeutered,
+      weightGoalMinKg: data.weightGoalMinKg.present
+          ? data.weightGoalMinKg.value
+          : this.weightGoalMinKg,
+      weightGoalMaxKg: data.weightGoalMaxKg.present
+          ? data.weightGoalMaxKg.value
+          : this.weightGoalMaxKg,
       targetWaterMl: data.targetWaterMl.present
           ? data.targetWaterMl.value
           : this.targetWaterMl,
@@ -392,6 +543,10 @@ class Cat extends DataClass implements Insertable<Cat> {
           ..write('breed: $breed, ')
           ..write('birthDate: $birthDate, ')
           ..write('photoPath: $photoPath, ')
+          ..write('sex: $sex, ')
+          ..write('isNeutered: $isNeutered, ')
+          ..write('weightGoalMinKg: $weightGoalMinKg, ')
+          ..write('weightGoalMaxKg: $weightGoalMaxKg, ')
           ..write('targetWaterMl: $targetWaterMl, ')
           ..write('targetMealsPerDay: $targetMealsPerDay, ')
           ..write('createdAt: $createdAt, ')
@@ -407,6 +562,10 @@ class Cat extends DataClass implements Insertable<Cat> {
     breed,
     birthDate,
     photoPath,
+    sex,
+    isNeutered,
+    weightGoalMinKg,
+    weightGoalMaxKg,
     targetWaterMl,
     targetMealsPerDay,
     createdAt,
@@ -421,6 +580,10 @@ class Cat extends DataClass implements Insertable<Cat> {
           other.breed == this.breed &&
           other.birthDate == this.birthDate &&
           other.photoPath == this.photoPath &&
+          other.sex == this.sex &&
+          other.isNeutered == this.isNeutered &&
+          other.weightGoalMinKg == this.weightGoalMinKg &&
+          other.weightGoalMaxKg == this.weightGoalMaxKg &&
           other.targetWaterMl == this.targetWaterMl &&
           other.targetMealsPerDay == this.targetMealsPerDay &&
           other.createdAt == this.createdAt &&
@@ -433,6 +596,10 @@ class CatsCompanion extends UpdateCompanion<Cat> {
   final Value<String?> breed;
   final Value<DateTime?> birthDate;
   final Value<String?> photoPath;
+  final Value<String> sex;
+  final Value<bool> isNeutered;
+  final Value<double?> weightGoalMinKg;
+  final Value<double?> weightGoalMaxKg;
   final Value<double> targetWaterMl;
   final Value<int> targetMealsPerDay;
   final Value<DateTime> createdAt;
@@ -443,6 +610,10 @@ class CatsCompanion extends UpdateCompanion<Cat> {
     this.breed = const Value.absent(),
     this.birthDate = const Value.absent(),
     this.photoPath = const Value.absent(),
+    this.sex = const Value.absent(),
+    this.isNeutered = const Value.absent(),
+    this.weightGoalMinKg = const Value.absent(),
+    this.weightGoalMaxKg = const Value.absent(),
     this.targetWaterMl = const Value.absent(),
     this.targetMealsPerDay = const Value.absent(),
     this.createdAt = const Value.absent(),
@@ -454,6 +625,10 @@ class CatsCompanion extends UpdateCompanion<Cat> {
     this.breed = const Value.absent(),
     this.birthDate = const Value.absent(),
     this.photoPath = const Value.absent(),
+    this.sex = const Value.absent(),
+    this.isNeutered = const Value.absent(),
+    this.weightGoalMinKg = const Value.absent(),
+    this.weightGoalMaxKg = const Value.absent(),
     this.targetWaterMl = const Value.absent(),
     this.targetMealsPerDay = const Value.absent(),
     this.createdAt = const Value.absent(),
@@ -465,6 +640,10 @@ class CatsCompanion extends UpdateCompanion<Cat> {
     Expression<String>? breed,
     Expression<DateTime>? birthDate,
     Expression<String>? photoPath,
+    Expression<String>? sex,
+    Expression<bool>? isNeutered,
+    Expression<double>? weightGoalMinKg,
+    Expression<double>? weightGoalMaxKg,
     Expression<double>? targetWaterMl,
     Expression<int>? targetMealsPerDay,
     Expression<DateTime>? createdAt,
@@ -476,6 +655,10 @@ class CatsCompanion extends UpdateCompanion<Cat> {
       if (breed != null) 'breed': breed,
       if (birthDate != null) 'birth_date': birthDate,
       if (photoPath != null) 'photo_path': photoPath,
+      if (sex != null) 'sex': sex,
+      if (isNeutered != null) 'is_neutered': isNeutered,
+      if (weightGoalMinKg != null) 'weight_goal_min_kg': weightGoalMinKg,
+      if (weightGoalMaxKg != null) 'weight_goal_max_kg': weightGoalMaxKg,
       if (targetWaterMl != null) 'target_water_ml': targetWaterMl,
       if (targetMealsPerDay != null) 'target_meals_per_day': targetMealsPerDay,
       if (createdAt != null) 'created_at': createdAt,
@@ -489,6 +672,10 @@ class CatsCompanion extends UpdateCompanion<Cat> {
     Value<String?>? breed,
     Value<DateTime?>? birthDate,
     Value<String?>? photoPath,
+    Value<String>? sex,
+    Value<bool>? isNeutered,
+    Value<double?>? weightGoalMinKg,
+    Value<double?>? weightGoalMaxKg,
     Value<double>? targetWaterMl,
     Value<int>? targetMealsPerDay,
     Value<DateTime>? createdAt,
@@ -500,6 +687,10 @@ class CatsCompanion extends UpdateCompanion<Cat> {
       breed: breed ?? this.breed,
       birthDate: birthDate ?? this.birthDate,
       photoPath: photoPath ?? this.photoPath,
+      sex: sex ?? this.sex,
+      isNeutered: isNeutered ?? this.isNeutered,
+      weightGoalMinKg: weightGoalMinKg ?? this.weightGoalMinKg,
+      weightGoalMaxKg: weightGoalMaxKg ?? this.weightGoalMaxKg,
       targetWaterMl: targetWaterMl ?? this.targetWaterMl,
       targetMealsPerDay: targetMealsPerDay ?? this.targetMealsPerDay,
       createdAt: createdAt ?? this.createdAt,
@@ -525,6 +716,18 @@ class CatsCompanion extends UpdateCompanion<Cat> {
     if (photoPath.present) {
       map['photo_path'] = Variable<String>(photoPath.value);
     }
+    if (sex.present) {
+      map['sex'] = Variable<String>(sex.value);
+    }
+    if (isNeutered.present) {
+      map['is_neutered'] = Variable<bool>(isNeutered.value);
+    }
+    if (weightGoalMinKg.present) {
+      map['weight_goal_min_kg'] = Variable<double>(weightGoalMinKg.value);
+    }
+    if (weightGoalMaxKg.present) {
+      map['weight_goal_max_kg'] = Variable<double>(weightGoalMaxKg.value);
+    }
     if (targetWaterMl.present) {
       map['target_water_ml'] = Variable<double>(targetWaterMl.value);
     }
@@ -548,6 +751,10 @@ class CatsCompanion extends UpdateCompanion<Cat> {
           ..write('breed: $breed, ')
           ..write('birthDate: $birthDate, ')
           ..write('photoPath: $photoPath, ')
+          ..write('sex: $sex, ')
+          ..write('isNeutered: $isNeutered, ')
+          ..write('weightGoalMinKg: $weightGoalMinKg, ')
+          ..write('weightGoalMaxKg: $weightGoalMaxKg, ')
           ..write('targetWaterMl: $targetWaterMl, ')
           ..write('targetMealsPerDay: $targetMealsPerDay, ')
           ..write('createdAt: $createdAt, ')
@@ -2431,6 +2638,10 @@ typedef $$CatsTableCreateCompanionBuilder =
       Value<String?> breed,
       Value<DateTime?> birthDate,
       Value<String?> photoPath,
+      Value<String> sex,
+      Value<bool> isNeutered,
+      Value<double?> weightGoalMinKg,
+      Value<double?> weightGoalMaxKg,
       Value<double> targetWaterMl,
       Value<int> targetMealsPerDay,
       Value<DateTime> createdAt,
@@ -2443,6 +2654,10 @@ typedef $$CatsTableUpdateCompanionBuilder =
       Value<String?> breed,
       Value<DateTime?> birthDate,
       Value<String?> photoPath,
+      Value<String> sex,
+      Value<bool> isNeutered,
+      Value<double?> weightGoalMinKg,
+      Value<double?> weightGoalMaxKg,
       Value<double> targetWaterMl,
       Value<int> targetMealsPerDay,
       Value<DateTime> createdAt,
@@ -2558,6 +2773,26 @@ class $$CatsTableFilterComposer extends Composer<_$AppDatabase, $CatsTable> {
 
   ColumnFilters<String> get photoPath => $composableBuilder(
     column: $table.photoPath,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get sex => $composableBuilder(
+    column: $table.sex,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<bool> get isNeutered => $composableBuilder(
+    column: $table.isNeutered,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<double> get weightGoalMinKg => $composableBuilder(
+    column: $table.weightGoalMinKg,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<double> get weightGoalMaxKg => $composableBuilder(
+    column: $table.weightGoalMaxKg,
     builder: (column) => ColumnFilters(column),
   );
 
@@ -2715,6 +2950,26 @@ class $$CatsTableOrderingComposer extends Composer<_$AppDatabase, $CatsTable> {
     builder: (column) => ColumnOrderings(column),
   );
 
+  ColumnOrderings<String> get sex => $composableBuilder(
+    column: $table.sex,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<bool> get isNeutered => $composableBuilder(
+    column: $table.isNeutered,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<double> get weightGoalMinKg => $composableBuilder(
+    column: $table.weightGoalMinKg,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<double> get weightGoalMaxKg => $composableBuilder(
+    column: $table.weightGoalMaxKg,
+    builder: (column) => ColumnOrderings(column),
+  );
+
   ColumnOrderings<double> get targetWaterMl => $composableBuilder(
     column: $table.targetWaterMl,
     builder: (column) => ColumnOrderings(column),
@@ -2759,6 +3014,24 @@ class $$CatsTableAnnotationComposer
 
   GeneratedColumn<String> get photoPath =>
       $composableBuilder(column: $table.photoPath, builder: (column) => column);
+
+  GeneratedColumn<String> get sex =>
+      $composableBuilder(column: $table.sex, builder: (column) => column);
+
+  GeneratedColumn<bool> get isNeutered => $composableBuilder(
+    column: $table.isNeutered,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<double> get weightGoalMinKg => $composableBuilder(
+    column: $table.weightGoalMinKg,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<double> get weightGoalMaxKg => $composableBuilder(
+    column: $table.weightGoalMaxKg,
+    builder: (column) => column,
+  );
 
   GeneratedColumn<double> get targetWaterMl => $composableBuilder(
     column: $table.targetWaterMl,
@@ -2915,6 +3188,10 @@ class $$CatsTableTableManager
                 Value<String?> breed = const Value.absent(),
                 Value<DateTime?> birthDate = const Value.absent(),
                 Value<String?> photoPath = const Value.absent(),
+                Value<String> sex = const Value.absent(),
+                Value<bool> isNeutered = const Value.absent(),
+                Value<double?> weightGoalMinKg = const Value.absent(),
+                Value<double?> weightGoalMaxKg = const Value.absent(),
                 Value<double> targetWaterMl = const Value.absent(),
                 Value<int> targetMealsPerDay = const Value.absent(),
                 Value<DateTime> createdAt = const Value.absent(),
@@ -2925,6 +3202,10 @@ class $$CatsTableTableManager
                 breed: breed,
                 birthDate: birthDate,
                 photoPath: photoPath,
+                sex: sex,
+                isNeutered: isNeutered,
+                weightGoalMinKg: weightGoalMinKg,
+                weightGoalMaxKg: weightGoalMaxKg,
                 targetWaterMl: targetWaterMl,
                 targetMealsPerDay: targetMealsPerDay,
                 createdAt: createdAt,
@@ -2937,6 +3218,10 @@ class $$CatsTableTableManager
                 Value<String?> breed = const Value.absent(),
                 Value<DateTime?> birthDate = const Value.absent(),
                 Value<String?> photoPath = const Value.absent(),
+                Value<String> sex = const Value.absent(),
+                Value<bool> isNeutered = const Value.absent(),
+                Value<double?> weightGoalMinKg = const Value.absent(),
+                Value<double?> weightGoalMaxKg = const Value.absent(),
                 Value<double> targetWaterMl = const Value.absent(),
                 Value<int> targetMealsPerDay = const Value.absent(),
                 Value<DateTime> createdAt = const Value.absent(),
@@ -2947,6 +3232,10 @@ class $$CatsTableTableManager
                 breed: breed,
                 birthDate: birthDate,
                 photoPath: photoPath,
+                sex: sex,
+                isNeutered: isNeutered,
+                weightGoalMinKg: weightGoalMinKg,
+                weightGoalMaxKg: weightGoalMaxKg,
                 targetWaterMl: targetWaterMl,
                 targetMealsPerDay: targetMealsPerDay,
                 createdAt: createdAt,

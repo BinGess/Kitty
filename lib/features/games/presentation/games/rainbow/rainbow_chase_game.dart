@@ -12,10 +12,7 @@ import '../../../domain/game_config.dart';
 class RainbowChaseGame extends StatefulWidget {
   final GameConfig config;
 
-  const RainbowChaseGame({
-    super.key,
-    required this.config,
-  });
+  const RainbowChaseGame({super.key, required this.config});
 
   @override
   State<RainbowChaseGame> createState() => _RainbowChaseGameState();
@@ -95,8 +92,7 @@ class _RainbowChaseGameState extends State<RainbowChaseGame> {
       }
     } else {
       final angle = atan2(dir.dy, dir.dx);
-      final drift =
-          sin(_time / 1200) * 0.18 + cos(_time / 900) * 0.14;
+      final drift = sin(_time / 1200) * 0.18 + cos(_time / 900) * 0.14;
       dir = Offset(cos(angle + drift), sin(angle + drift));
     }
 
@@ -178,14 +174,16 @@ class _RainbowChaseGameState extends State<RainbowChaseGame> {
       final angle = _rng.nextDouble() * pi * 2;
       final speed = 60 + _rng.nextDouble() * 140;
       final hue = _rng.nextDouble() * 360;
-      _sparkles.add(_Sparkle(
-        pos: pos,
-        vel: Offset(cos(angle), sin(angle)) * speed,
-        life: 0.5 + _rng.nextDouble() * 0.6,
-        maxLife: 1.1,
-        radius: 1.5 + _rng.nextDouble() * 2.5,
-        hue: hue,
-      ));
+      _sparkles.add(
+        _Sparkle(
+          pos: pos,
+          vel: Offset(cos(angle), sin(angle)) * speed,
+          life: 0.5 + _rng.nextDouble() * 0.6,
+          maxLife: 1.1,
+          radius: 1.5 + _rng.nextDouble() * 2.5,
+          hue: hue,
+        ),
+      );
     }
   }
 
@@ -214,6 +212,9 @@ class _RainbowChaseGameState extends State<RainbowChaseGame> {
     return LayoutBuilder(
       builder: (context, constraints) {
         final size = constraints.biggest;
+        final overlayTop = MediaQuery.of(context).padding.top + 12;
+        const overlaySize = 48.0;
+        const overlayLeft = 12.0;
         if (size.width > 0 && size.height > 0) {
           if (!_initialized || _bounds.size != size) {
             _init(size);
@@ -235,6 +236,9 @@ class _RainbowChaseGameState extends State<RainbowChaseGame> {
               sparkles: _sparkles,
               ripples: _ripples,
               touchCount: _touchCount,
+              overlayTop: overlayTop,
+              overlaySize: overlaySize,
+              overlayLeft: overlayLeft,
             ),
           ),
         );
@@ -251,6 +255,9 @@ class _RainbowChasePainter extends CustomPainter {
   final List<_Sparkle> sparkles;
   final List<_Ripple> ripples;
   final int touchCount;
+  final double overlayTop;
+  final double overlaySize;
+  final double overlayLeft;
 
   _RainbowChasePainter({
     required this.bounds,
@@ -260,6 +267,9 @@ class _RainbowChasePainter extends CustomPainter {
     required this.sparkles,
     required this.ripples,
     required this.touchCount,
+    required this.overlayTop,
+    required this.overlaySize,
+    required this.overlayLeft,
   });
 
   @override
@@ -363,12 +373,7 @@ class _RainbowChasePainter extends CustomPainter {
   void _paintSparkles(Canvas canvas, List<_Sparkle> sparkles) {
     for (final s in sparkles) {
       final lifeT = (s.life / s.maxLife).clamp(0.0, 1.0);
-      final color = HSVColor.fromAHSV(
-        0.5 * lifeT,
-        s.hue,
-        0.9,
-        1.0,
-      ).toColor();
+      final color = HSVColor.fromAHSV(0.5 * lifeT, s.hue, 0.9, 1.0).toColor();
       final paint = Paint()
         ..color = color
         ..maskFilter = const MaskFilter.blur(BlurStyle.normal, 4);
@@ -416,7 +421,7 @@ class _RainbowChasePainter extends CustomPainter {
     textPainter.layout();
     textPainter.paint(
       canvas,
-      const Offset(68, 56),
+      Offset(overlayLeft, overlayTop + (overlaySize - textPainter.height) / 2),
     );
   }
 
@@ -466,9 +471,5 @@ class _Ripple {
   double age;
   final double maxAge;
 
-  _Ripple({
-    required this.pos,
-    required this.age,
-    required this.maxAge,
-  });
+  _Ripple({required this.pos, required this.age, required this.maxAge});
 }

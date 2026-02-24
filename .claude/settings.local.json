@@ -33,7 +33,9 @@
       "Bash(__NEW_LINE_3bca481916ac35bc__ xcrun simctl io EF16A281-F5A6-49CE-AC87-DD16C4E342F5 screenshot /tmp/kitty_health_fixed2.png)",
       "Bash(__NEW_LINE_35d89051a4a7ff21__ xcrun simctl io EF16A281-F5A6-49CE-AC87-DD16C4E342F5 screenshot /tmp/kitty_health_try.png)",
       "Bash(__NEW_LINE_bee529768259969c__ xcrun simctl io EF16A281-F5A6-49CE-AC87-DD16C4E342F5 screenshot /tmp/kitty_health_fab_fixed.png)",
-      "Bash(__NEW_LINE_d474333952a333a4__ xcrun simctl io EF16A281-F5A6-49CE-AC87-DD16C4E342F5 screenshot /tmp/kitty_health_fab_final.png)"
+      "Bash(__NEW_LINE_d474333952a333a4__ xcrun simctl io EF16A281-F5A6-49CE-AC87-DD16C4E342F5 screenshot /tmp/kitty_health_fab_final.png)",
+      "Bash(identify:*)",
+      "Bash(sips:*)"
     ]
   }
 }

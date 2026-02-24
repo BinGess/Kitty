@@ -3,14 +3,32 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../../core/constants/app_colors.dart';
 import '../../../../core/widgets/centered_page_title.dart';
 import '../../data/models/sound_item.dart';
+import '../../data/repositories/sound_repository.dart';
 import '../providers/sounds_provider.dart';
 import '../widgets/sound_card.dart';
 
-class SoundsScreen extends ConsumerWidget {
+class SoundsScreen extends ConsumerStatefulWidget {
   const SoundsScreen({super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<SoundsScreen> createState() => _SoundsScreenState();
+}
+
+class _SoundsScreenState extends ConsumerState<SoundsScreen> {
+  bool _precacheDone = false;
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    if (_precacheDone) return;
+    _precacheDone = true;
+    for (final sound in SoundRepository.allSounds) {
+      precacheImage(AssetImage(sound.imagePath), context);
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
     final playbackState = ref.watch(soundPlaybackProvider);
     final isPlaying = playbackState.playingId != null;
     final listenSounds = ref.watch(listenSoundsProvider);
@@ -66,9 +84,11 @@ class SoundsScreen extends ConsumerWidget {
                   const Expanded(child: Divider(color: AppColors.divider)),
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 12),
-                    child: Icon(Icons.pets,
-                        size: 14,
-                        color: AppColors.textSecondary.withValues(alpha: 0.4)),
+                    child: Icon(
+                      Icons.pets,
+                      size: 14,
+                      color: AppColors.textSecondary.withValues(alpha: 0.4),
+                    ),
                   ),
                   const Expanded(child: Divider(color: AppColors.divider)),
                 ],
@@ -127,10 +147,7 @@ class _SectionHeader extends StatelessWidget {
             ),
             Text(
               subtitle,
-              style: TextStyle(
-                fontSize: 11,
-                color: AppColors.textSecondary,
-              ),
+              style: TextStyle(fontSize: 11, color: AppColors.textSecondary),
             ),
           ],
         ),

@@ -167,7 +167,10 @@ class GameSettingsSheet extends ConsumerWidget {
                   ),
                 ),
                 SizedBox(
-                    height: MediaQuery.of(context).padding.bottom + 8),
+                  height: MediaQuery.of(context).padding.bottom +
+                      kBottomNavigationBarHeight +
+                      8,
+                ),
               ],
             ),
           ),

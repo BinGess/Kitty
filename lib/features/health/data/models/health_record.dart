@@ -30,19 +30,25 @@ class HealthTimelineEntry {
 class HealthSummary {
   final double? latestWeight;
   final double? weightChange;
+  final double? weightGoalMinKg;
+  final double? weightGoalMaxKg;
   final double todayWaterMl;
   final double targetWaterMl;
   final int todayMeals;
   final int targetMeals;
+  final bool isWeightOutOfGoal;
   final bool hasWeightWarning;
 
   const HealthSummary({
     this.latestWeight,
     this.weightChange,
+    this.weightGoalMinKg,
+    this.weightGoalMaxKg,
     this.todayWaterMl = 0,
     this.targetWaterMl = 200,
     this.todayMeals = 0,
     this.targetMeals = 3,
+    this.isWeightOutOfGoal = false,
     this.hasWeightWarning = false,
   });
 }
@@ -55,11 +61,7 @@ class ExcretionLabels {
     3: '软便无形',
     4: '水样拉稀',
   };
-  static const Map<int, String> urineLabels = {
-    1: '小团',
-    2: '中团',
-    3: '大团',
-  };
+  static const Map<int, String> urineLabels = {1: '小团', 2: '中团', 3: '大团'};
 
   static IconData iconForBristol(int scale) {
     switch (scale) {

@@ -45,10 +45,12 @@ class _SplashScreenState extends State<SplashScreen>
   }
 
   void _scheduleNavigate() {
-    Future.delayed(const Duration(milliseconds: 500), () {
-      if (!mounted || _navigated) return;
-      _navigated = true;
-      context.go('/sounds');
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      Future.delayed(const Duration(seconds: 1), () {
+        if (!mounted || _navigated) return;
+        _navigated = true;
+        context.go('/sounds');
+      });
     });
   }
 

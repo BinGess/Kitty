@@ -15,10 +15,7 @@ import 'catch_mouse_logic.dart';
 class CatchMouseGame extends StatefulWidget {
   final GameConfig config;
 
-  const CatchMouseGame({
-    super.key,
-    required this.config,
-  });
+  const CatchMouseGame({super.key, required this.config});
 
   @override
   State<CatchMouseGame> createState() => _CatchMouseGameState();
@@ -80,6 +77,9 @@ class _CatchMouseGameState extends State<CatchMouseGame> {
     return LayoutBuilder(
       builder: (context, constraints) {
         final size = constraints.biggest;
+        final overlayTop = MediaQuery.of(context).padding.top + 12;
+        const overlaySize = 48.0;
+        const overlayLeft = 12.0;
         if (size.width > 0 && size.height > 0) {
           if (_logic == null || _logic!.bounds.size != size) {
             _initLogic(size);
@@ -93,7 +93,12 @@ class _CatchMouseGameState extends State<CatchMouseGame> {
           onPointerDown: (e) => _onTap(e.localPosition),
           child: CustomPaint(
             size: Size(constraints.maxWidth, constraints.maxHeight),
-            painter: _CatchMousePainter(logic: _logic!),
+            painter: _CatchMousePainter(
+              logic: _logic!,
+              overlayTop: overlayTop,
+              overlaySize: overlaySize,
+              overlayLeft: overlayLeft,
+            ),
           ),
         );
       },
@@ -103,8 +108,16 @@ class _CatchMouseGameState extends State<CatchMouseGame> {
 
 class _CatchMousePainter extends CustomPainter {
   final CatchMouseLogic logic;
+  final double overlayTop;
+  final double overlaySize;
+  final double overlayLeft;
 
-  _CatchMousePainter({required this.logic});
+  _CatchMousePainter({
+    required this.logic,
+    required this.overlayTop,
+    required this.overlaySize,
+    required this.overlayLeft,
+  });
 
   @override
   void paint(Canvas canvas, Size size) {
@@ -163,23 +176,18 @@ class _CatchMousePainter extends CustomPainter {
         const Color(0xFF2D1F0E),
         const Color(0xFF1A1208),
         rng.nextDouble(),
-      )!
-          .withValues(alpha: 0.4);
+      )!.withValues(alpha: 0.4);
 
       final path = Path()..moveTo(0, y);
       for (double x = 0; x < bounds.width; x += 40) {
-        path.lineTo(
-            x + 40, y + (rng.nextDouble() - 0.5) * 3);
+        path.lineTo(x + 40, y + (rng.nextDouble() - 0.5) * 3);
       }
       canvas.drawPath(path, woodPaint);
     }
 
     // 边角暗角效果
     final vignetteShader = RadialGradient(
-      colors: [
-        Colors.transparent,
-        Colors.black.withValues(alpha: 0.3),
-      ],
+      colors: [Colors.transparent, Colors.black.withValues(alpha: 0.3)],
       stops: const [0.6, 1.0],
     ).createShader(bounds);
     canvas.drawRect(bounds, Paint()..shader = vignetteShader);
@@ -190,8 +198,9 @@ class _CatchMousePainter extends CustomPainter {
     if (trail.length < 2) return;
 
     final isMouse = logic.creatureType == CatchCreatureType.mouse;
-    final trailColor =
-        isMouse ? const Color(0xFF8D6E63) : const Color(0xFF4FC3F7);
+    final trailColor = isMouse
+        ? const Color(0xFF8D6E63)
+        : const Color(0xFF4FC3F7);
 
     for (int i = 0; i < trail.length; i++) {
       final t = i / trail.length;
@@ -221,8 +230,7 @@ class _CatchMousePainter extends CustomPainter {
           canvas.save();
           canvas.translate(p.x, p.y);
           canvas.rotate(p.rotation);
-          _drawStar(
-              canvas, p.size * p.life, p.color.withValues(alpha: alpha));
+          _drawStar(canvas, p.size * p.life, p.color.withValues(alpha: alpha));
           canvas.restore();
           break;
 
@@ -305,9 +313,12 @@ class _CatchMousePainter extends CustomPainter {
     final tailPath = Path()
       ..moveTo(center.dx - r * 0.7, center.dy)
       ..cubicTo(
-        center.dx - r * 1.2, center.dy + sway,
-        center.dx - r * 1.5, center.dy - sway * 0.5,
-        center.dx - r * 1.6, center.dy + sway * 0.3,
+        center.dx - r * 1.2,
+        center.dy + sway,
+        center.dx - r * 1.5,
+        center.dy - sway * 0.5,
+        center.dx - r * 1.6,
+        center.dy + sway * 0.3,
       );
     canvas.drawPath(tailPath, tailPaint);
 
@@ -339,10 +350,16 @@ class _CatchMousePainter extends CustomPainter {
     );
 
     // 耳朵
-    _drawMouseEar(canvas, Offset(center.dx + r * 0.3, center.dy - r * 0.55),
-        r * 0.3);
-    _drawMouseEar(canvas, Offset(center.dx + r * 0.6, center.dy - r * 0.45),
-        r * 0.25);
+    _drawMouseEar(
+      canvas,
+      Offset(center.dx + r * 0.3, center.dy - r * 0.55),
+      r * 0.3,
+    );
+    _drawMouseEar(
+      canvas,
+      Offset(center.dx + r * 0.6, center.dy - r * 0.45),
+      r * 0.25,
+    );
 
     // 眼睛
     final eyePaint = Paint()..color = const Color(0xFF212121);
@@ -405,8 +422,10 @@ class _CatchMousePainter extends CustomPainter {
       ..moveTo(center.dx - r * 0.5, center.dy)
       ..lineTo(center.dx - r * 1.3, center.dy - r * 0.5 + tailSway)
       ..quadraticBezierTo(
-        center.dx - r * 0.9, center.dy,
-        center.dx - r * 1.3, center.dy + r * 0.5 + tailSway,
+        center.dx - r * 0.9,
+        center.dy,
+        center.dx - r * 1.3,
+        center.dy + r * 0.5 + tailSway,
       )
       ..close();
     canvas.drawPath(tailPath, Paint()..color = const Color(0xFF0277BD));
@@ -444,8 +463,10 @@ class _CatchMousePainter extends CustomPainter {
     final dorsalPath = Path()
       ..moveTo(center.dx - r * 0.1, center.dy - r * 0.5)
       ..quadraticBezierTo(
-        center.dx + r * 0.2, center.dy - r * 0.9,
-        center.dx + r * 0.5, center.dy - r * 0.45,
+        center.dx + r * 0.2,
+        center.dy - r * 0.9,
+        center.dx + r * 0.5,
+        center.dy - r * 0.45,
       )
       ..close();
     canvas.drawPath(dorsalPath, Paint()..color = const Color(0xFF039BE5));
@@ -454,15 +475,18 @@ class _CatchMousePainter extends CustomPainter {
     final pectoralPath = Path()
       ..moveTo(center.dx + r * 0.1, center.dy + r * 0.15)
       ..quadraticBezierTo(
-        center.dx + r * 0.4, center.dy + r * 0.5,
-        center.dx + r * 0.1, center.dy + r * 0.45,
+        center.dx + r * 0.4,
+        center.dy + r * 0.5,
+        center.dx + r * 0.1,
+        center.dy + r * 0.45,
       );
     canvas.drawPath(
-        pectoralPath,
-        Paint()
-          ..color = const Color(0xFF4FC3F7).withValues(alpha: 0.7)
-          ..strokeWidth = 2
-          ..style = PaintingStyle.stroke);
+      pectoralPath,
+      Paint()
+        ..color = const Color(0xFF4FC3F7).withValues(alpha: 0.7)
+        ..strokeWidth = 2
+        ..style = PaintingStyle.stroke,
+    );
 
     // 鳞片纹理（微妙的弧线）
     final scalePaint = Paint()
@@ -473,7 +497,10 @@ class _CatchMousePainter extends CustomPainter {
       final sx = center.dx - r * 0.2 + i * r * 0.25;
       canvas.drawArc(
         Rect.fromCenter(
-            center: Offset(sx, center.dy), width: r * 0.3, height: r * 0.4),
+          center: Offset(sx, center.dy),
+          width: r * 0.3,
+          height: r * 0.4,
+        ),
         0.5,
         2.0,
         false,
@@ -593,7 +620,7 @@ class _CatchMousePainter extends CustomPainter {
     textPainter.layout();
     textPainter.paint(
       canvas,
-      const Offset(68, 56),
+      Offset(overlayLeft, overlayTop + (overlaySize - textPainter.height) / 2),
     );
   }
 

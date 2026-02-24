@@ -27,6 +27,8 @@ class _WeightCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final change = summary.weightChange;
+    final hasGoal =
+        summary.weightGoalMinKg != null || summary.weightGoalMaxKg != null;
     return _SummaryCardBase(
       icon: Icons.monitor_weight_outlined,
       iconColor: const Color(0xFFAB47BC),
@@ -36,30 +38,67 @@ class _WeightCard extends StatelessWidget {
           ? summary.latestWeight!.toStringAsFixed(1)
           : '--',
       unit: 'kg',
-      footer: change != null
-          ? Row(
-              children: [
-                Icon(
-                  change >= 0 ? Icons.trending_up : Icons.trending_down,
-                  size: 12,
-                  color: change >= 0 ? AppColors.error : AppColors.success,
-                ),
-                const SizedBox(width: 2),
-                Text(
-                  '${change.abs().toStringAsFixed(1)}kg',
+      footer: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          change != null
+              ? Row(
+                  children: [
+                    Icon(
+                      change >= 0 ? Icons.trending_up : Icons.trending_down,
+                      size: 12,
+                      color: change >= 0 ? AppColors.error : AppColors.success,
+                    ),
+                    const SizedBox(width: 2),
+                    Text(
+                      '${change.abs().toStringAsFixed(1)}kg',
+                      style: TextStyle(
+                        fontSize: 11,
+                        fontWeight: FontWeight.w500,
+                        color: change >= 0
+                            ? AppColors.error
+                            : AppColors.success,
+                      ),
+                    ),
+                  ],
+                )
+              : const Text(
+                  '暂无变化',
                   style: TextStyle(
                     fontSize: 11,
-                    fontWeight: FontWeight.w500,
-                    color: change >= 0 ? AppColors.error : AppColors.success,
+                    color: AppColors.textSecondary,
                   ),
                 ),
-              ],
-            )
-          : Text(
-              '暂无变化',
-              style: TextStyle(fontSize: 11, color: AppColors.textSecondary),
+          if (hasGoal) ...[
+            const SizedBox(height: 3),
+            Text(
+              _buildGoalText(summary),
+              style: TextStyle(
+                fontSize: 10,
+                color: summary.isWeightOutOfGoal
+                    ? AppColors.warning
+                    : AppColors.textSecondary,
+              ),
             ),
+          ],
+        ],
+      ),
     );
+  }
+
+  String _buildGoalText(HealthSummary summary) {
+    final min = summary.weightGoalMinKg;
+    final max = summary.weightGoalMaxKg;
+    String base = '';
+    if (min != null && max != null) {
+      base = '目标 ${min.toStringAsFixed(1)}-${max.toStringAsFixed(1)}kg';
+    } else if (min != null) {
+      base = '目标 >= ${min.toStringAsFixed(1)}kg';
+    } else if (max != null) {
+      base = '目标 <= ${max.toStringAsFixed(1)}kg';
+    }
+    if (base.isEmpty || !summary.isWeightOutOfGoal) return base;
+    return '$base（当前超出）';
   }
 }
 
@@ -93,7 +132,10 @@ class _WaterCard extends StatelessWidget {
           const SizedBox(height: 3),
           Text(
             '目标 ${summary.targetWaterMl.toStringAsFixed(0)}ml',
-            style: const TextStyle(fontSize: 10, color: AppColors.textSecondary),
+            style: const TextStyle(
+              fontSize: 10,
+              color: AppColors.textSecondary,
+            ),
           ),
         ],
       ),
@@ -185,8 +227,11 @@ class _SummaryCardBase extends StatelessWidget {
               ),
               if (hasWarning) ...[
                 const Spacer(),
-                const Icon(Icons.warning_amber_rounded,
-                    size: 14, color: AppColors.warning),
+                const Icon(
+                  Icons.warning_amber_rounded,
+                  size: 14,
+                  color: AppColors.warning,
+                ),
               ],
             ],
           ),

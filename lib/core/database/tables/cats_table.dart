@@ -6,12 +6,12 @@ class Cats extends Table {
   TextColumn get breed => text().nullable()();
   DateTimeColumn get birthDate => dateTime().nullable()();
   TextColumn get photoPath => text().nullable()();
-  RealColumn get targetWaterMl =>
-      real().withDefault(const Constant(200.0))();
-  IntColumn get targetMealsPerDay =>
-      integer().withDefault(const Constant(3))();
-  DateTimeColumn get createdAt =>
-      dateTime().withDefault(currentDateAndTime)();
-  DateTimeColumn get updatedAt =>
-      dateTime().withDefault(currentDateAndTime)();
+  TextColumn get sex => text().withDefault(const Constant('unknown'))();
+  BoolColumn get isNeutered => boolean().withDefault(const Constant(false))();
+  RealColumn get weightGoalMinKg => real().nullable()();
+  RealColumn get weightGoalMaxKg => real().nullable()();
+  RealColumn get targetWaterMl => real().withDefault(const Constant(200.0))();
+  IntColumn get targetMealsPerDay => integer().withDefault(const Constant(3))();
+  DateTimeColumn get createdAt => dateTime().withDefault(currentDateAndTime)();
+  DateTimeColumn get updatedAt => dateTime().withDefault(currentDateAndTime)();
 }

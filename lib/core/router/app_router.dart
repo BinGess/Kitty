@@ -11,6 +11,7 @@ import '../../features/splash/presentation/screens/splash_screen.dart';
 import '../../features/profile/presentation/screens/more_screen.dart';
 import '../../features/profile/presentation/screens/cat_list_screen.dart';
 import '../../features/profile/presentation/screens/about_screen.dart';
+import '../../features/profile/presentation/screens/settings_screen.dart';
 import '../../features/theater/presentation/screens/theater_screen.dart';
 import 'scaffold_with_nav_bar.dart';
 
@@ -26,9 +27,8 @@ final appRouter = GoRouter(
     GoRoute(
       path: '/game-play/:gameId',
       name: 'gamePlay',
-      builder: (context, state) => GamePlayScreen(
-        gameId: state.pathParameters['gameId']!,
-      ),
+      builder: (context, state) =>
+          GamePlayScreen(gameId: state.pathParameters['gameId']!),
     ),
     StatefulShellRoute.indexedStack(
       builder: (context, state, navigationShell) {
@@ -114,6 +114,11 @@ final appRouter = GoRouter(
                   path: 'about',
                   name: 'about',
                   builder: (context, state) => const AboutScreen(),
+                ),
+                GoRoute(
+                  path: 'settings',
+                  name: 'settings',
+                  builder: (context, state) => const SettingsScreen(),
                 ),
               ],
             ),

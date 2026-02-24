@@ -79,7 +79,7 @@ class SoundRepository {
       label: '召唤本喵喝水',
       imagePath: '$_img/water.png',
       icon: Icons.water_drop,
-      assetPath: 'sounds/environment/9.mp3',
+      assetPath: 'sounds/calling/9.mp3',
       isLoopable: true,
     ),
     SoundItem(
@@ -88,7 +88,7 @@ class SoundRepository {
       label: '睡眠引导模式',
       imagePath: '$_img/white_noise.png',
       icon: Icons.cloud,
-      assetPath: 'sounds/environment/10.mp3',
+      assetPath: 'sounds/calling/10.mp3',
       isLoopable: true,
     ),
     SoundItem(
@@ -113,7 +113,7 @@ class SoundRepository {
       label: '偷袭：老鼠出没',
       imagePath: '$_img/mouse_sounds.png',
       icon: Icons.cruelty_free,
-      assetPath: 'sounds/environment/13.mp3',
+      assetPath: 'sounds/calling/13.mp3',
     ),
     SoundItem(
       id: 'plastic_bag',
@@ -129,7 +129,7 @@ class SoundRepository {
       label: '喵星频道来电',
       imagePath: '$_img/bird_sounds.png',
       icon: Icons.forest,
-      assetPath: 'sounds/environment/15.mp3',
+      assetPath: 'sounds/calling/15.mp3',
       isLoopable: true,
     ),
     SoundItem(
@@ -138,7 +138,7 @@ class SoundRepository {
       label: '开罐头',
       imagePath: '$_img/can_opener.png',
       icon: Icons.takeout_dining,
-      assetPath: 'sounds/environment/16.mp3',
+      assetPath: 'sounds/calling/16.mp3',
     ),
     SoundItem(
       id: 'comeback',
@@ -146,7 +146,7 @@ class SoundRepository {
       label: '你回来了',
       imagePath: '$_img/comeback.png',
       icon: Icons.home,
-      assetPath: 'sounds/environment/17.mp3',
+      assetPath: 'sounds/calling/17.mp3',
     ),
     SoundItem(
       id: 'squeaky_toys',
@@ -154,7 +154,7 @@ class SoundRepository {
       label: '响纸玩具',
       imagePath: '$_img/squeaky_toys.png',
       icon: Icons.auto_awesome,
-      assetPath: 'sounds/environment/18.mp3',
+      assetPath: 'sounds/calling/18.mp3',
     ),
   ];
 

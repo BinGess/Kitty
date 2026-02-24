@@ -36,7 +36,6 @@ class SoundCard extends ConsumerWidget {
               child: Stack(
                 alignment: Alignment.center,
                 children: [
-                  if (isLooping) _LoopingRing(color: AppColors.primary),
                   AnimatedScale(
                     scale: isPlaying ? 1.08 : 1.0,
                     duration: const Duration(milliseconds: 200),
@@ -44,6 +43,7 @@ class SoundCard extends ConsumerWidget {
                     child: Image.asset(
                       sound.imagePath,
                       fit: BoxFit.contain,
+                      gaplessPlayback: true,
                       errorBuilder: (context, error, stackTrace) {
                         return Icon(
                           sound.icon,
@@ -55,35 +55,36 @@ class SoundCard extends ConsumerWidget {
                       },
                     ),
                   ),
+                  if (isPlaying) _PlayingRipple(color: AppColors.primary),
                 ],
               ),
             ),
-          const SizedBox(height: 2),
-          Text(
-            sound.label,
-            textAlign: TextAlign.center,
-            maxLines: 1,
-            overflow: TextOverflow.ellipsis,
-            style: TextStyle(
-              fontSize: 12,
-              fontWeight: isPlaying ? FontWeight.w600 : FontWeight.w400,
-              color: isPlaying ? AppColors.primary : AppColors.onSurface,
+            const SizedBox(height: 2),
+            Text(
+              sound.label,
+              textAlign: TextAlign.center,
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+              style: TextStyle(
+                fontSize: 12,
+                fontWeight: isPlaying ? FontWeight.w600 : FontWeight.w400,
+                color: isPlaying ? AppColors.primary : AppColors.onSurface,
+              ),
             ),
-          ),
-          SizedBox(
-            height: 14,
-            child: isLooping
-                ? Text(
-                    '循环中',
-                    textAlign: TextAlign.center,
-                    style: TextStyle(
-                      fontSize: 9,
-                      color: AppColors.primary.withValues(alpha: 0.8),
-                      fontWeight: FontWeight.w500,
-                    ),
-                  )
-                : null,
-          ),
+            SizedBox(
+              height: 14,
+              child: isLooping
+                  ? Text(
+                      '循环中',
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                        fontSize: 9,
+                        color: AppColors.primary.withValues(alpha: 0.8),
+                        fontWeight: FontWeight.w500,
+                      ),
+                    )
+                  : null,
+            ),
           ],
         ),
       ),
@@ -91,29 +92,25 @@ class SoundCard extends ConsumerWidget {
   }
 }
 
-class _LoopingRing extends StatefulWidget {
+class _PlayingRipple extends StatefulWidget {
   final Color color;
-  const _LoopingRing({required this.color});
+  const _PlayingRipple({required this.color});
 
   @override
-  State<_LoopingRing> createState() => _LoopingRingState();
+  State<_PlayingRipple> createState() => _PlayingRippleState();
 }
 
-class _LoopingRingState extends State<_LoopingRing>
+class _PlayingRippleState extends State<_PlayingRipple>
     with SingleTickerProviderStateMixin {
   late final AnimationController _ctrl;
-  late final Animation<double> _scale;
 
   @override
   void initState() {
     super.initState();
     _ctrl = AnimationController(
-      duration: const Duration(milliseconds: 1200),
+      duration: const Duration(milliseconds: 4200),
       vsync: this,
     )..repeat();
-    _scale = Tween<double>(begin: 0.7, end: 1.3).animate(
-      CurvedAnimation(parent: _ctrl, curve: Curves.easeOut),
-    );
   }
 
   @override
@@ -125,21 +122,41 @@ class _LoopingRingState extends State<_LoopingRing>
   @override
   Widget build(BuildContext context) {
     return AnimatedBuilder(
-      animation: _scale,
+      animation: _ctrl,
       builder: (context, child) {
-        final progress = (_scale.value - 0.7) / 0.6;
-        return Container(
-          width: 80 * _scale.value,
-          height: 80 * _scale.value,
-          decoration: BoxDecoration(
-            shape: BoxShape.circle,
-            border: Border.all(
-              color: widget.color.withValues(alpha: 1.0 - progress),
-              width: 2,
-            ),
-          ),
+        return CustomPaint(
+          size: const Size(110, 110),
+          painter: _RipplePainter(progress: _ctrl.value, color: widget.color),
         );
       },
     );
+  }
+}
+
+class _RipplePainter extends CustomPainter {
+  final double progress;
+  final Color color;
+
+  _RipplePainter({required this.progress, required this.color});
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    final center = Offset(size.width / 2, size.height / 2);
+    for (int i = 0; i < 3; i++) {
+      final t = (progress + i / 3) % 1.0;
+      final radius = 18 + t * (size.width / 2 - 8);
+      final alpha = (1 - t) * 0.7;
+      final stroke = 10 - t * 2.0;
+      final paint = Paint()
+        ..color = color.withValues(alpha: alpha)
+        ..style = PaintingStyle.stroke
+        ..strokeWidth = stroke;
+      canvas.drawCircle(center, radius, paint);
+    }
+  }
+
+  @override
+  bool shouldRepaint(covariant _RipplePainter oldDelegate) {
+    return oldDelegate.progress != progress || oldDelegate.color != color;
   }
 }
