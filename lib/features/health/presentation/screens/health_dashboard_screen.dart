@@ -94,11 +94,11 @@ class _HealthDashboardScreenState
                         summaryAsync.when(
                           data: (s) => SummaryCards(summary: s),
                           loading: () => const SizedBox(
-                              height: 120,
+                              height: 100,
                               child: Center(
                                   child: CircularProgressIndicator(
                                       color: AppColors.primary))),
-                          error: (_, __) => const SizedBox(height: 120),
+                          error: (_, __) => const SizedBox(height: 100),
                         ),
                         const SizedBox(height: 24),
                         _sectionTitle(),

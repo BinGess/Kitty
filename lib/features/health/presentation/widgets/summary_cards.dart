@@ -8,17 +8,14 @@ class SummaryCards extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return SizedBox(
-      height: 120,
-      child: Row(
-        children: [
-          Expanded(child: _WeightCard(summary: summary)),
-          const SizedBox(width: 10),
-          Expanded(child: _WaterCard(summary: summary)),
-          const SizedBox(width: 10),
-          Expanded(child: _DietCard(summary: summary)),
-        ],
-      ),
+    return Row(
+      children: [
+        Expanded(child: _WeightCard(summary: summary)),
+        const SizedBox(width: 10),
+        Expanded(child: _WaterCard(summary: summary)),
+        const SizedBox(width: 10),
+        Expanded(child: _DietCard(summary: summary)),
+      ],
     );
   }
 }
@@ -32,33 +29,36 @@ class _WeightCard extends StatelessWidget {
     final change = summary.weightChange;
     return _SummaryCardBase(
       icon: Icons.monitor_weight_outlined,
-      iconColor: AppColors.info,
+      iconColor: const Color(0xFFAB47BC),
       label: '体重',
       hasWarning: summary.hasWeightWarning,
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            summary.latestWeight != null
-                ? '${summary.latestWeight!.toStringAsFixed(2)}kg'
-                : '--',
-            style: const TextStyle(
-              fontSize: 20,
-              fontWeight: FontWeight.w700,
-              color: AppColors.onBackground,
+      value: summary.latestWeight != null
+          ? summary.latestWeight!.toStringAsFixed(1)
+          : '--',
+      unit: 'kg',
+      footer: change != null
+          ? Row(
+              children: [
+                Icon(
+                  change >= 0 ? Icons.trending_up : Icons.trending_down,
+                  size: 12,
+                  color: change >= 0 ? AppColors.error : AppColors.success,
+                ),
+                const SizedBox(width: 2),
+                Text(
+                  '${change.abs().toStringAsFixed(1)}kg',
+                  style: TextStyle(
+                    fontSize: 11,
+                    fontWeight: FontWeight.w500,
+                    color: change >= 0 ? AppColors.error : AppColors.success,
+                  ),
+                ),
+              ],
+            )
+          : Text(
+              '暂无变化',
+              style: TextStyle(fontSize: 11, color: AppColors.textSecondary),
             ),
-          ),
-          if (change != null)
-            Text(
-              '${change >= 0 ? '↑' : '↓'} ${change.abs().toStringAsFixed(2)}kg',
-              style: TextStyle(
-                fontSize: 11,
-                fontWeight: FontWeight.w500,
-                color: change >= 0 ? AppColors.error : AppColors.success,
-              ),
-            ),
-        ],
-      ),
     );
   }
 }
@@ -76,34 +76,24 @@ class _WaterCard extends StatelessWidget {
       icon: Icons.water_drop_outlined,
       iconColor: AppColors.info,
       label: '饮水',
-      child: Column(
+      value: summary.todayWaterMl.toStringAsFixed(0),
+      unit: 'ml',
+      footer: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(
-            '${summary.todayWaterMl.toStringAsFixed(0)}ml',
-            style: const TextStyle(
-              fontSize: 20,
-              fontWeight: FontWeight.w700,
-              color: AppColors.onBackground,
-            ),
-          ),
-          const SizedBox(height: 6),
           ClipRRect(
-            borderRadius: BorderRadius.circular(4),
+            borderRadius: BorderRadius.circular(3),
             child: LinearProgressIndicator(
               value: ratio,
-              minHeight: 6,
+              minHeight: 5,
               backgroundColor: AppColors.divider,
               valueColor: const AlwaysStoppedAnimation(AppColors.info),
             ),
           ),
-          const SizedBox(height: 2),
+          const SizedBox(height: 3),
           Text(
-            '${summary.todayWaterMl.toStringAsFixed(0)}/${summary.targetWaterMl.toStringAsFixed(0)}ml',
-            style: const TextStyle(
-              fontSize: 10,
-              color: AppColors.textSecondary,
-            ),
+            '目标 ${summary.targetWaterMl.toStringAsFixed(0)}ml',
+            style: const TextStyle(fontSize: 10, color: AppColors.textSecondary),
           ),
         ],
       ),
@@ -121,45 +111,41 @@ class _DietCard extends StatelessWidget {
       icon: Icons.restaurant,
       iconColor: AppColors.primary,
       label: '饮食',
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.end,
-        children: [
-          Text(
-            '${summary.todayMeals}',
-            style: const TextStyle(
-              fontSize: 24,
-              fontWeight: FontWeight.w700,
-              color: AppColors.onBackground,
-            ),
-          ),
-          Padding(
-            padding: const EdgeInsets.only(bottom: 3, left: 2),
-            child: Text(
-              '/${summary.targetMeals}次',
-              style: const TextStyle(
-                fontSize: 12,
-                color: AppColors.textSecondary,
-              ),
-            ),
-          ),
-        ],
+      value: '${summary.todayMeals}',
+      unit: '/${summary.targetMeals}次',
+      footer: Text(
+        summary.todayMeals >= summary.targetMeals ? '已完成' : '进行中',
+        style: TextStyle(
+          fontSize: 11,
+          color: summary.todayMeals >= summary.targetMeals
+              ? AppColors.success
+              : AppColors.textSecondary,
+        ),
       ),
     );
   }
 }
 
+/// 统一的卡片基础布局：
+///   图标 + 标签 (顶部行)
+///   数值 + 单位 (中间主体, 统一的 fontSize/baseline)
+///   footer 小组件 (底部)
 class _SummaryCardBase extends StatelessWidget {
   final IconData icon;
   final Color iconColor;
   final String label;
-  final Widget child;
+  final String value;
+  final String unit;
+  final Widget footer;
   final bool hasWarning;
 
   const _SummaryCardBase({
     required this.icon,
     required this.iconColor,
     required this.label,
-    required this.child,
+    required this.value,
+    required this.unit,
+    required this.footer,
     this.hasWarning = false,
   });
 
@@ -183,10 +169,12 @@ class _SummaryCardBase extends StatelessWidget {
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
+        mainAxisSize: MainAxisSize.min,
         children: [
+          // 顶部：图标 + 标签
           Row(
             children: [
-              Icon(icon, size: 16, color: iconColor),
+              Icon(icon, size: 14, color: iconColor),
               const SizedBox(width: 4),
               Text(
                 label,
@@ -202,8 +190,37 @@ class _SummaryCardBase extends StatelessWidget {
               ],
             ],
           ),
+          const SizedBox(height: 10),
+
+          // 中间：数值 + 单位 (统一 baseline 对齐)
+          Row(
+            crossAxisAlignment: CrossAxisAlignment.baseline,
+            textBaseline: TextBaseline.alphabetic,
+            children: [
+              Text(
+                value,
+                style: const TextStyle(
+                  fontSize: 22,
+                  fontWeight: FontWeight.w700,
+                  color: AppColors.onBackground,
+                  height: 1.0,
+                ),
+              ),
+              const SizedBox(width: 2),
+              Text(
+                unit,
+                style: const TextStyle(
+                  fontSize: 12,
+                  color: AppColors.textSecondary,
+                  height: 1.0,
+                ),
+              ),
+            ],
+          ),
           const SizedBox(height: 8),
-          Expanded(child: child),
+
+          // 底部：footer
+          footer,
         ],
       ),
     );

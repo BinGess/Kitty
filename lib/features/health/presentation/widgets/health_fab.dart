@@ -27,15 +27,15 @@ class _HealthFabState extends State<HealthFab>
   bool _open = false;
 
   static const _items = <_FabItem>[
-    _FabItem(icon: Icons.restaurant, label: '饮食', color: AppColors.primary),
+    _FabItem(
+        icon: Icons.restaurant, label: '饮食', color: AppColors.primary),
     _FabItem(
         icon: Icons.water_drop_outlined, label: '饮水', color: AppColors.info),
     _FabItem(
         icon: Icons.monitor_weight_outlined,
         label: '体重',
         color: Color(0xFFAB47BC)),
-    _FabItem(
-        icon: Icons.pets, label: '排泄', color: AppColors.success),
+    _FabItem(icon: Icons.pets, label: '排泄', color: AppColors.success),
   ];
 
   @override
@@ -75,52 +75,38 @@ class _HealthFabState extends State<HealthFab>
 
   @override
   Widget build(BuildContext context) {
-    return SizedBox(
-      width: 200,
-      height: 300,
-      child: Stack(
-        alignment: Alignment.bottomRight,
-        children: [
-          if (_open)
-            Positioned.fill(
-              child: GestureDetector(
-                behavior: HitTestBehavior.opaque,
-                onTap: _toggle,
-                child: const SizedBox.expand(),
-              ),
-            ),
-          ..._items.asMap().entries.map((e) {
-            final i = e.key;
-            final item = e.value;
-            final angle = (pi / 2) * (i / (_items.length - 1));
-            final distance = 70.0;
-            final dx = -cos(angle) * distance * (i < 2 ? 1.0 : 0.6);
-            final dy = -sin(angle) * distance * (i < 2 ? 0.6 : 1.0);
-            final offsetX = dx - (i == 0 ? 20 : (i == 3 ? -20 : 0));
-            final offsetY = dy - 20;
-            return _AnimatedFabChild(
-              controller: _ctrl,
-              index: i,
-              offset: Offset(offsetX, offsetY),
-              item: item,
-              onTap: () => _onSelect(i),
-            );
-          }),
-          FloatingActionButton(
-            onPressed: _toggle,
-            backgroundColor: AppColors.primary,
-            elevation: 6,
-            shape: const CircleBorder(),
-            child: AnimatedBuilder(
-              animation: _ctrl,
-              builder: (context, child) => Transform.rotate(
-                angle: _ctrl.value * pi / 4,
-                child: const Icon(Icons.add, color: Colors.white, size: 28),
-              ),
+    // 使用 Column 垂直布局，每个按钮间距 12px，避免重叠
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      crossAxisAlignment: CrossAxisAlignment.end,
+      children: [
+        // 展开的子按钮 (从上到下: 排泄, 体重, 饮水, 饮食)
+        ..._items.reversed.toList().asMap().entries.map((e) {
+          final reversedIndex = _items.length - 1 - e.key;
+          final item = e.value;
+          return _AnimatedFabChild(
+            controller: _ctrl,
+            index: e.key,
+            item: item,
+            onTap: () => _onSelect(reversedIndex),
+          );
+        }),
+
+        // 主按钮
+        FloatingActionButton(
+          onPressed: _toggle,
+          backgroundColor: AppColors.primary,
+          elevation: 6,
+          shape: const CircleBorder(),
+          child: AnimatedBuilder(
+            animation: _ctrl,
+            builder: (context, child) => Transform.rotate(
+              angle: _ctrl.value * pi / 4,
+              child: const Icon(Icons.add, color: Colors.white, size: 28),
             ),
           ),
-        ],
-      ),
+        ),
+      ],
     );
   }
 }
@@ -128,14 +114,12 @@ class _HealthFabState extends State<HealthFab>
 class _AnimatedFabChild extends StatelessWidget {
   final AnimationController controller;
   final int index;
-  final Offset offset;
   final _FabItem item;
   final VoidCallback onTap;
 
   const _AnimatedFabChild({
     required this.controller,
     required this.index,
-    required this.offset,
     required this.item,
     required this.onTap,
   });
@@ -143,55 +127,84 @@ class _AnimatedFabChild extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final interval = Interval(
-      index * 0.1,
-      0.6 + index * 0.1,
+      index * 0.08,
+      0.5 + index * 0.1,
       curve: Curves.easeOutBack,
     );
     final animation = CurvedAnimation(parent: controller, curve: interval);
 
     return AnimatedBuilder(
       animation: animation,
-      builder: (_, __) {
+      builder: (_, child) {
         final t = animation.value;
-        return Positioned(
-          right: 8 + (-offset.dx * t),
-          bottom: 8 + (-offset.dy * t),
-          child: Opacity(
-            opacity: t.clamp(0.0, 1.0),
+        if (t < 0.01) return const SizedBox.shrink();
+        return Opacity(
+          opacity: t.clamp(0.0, 1.0),
+          child: Transform.translate(
+            offset: Offset(0, 20 * (1 - t)),
             child: Transform.scale(
               scale: t,
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Text(
-                    item.label,
-                    style: TextStyle(
-                      fontSize: 11,
-                      fontWeight: FontWeight.w600,
-                      color: item.color,
-                    ),
-                  ),
-                  const SizedBox(height: 4),
-                  Material(
-                    color: item.color.withValues(alpha: 0.12),
-                    shape: const CircleBorder(),
-                    child: InkWell(
-                      onTap: onTap,
-                      customBorder: const CircleBorder(),
-                      child: Container(
-                        width: 48,
-                        height: 48,
-                        alignment: Alignment.center,
-                        child: Icon(item.icon, color: item.color, size: 22),
-                      ),
-                    ),
-                  ),
-                ],
-              ),
+              child: child,
             ),
           ),
         );
       },
+      child: Padding(
+        padding: const EdgeInsets.only(bottom: 10),
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            // 标签
+            Container(
+              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+              decoration: BoxDecoration(
+                color: AppColors.surface,
+                borderRadius: BorderRadius.circular(8),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black.withValues(alpha: 0.08),
+                    blurRadius: 6,
+                    offset: const Offset(0, 2),
+                  ),
+                ],
+              ),
+              child: Text(
+                item.label,
+                style: TextStyle(
+                  fontSize: 13,
+                  fontWeight: FontWeight.w600,
+                  color: item.color,
+                ),
+              ),
+            ),
+            const SizedBox(width: 10),
+            // 圆形按钮
+            Material(
+              color: AppColors.surface,
+              shape: const CircleBorder(),
+              elevation: 3,
+              shadowColor: item.color.withValues(alpha: 0.3),
+              child: InkWell(
+                onTap: onTap,
+                customBorder: const CircleBorder(),
+                child: Container(
+                  width: 48,
+                  height: 48,
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    border: Border.all(
+                      color: item.color.withValues(alpha: 0.2),
+                      width: 1.5,
+                    ),
+                  ),
+                  alignment: Alignment.center,
+                  child: Icon(item.icon, color: item.color, size: 22),
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
     );
   }
 }

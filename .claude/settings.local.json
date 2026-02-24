@@ -27,7 +27,13 @@
       "Bash(/opt/homebrew/bin/flutter analyze:*)",
       "Bash(/opt/homebrew/bin/flutter build:*)",
       "Bash(/opt/homebrew/bin/flutter devices:*)",
-      "Bash(xcrun simctl install:*)"
+      "Bash(xcrun simctl install:*)",
+      "Bash(__NEW_LINE_e817125c21f20699__ xcrun simctl io EF16A281-F5A6-49CE-AC87-DD16C4E342F5 screenshot /tmp/kitty_health_fab_open.png)",
+      "Bash(__NEW_LINE_6894c9cad3f291b2__ xcrun simctl io EF16A281-F5A6-49CE-AC87-DD16C4E342F5 screenshot /tmp/kitty_health_fab2.png)",
+      "Bash(__NEW_LINE_3bca481916ac35bc__ xcrun simctl io EF16A281-F5A6-49CE-AC87-DD16C4E342F5 screenshot /tmp/kitty_health_fixed2.png)",
+      "Bash(__NEW_LINE_35d89051a4a7ff21__ xcrun simctl io EF16A281-F5A6-49CE-AC87-DD16C4E342F5 screenshot /tmp/kitty_health_try.png)",
+      "Bash(__NEW_LINE_bee529768259969c__ xcrun simctl io EF16A281-F5A6-49CE-AC87-DD16C4E342F5 screenshot /tmp/kitty_health_fab_fixed.png)",
+      "Bash(__NEW_LINE_d474333952a333a4__ xcrun simctl io EF16A281-F5A6-49CE-AC87-DD16C4E342F5 screenshot /tmp/kitty_health_fab_final.png)"
     ]
   }
 }
