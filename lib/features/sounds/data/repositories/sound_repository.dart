@@ -133,27 +133,27 @@ class SoundRepository {
       isLoopable: true,
     ),
     SoundItem(
-      id: 'can_open',
+      id: 'feather',
       category: SoundCategory.play,
       label: '开罐头',
-      imagePath: '$_img/can_opener.png',
-      icon: Icons.takeout_dining,
+      imagePath: '$_img/feather.png',
+      icon: Icons.air,
       assetPath: 'sounds/environment/16.mp3',
     ),
-    SoundItem(
+      SoundItem(
       id: 'comeback',
       category: SoundCategory.play,
       label: '你回来了',
       imagePath: '$_img/comeback.png',
-      icon: Icons.home,
+      icon: Icons.air,
       assetPath: 'sounds/environment/17.mp3',
     ),
-    SoundItem(
+      SoundItem(
       id: 'squeaky_toys',
       category: SoundCategory.play,
       label: '响纸玩具',
       imagePath: '$_img/squeaky_toys.png',
-      icon: Icons.auto_awesome,
+      icon: Icons.air,
       assetPath: 'sounds/environment/18.mp3',
     ),
   ];
