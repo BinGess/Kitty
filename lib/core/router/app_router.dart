@@ -7,6 +7,7 @@ import '../../features/personality_test/presentation/screens/result_screen.dart'
 import '../../features/health/presentation/screens/health_dashboard_screen.dart';
 import '../../features/games/presentation/screens/game_menu_screen.dart';
 import '../../features/games/presentation/screens/game_play_screen.dart';
+import '../../features/splash/presentation/screens/splash_screen.dart';
 import '../../features/profile/presentation/screens/more_screen.dart';
 import '../../features/profile/presentation/screens/cat_list_screen.dart';
 import '../../features/profile/presentation/screens/about_screen.dart';
@@ -14,8 +15,13 @@ import '../../features/theater/presentation/screens/theater_screen.dart';
 import 'scaffold_with_nav_bar.dart';
 
 final appRouter = GoRouter(
-  initialLocation: '/sounds',
+  initialLocation: '/splash',
   routes: [
+    GoRoute(
+      path: '/splash',
+      name: 'splash',
+      builder: (context, state) => const SplashScreen(),
+    ),
     // 游戏全屏路由：不显示底部导航栏
     GoRoute(
       path: '/game-play/:gameId',
