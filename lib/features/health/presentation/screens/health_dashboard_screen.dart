@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../../core/constants/app_colors.dart';
-import '../../../../core/database/app_database.dart';
 import '../../../../core/providers/current_cat_provider.dart';
 import '../../../../core/providers/database_provider.dart';
+import '../../../../core/widgets/centered_page_title.dart';
 import '../../data/models/health_record.dart';
 import '../providers/health_provider.dart';
 import '../widgets/diet_record_sheet.dart';
@@ -22,8 +22,7 @@ class HealthDashboardScreen extends ConsumerStatefulWidget {
       _HealthDashboardScreenState();
 }
 
-class _HealthDashboardScreenState
-    extends ConsumerState<HealthDashboardScreen> {
+class _HealthDashboardScreenState extends ConsumerState<HealthDashboardScreen> {
   void _refresh() {
     ref.invalidate(healthSummaryProvider);
     ref.invalidate(healthTimelineProvider);
@@ -84,27 +83,71 @@ class _HealthDashboardScreenState
             CustomScrollView(
               slivers: [
                 SliverToBoxAdapter(
-                  child: Padding(
-                    padding: const EdgeInsets.fromLTRB(20, 16, 20, 0),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        _buildHeader(cat),
-                        const SizedBox(height: 20),
-                        summaryAsync.when(
-                          data: (s) => SummaryCards(summary: s),
-                          loading: () => const SizedBox(
-                              height: 100,
-                              child: Center(
+                  child: Column(
+                    children: [
+                      CenteredPageTitle(
+                        title: '猫咪健康',
+                        trailing: _CatSwitcher(),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.fromLTRB(20, 8, 20, 0),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            const SizedBox(height: 20),
+                            summaryAsync.when(
+                              data: (s) => Column(
+                                children: [
+                                  SummaryCards(summary: s),
+                                  if (s.isWeightOutOfGoal) ...[
+                                    const SizedBox(height: 10),
+                                    Container(
+                                      width: double.infinity,
+                                      padding: const EdgeInsets.symmetric(
+                                        horizontal: 12,
+                                        vertical: 10,
+                                      ),
+                                      decoration: BoxDecoration(
+                                        color: AppColors.warning.withValues(
+                                          alpha: 0.12,
+                                        ),
+                                        borderRadius: BorderRadius.circular(14),
+                                        border: Border.all(
+                                          color: AppColors.warning.withValues(
+                                            alpha: 0.6,
+                                          ),
+                                        ),
+                                      ),
+                                      child: const Text(
+                                        '体重已超出档案目标区间，建议近期增加称重和饮食观察。',
+                                        style: TextStyle(
+                                          fontSize: 12,
+                                          color: AppColors.warning,
+                                          fontWeight: FontWeight.w500,
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+                                ],
+                              ),
+                              loading: () => const SizedBox(
+                                height: 100,
+                                child: Center(
                                   child: CircularProgressIndicator(
-                                      color: AppColors.primary))),
-                          error: (_, __) => const SizedBox(height: 100),
+                                    color: AppColors.primary,
+                                  ),
+                                ),
+                              ),
+                              error: (_, stackTrace) =>
+                                  const SizedBox(height: 100),
+                            ),
+                            const SizedBox(height: 24),
+                            _sectionTitle(),
+                            const SizedBox(height: 12),
+                          ],
                         ),
-                        const SizedBox(height: 24),
-                        _sectionTitle(),
-                        const SizedBox(height: 12),
-                      ],
-                    ),
+                      ),
+                    ],
                   ),
                 ),
                 SliverPadding(
@@ -118,10 +161,12 @@ class _HealthDashboardScreenState
                       loading: () => const Padding(
                         padding: EdgeInsets.only(top: 40),
                         child: Center(
-                            child: CircularProgressIndicator(
-                                color: AppColors.primary)),
+                          child: CircularProgressIndicator(
+                            color: AppColors.primary,
+                          ),
+                        ),
                       ),
-                      error: (_, __) => const SizedBox.shrink(),
+                      error: (_, stackTrace) => const SizedBox.shrink(),
                     ),
                   ),
                 ),
@@ -134,54 +179,12 @@ class _HealthDashboardScreenState
                 onDiet: () => _showSheet(const DietRecordSheet()),
                 onWater: () => _showSheet(const WaterRecordSheet()),
                 onWeight: () => _showSheet(const WeightRecordSheet()),
-                onExcretion: () =>
-                    _showSheet(const ExcretionRecordSheet()),
+                onExcretion: () => _showSheet(const ExcretionRecordSheet()),
               ),
             ),
           ],
         ),
       ),
-    );
-  }
-
-  Widget _buildHeader(Cat? cat) {
-    return Row(
-      children: [
-        Container(
-          width: 44,
-          height: 44,
-          decoration: BoxDecoration(
-            color: AppColors.primaryLight,
-            borderRadius: BorderRadius.circular(14),
-          ),
-          child: const Icon(Icons.monitor_heart_outlined,
-              color: AppColors.primaryDark, size: 24),
-        ),
-        const SizedBox(width: 12),
-        Expanded(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                cat != null ? '${cat.name}的健康' : '健康记录',
-                style: const TextStyle(
-                  fontSize: 20,
-                  fontWeight: FontWeight.w700,
-                  color: AppColors.onBackground,
-                ),
-              ),
-              const Text(
-                '体重 · 饮食 · 饮水 · 排泄',
-                style: TextStyle(
-                  fontSize: 12,
-                  color: AppColors.textSecondary,
-                ),
-              ),
-            ],
-          ),
-        ),
-        _CatSwitcher(),
-      ],
     );
   }
 
@@ -239,8 +242,11 @@ class _CatSwitcher extends ConsumerWidget {
               ),
             ),
             const SizedBox(width: 2),
-            const Icon(Icons.expand_more,
-                size: 16, color: AppColors.textSecondary),
+            const Icon(
+              Icons.expand_more,
+              size: 16,
+              color: AppColors.textSecondary,
+            ),
           ],
         ),
       ),
@@ -263,37 +269,44 @@ class _CatSwitcher extends ConsumerWidget {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            const Text('切换猫咪',
-                style: TextStyle(
-                    fontSize: 16,
-                    fontWeight: FontWeight.w700,
-                    color: AppColors.onBackground)),
+            const Text(
+              '切换猫咪',
+              style: TextStyle(
+                fontSize: 16,
+                fontWeight: FontWeight.w700,
+                color: AppColors.onBackground,
+              ),
+            ),
             const SizedBox(height: 16),
-            ...cats.map((c) => ListTile(
-                  leading: Container(
-                    width: 40,
-                    height: 40,
-                    decoration: BoxDecoration(
-                      color: AppColors.primaryLight,
-                      borderRadius: BorderRadius.circular(12),
-                    ),
-                    child: const Icon(Icons.pets,
-                        color: AppColors.primaryDark, size: 20),
+            ...cats.map(
+              (c) => ListTile(
+                leading: Container(
+                  width: 40,
+                  height: 40,
+                  decoration: BoxDecoration(
+                    color: AppColors.primaryLight,
+                    borderRadius: BorderRadius.circular(12),
                   ),
-                  title: Text(c.name),
-                  trailing: c.id == ref.read(currentCatProvider)?.id
-                      ? const Icon(Icons.check_circle,
-                          color: AppColors.primary)
-                      : null,
-                  onTap: () {
-                    ref.read(currentCatProvider.notifier).select(c);
-                    Navigator.pop(context);
-                  },
-                  shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(14)),
-                )),
-            SizedBox(
-                height: MediaQuery.of(context).padding.bottom + 8),
+                  child: const Icon(
+                    Icons.pets,
+                    color: AppColors.primaryDark,
+                    size: 20,
+                  ),
+                ),
+                title: Text(c.name),
+                trailing: c.id == ref.read(currentCatProvider)?.id
+                    ? const Icon(Icons.check_circle, color: AppColors.primary)
+                    : null,
+                onTap: () {
+                  ref.read(currentCatProvider.notifier).select(c);
+                  Navigator.pop(context);
+                },
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(14),
+                ),
+              ),
+            ),
+            SizedBox(height: MediaQuery.of(context).padding.bottom + 8),
           ],
         ),
       ),

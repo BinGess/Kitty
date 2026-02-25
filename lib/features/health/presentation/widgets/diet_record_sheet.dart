@@ -19,6 +19,8 @@ class _DietRecordSheetState extends ConsumerState<DietRecordSheet> {
   String _foodType = '主粮';
   DateTime _time = DateTime.now();
   bool _loadedLast = false;
+  int _todayMeals = 0;
+  int _mealTarget = 3;
 
   static const _brands = ['渴望', '巅峰', '皇家', '自制', '零食', '其他'];
   static const _types = ['主粮', '罐头', '零食', '冻干'];
@@ -35,7 +37,13 @@ class _DietRecordSheetState extends ConsumerState<DietRecordSheet> {
       if (cat == null) return;
       final dao = ref.read(healthDaoProvider);
       final last = await dao.getLatestDietRecord(cat.id);
-      if (last != null && mounted) {
+      final today = await dao.getTodayDietRecords(cat.id);
+      if (!mounted) return;
+      setState(() {
+        _todayMeals = today.length;
+        _mealTarget = cat.targetMealsPerDay;
+      });
+      if (last != null) {
         setState(() {
           _amount = last.amountGrams;
           _selectedBrand = last.brandTag ?? _selectedBrand;
@@ -59,15 +67,18 @@ class _DietRecordSheetState extends ConsumerState<DietRecordSheet> {
         builder: (ctx) => AlertDialog(
           title: const Text('确认'),
           content: Text('输入的数值较大（${_amount.toStringAsFixed(0)}g），确定吗？'),
-          shape:
-              RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(20),
+          ),
           actions: [
             TextButton(
-                onPressed: () => Navigator.pop(ctx, false),
-                child: const Text('取消')),
+              onPressed: () => Navigator.pop(ctx, false),
+              child: const Text('取消'),
+            ),
             TextButton(
-                onPressed: () => Navigator.pop(ctx, true),
-                child: const Text('确定')),
+              onPressed: () => Navigator.pop(ctx, true),
+              child: const Text('确定'),
+            ),
           ],
         ),
       );
@@ -76,13 +87,15 @@ class _DietRecordSheetState extends ConsumerState<DietRecordSheet> {
 
     try {
       final dao = ref.read(healthDaoProvider);
-      await dao.insertDietRecord(DietRecordsCompanion(
-        catId: Value(cat.id),
-        brandTag: Value(_selectedBrand),
-        amountGrams: Value(_amount),
-        foodType: Value(_foodType),
-        recordedAt: Value(_time),
-      ));
+      await dao.insertDietRecord(
+        DietRecordsCompanion(
+          catId: Value(cat.id),
+          brandTag: Value(_selectedBrand),
+          amountGrams: Value(_amount),
+          foodType: Value(_foodType),
+          recordedAt: Value(_time),
+        ),
+      );
       if (mounted) Navigator.pop(context, true);
     } catch (e) {
       _showError('保存失败：$e');
@@ -126,11 +139,34 @@ class _DietRecordSheetState extends ConsumerState<DietRecordSheet> {
           children: [
             _handle(),
             const SizedBox(height: 12),
-            const Text('🍚 饮食记录',
-                style: TextStyle(
-                    fontSize: 18,
-                    fontWeight: FontWeight.w700,
-                    color: AppColors.onBackground)),
+            const Text(
+              '🍚 饮食记录',
+              style: TextStyle(
+                fontSize: 18,
+                fontWeight: FontWeight.w700,
+                color: AppColors.onBackground,
+              ),
+            ),
+            const SizedBox(height: 8),
+            ClipRRect(
+              borderRadius: BorderRadius.circular(6),
+              child: LinearProgressIndicator(
+                value: _mealTarget > 0
+                    ? ((_todayMeals + 1) / _mealTarget).clamp(0.0, 1.0)
+                    : 0.0,
+                minHeight: 8,
+                backgroundColor: AppColors.divider,
+                valueColor: const AlwaysStoppedAnimation(AppColors.primary),
+              ),
+            ),
+            const SizedBox(height: 4),
+            Text(
+              '今日喂食：${_todayMeals + 1}/$_mealTarget 次（保存后）',
+              style: const TextStyle(
+                fontSize: 12,
+                color: AppColors.textSecondary,
+              ),
+            ),
             const SizedBox(height: 20),
             _sectionLabel('品牌/种类'),
             const SizedBox(height: 8),
@@ -211,9 +247,13 @@ class _DietRecordSheetState extends ConsumerState<DietRecordSheet> {
             if (_loadedLast)
               const Padding(
                 padding: EdgeInsets.only(top: 4),
-                child: Text('同前一次记录',
-                    style: TextStyle(
-                        fontSize: 11, color: AppColors.textSecondary)),
+                child: Text(
+                  '同前一次记录',
+                  style: TextStyle(
+                    fontSize: 11,
+                    color: AppColors.textSecondary,
+                  ),
+                ),
               ),
             const SizedBox(height: 20),
             _timeSelector(),
@@ -227,12 +267,14 @@ class _DietRecordSheetState extends ConsumerState<DietRecordSheet> {
                   backgroundColor: AppColors.primary,
                   foregroundColor: Colors.white,
                   shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(16)),
+                    borderRadius: BorderRadius.circular(16),
+                  ),
                   elevation: 0,
                 ),
-                child: const Text('保存',
-                    style:
-                        TextStyle(fontSize: 16, fontWeight: FontWeight.w600)),
+                child: const Text(
+                  '保存',
+                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
+                ),
               ),
             ),
           ],
@@ -242,80 +284,91 @@ class _DietRecordSheetState extends ConsumerState<DietRecordSheet> {
   }
 
   Widget _handle() => Center(
-        child: Container(
-          width: 36,
-          height: 4,
-          decoration: BoxDecoration(
-            color: AppColors.divider,
-            borderRadius: BorderRadius.circular(2),
-          ),
-        ),
-      );
+    child: Container(
+      width: 36,
+      height: 4,
+      decoration: BoxDecoration(
+        color: AppColors.divider,
+        borderRadius: BorderRadius.circular(2),
+      ),
+    ),
+  );
 
   Widget _sectionLabel(String text) => Align(
-        alignment: Alignment.centerLeft,
-        child: Text(text,
-            style: const TextStyle(
-                fontSize: 13,
-                fontWeight: FontWeight.w600,
-                color: AppColors.textSecondary)),
-      );
+    alignment: Alignment.centerLeft,
+    child: Text(
+      text,
+      style: const TextStyle(
+        fontSize: 13,
+        fontWeight: FontWeight.w600,
+        color: AppColors.textSecondary,
+      ),
+    ),
+  );
 
   Widget _stepButton(IconData icon, VoidCallback onTap) => Material(
-        color: AppColors.surface,
-        shape: const CircleBorder(),
-        child: InkWell(
-          onTap: onTap,
-          customBorder: const CircleBorder(),
-          child: Container(
-            width: 44,
-            height: 44,
-            alignment: Alignment.center,
-            decoration: BoxDecoration(
-              shape: BoxShape.circle,
-              border: Border.all(color: AppColors.divider),
-            ),
-            child: Icon(icon, color: AppColors.primary),
-          ),
+    color: AppColors.surface,
+    shape: const CircleBorder(),
+    child: InkWell(
+      onTap: onTap,
+      customBorder: const CircleBorder(),
+      child: Container(
+        width: 44,
+        height: 44,
+        alignment: Alignment.center,
+        decoration: BoxDecoration(
+          shape: BoxShape.circle,
+          border: Border.all(color: AppColors.divider),
         ),
-      );
+        child: Icon(icon, color: AppColors.primary),
+      ),
+    ),
+  );
 
   Widget _timeSelector() => GestureDetector(
-        onTap: () async {
-          final picked = await showTimePicker(
-            context: context,
-            initialTime: TimeOfDay.fromDateTime(_time),
-          );
-          if (picked != null) {
-            setState(() {
-              _time = DateTime(
-                  _time.year, _time.month, _time.day, picked.hour, picked.minute);
-            });
-          }
-        },
-        child: Container(
-          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-          decoration: BoxDecoration(
-            color: AppColors.surface,
-            borderRadius: BorderRadius.circular(14),
-            border: Border.all(color: AppColors.divider),
-          ),
-          child: Row(
-            children: [
-              const Icon(Icons.access_time,
-                  size: 18, color: AppColors.textSecondary),
-              const SizedBox(width: 8),
-              Text(
-                '${_time.hour.toString().padLeft(2, '0')}:${_time.minute.toString().padLeft(2, '0')}',
-                style: const TextStyle(
-                    fontSize: 15, color: AppColors.onBackground),
-              ),
-              const Spacer(),
-              const Text('点击修改时间',
-                  style: TextStyle(
-                      fontSize: 12, color: AppColors.textSecondary)),
-            ],
-          ),
-        ),
+    onTap: () async {
+      final picked = await showTimePicker(
+        context: context,
+        initialTime: TimeOfDay.fromDateTime(_time),
       );
+      if (picked != null) {
+        setState(() {
+          _time = DateTime(
+            _time.year,
+            _time.month,
+            _time.day,
+            picked.hour,
+            picked.minute,
+          );
+        });
+      }
+    },
+    child: Container(
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+      decoration: BoxDecoration(
+        color: AppColors.surface,
+        borderRadius: BorderRadius.circular(14),
+        border: Border.all(color: AppColors.divider),
+      ),
+      child: Row(
+        children: [
+          const Icon(
+            Icons.access_time,
+            size: 18,
+            color: AppColors.textSecondary,
+          ),
+          const SizedBox(width: 8),
+          Text(
+            '${_time.hour.toString().padLeft(2, '0')}:${_time.minute.toString().padLeft(2, '0')}',
+            style: const TextStyle(fontSize: 15, color: AppColors.onBackground),
+          ),
+          const Spacer(),
+          const Text(
+            '点击修改时间',
+            style: TextStyle(fontSize: 12, color: AppColors.textSecondary),
+          ),
+        ],
+      ),
+    ),
+  );
 }

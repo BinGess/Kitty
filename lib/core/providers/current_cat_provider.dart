@@ -9,8 +9,9 @@ final sharedPreferencesProvider = Provider<SharedPreferences>((ref) {
   throw UnimplementedError('Must be overridden in ProviderScope');
 });
 
-final currentCatProvider =
-    NotifierProvider<CurrentCatNotifier, Cat?>(CurrentCatNotifier.new);
+final currentCatProvider = NotifierProvider<CurrentCatNotifier, Cat?>(
+  CurrentCatNotifier.new,
+);
 
 class CurrentCatNotifier extends Notifier<Cat?> {
   @override
@@ -42,12 +43,14 @@ class CurrentCatNotifier extends Notifier<Cat?> {
   }
 
   Future<void> _createDefaultCat() async {
-    final id = await _catDao.insertCat(CatsCompanion(
-      name: const Value('我的猫咪'),
-      breed: const Value('未知品种'),
-      targetWaterMl: const Value(200.0),
-      targetMealsPerDay: const Value(3),
-    ));
+    final id = await _catDao.insertCat(
+      CatsCompanion(
+        name: const Value('我的猫咪'),
+        breed: const Value('未知品种'),
+        targetWaterMl: const Value(200.0),
+        targetMealsPerDay: const Value(3),
+      ),
+    );
     final cat = await _catDao.getCatById(id);
     if (cat != null) {
       await select(cat);
@@ -62,6 +65,24 @@ class CurrentCatNotifier extends Notifier<Cat?> {
   Future<void> refresh() async {
     if (state != null) {
       state = await _catDao.getCatById(state!.id);
+    }
+  }
+
+  Future<void> ensureValidSelection() async {
+    final cats = await _catDao.getAllCats();
+    if (cats.isEmpty) {
+      await _createDefaultCat();
+      return;
+    }
+
+    if (state == null) {
+      await select(cats.first);
+      return;
+    }
+
+    final stillExists = cats.any((c) => c.id == state!.id);
+    if (!stillExists) {
+      await select(cats.first);
     }
   }
 }

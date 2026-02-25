@@ -14,10 +14,7 @@ import 'laser_trajectory.dart' show LaserTrajectory, LaserPhase;
 class LaserDotGame extends StatefulWidget {
   final GameConfig config;
 
-  const LaserDotGame({
-    super.key,
-    required this.config,
-  });
+  const LaserDotGame({super.key, required this.config});
 
   @override
   State<LaserDotGame> createState() => _LaserDotGameState();
@@ -99,6 +96,9 @@ class _LaserDotGameState extends State<LaserDotGame> {
     return LayoutBuilder(
       builder: (context, constraints) {
         final size = constraints.biggest;
+        final overlayTop = MediaQuery.of(context).padding.top + 12;
+        const overlaySize = 48.0;
+        const overlayLeft = 12.0;
         if (size.width > 0 && size.height > 0) {
           if (_trajectory == null || _trajectory!.bounds.size != size) {
             _initTrajectory(size);
@@ -116,8 +116,10 @@ class _LaserDotGameState extends State<LaserDotGame> {
               trajectory: _trajectory!,
               score: _score,
               tapFeedbackPos: _tapFeedbackPos,
-              tapFeedbackProgress:
-                  _showTapFeedback ? _tapFeedbackProgress : -1,
+              tapFeedbackProgress: _showTapFeedback ? _tapFeedbackProgress : -1,
+              overlayTop: overlayTop,
+              overlaySize: overlaySize,
+              overlayLeft: overlayLeft,
             ),
           ),
         );
@@ -131,12 +133,18 @@ class _LaserDotPainter extends CustomPainter {
   final int score;
   final Offset? tapFeedbackPos;
   final double tapFeedbackProgress;
+  final double overlayTop;
+  final double overlaySize;
+  final double overlayLeft;
 
   _LaserDotPainter({
     required this.trajectory,
     required this.score,
     this.tapFeedbackPos,
     this.tapFeedbackProgress = -1,
+    required this.overlayTop,
+    required this.overlaySize,
+    required this.overlayLeft,
   });
 
   @override
@@ -237,8 +245,7 @@ class _LaserDotPainter extends CustomPainter {
     canvas.drawCircle(pos, 10 * pulseScale, corePaint);
 
     // 层4：中心高光
-    final brightPaint = Paint()
-      ..color = Color.lerp(color, Colors.white, 0.6)!;
+    final brightPaint = Paint()..color = Color.lerp(color, Colors.white, 0.6)!;
     canvas.drawCircle(pos, 5 * pulseScale, brightPaint);
 
     // 层5：中心最亮点
@@ -278,7 +285,7 @@ class _LaserDotPainter extends CustomPainter {
   }
 
   void _paintScore(Canvas canvas, Size size) {
-    // 右上角分数
+    // 左上角分数（与右上角关闭按钮同一水平线）
     final textPainter = TextPainter(
       text: TextSpan(
         children: [
@@ -306,7 +313,7 @@ class _LaserDotPainter extends CustomPainter {
     textPainter.layout();
     textPainter.paint(
       canvas,
-      Offset(size.width - textPainter.width - 20, 56),
+      Offset(overlayLeft, overlayTop + (overlaySize - textPainter.height) / 2),
     );
   }
 

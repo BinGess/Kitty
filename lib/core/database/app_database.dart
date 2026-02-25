@@ -15,11 +15,22 @@ part 'app_database.g.dart';
   daos: [CatDao, HealthDao],
 )
 class AppDatabase extends _$AppDatabase {
-  AppDatabase([QueryExecutor? executor])
-      : super(executor ?? _openConnection());
+  AppDatabase([QueryExecutor? executor]) : super(executor ?? _openConnection());
 
   @override
-  int get schemaVersion => 1;
+  int get schemaVersion => 2;
+
+  @override
+  MigrationStrategy get migration => MigrationStrategy(
+    onUpgrade: (m, from, to) async {
+      if (from < 2) {
+        await m.addColumn(cats, cats.sex);
+        await m.addColumn(cats, cats.isNeutered);
+        await m.addColumn(cats, cats.weightGoalMinKg);
+        await m.addColumn(cats, cats.weightGoalMaxKg);
+      }
+    },
+  );
 
   static QueryExecutor _openConnection() {
     return driftDatabase(name: 'meow_talk_db');

@@ -1,15 +1,34 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../../core/constants/app_colors.dart';
+import '../../../../core/widgets/centered_page_title.dart';
 import '../../data/models/sound_item.dart';
+import '../../data/repositories/sound_repository.dart';
 import '../providers/sounds_provider.dart';
 import '../widgets/sound_card.dart';
 
-class SoundsScreen extends ConsumerWidget {
+class SoundsScreen extends ConsumerStatefulWidget {
   const SoundsScreen({super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<SoundsScreen> createState() => _SoundsScreenState();
+}
+
+class _SoundsScreenState extends ConsumerState<SoundsScreen> {
+  bool _precacheDone = false;
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    if (_precacheDone) return;
+    _precacheDone = true;
+    for (final sound in SoundRepository.allSounds) {
+      precacheImage(AssetImage(sound.imagePath), context);
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
     final playbackState = ref.watch(soundPlaybackProvider);
     final isPlaying = playbackState.playingId != null;
     final listenSounds = ref.watch(listenSoundsProvider);
@@ -24,39 +43,28 @@ class SoundsScreen extends ConsumerWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               // ── 顶部标题栏 ──
-              Row(
-                children: [
-                  const Spacer(),
-                  const Text(
-                    '🐱 猫咪语言',
-                    style: TextStyle(
-                      fontSize: 18,
-                      fontWeight: FontWeight.w700,
-                      color: AppColors.onBackground,
-                    ),
-                  ),
-                  const Spacer(),
-                  if (isPlaying)
-                    GestureDetector(
-                      onTap: () =>
-                          ref.read(soundPlaybackProvider.notifier).stopAll(),
-                      child: Container(
-                        width: 32,
-                        height: 32,
-                        decoration: BoxDecoration(
-                          color: AppColors.primary.withValues(alpha: 0.12),
-                          borderRadius: BorderRadius.circular(10),
+              CenteredPageTitle(
+                title: '猫咪语言',
+                padding: EdgeInsets.zero,
+                trailing: isPlaying
+                    ? GestureDetector(
+                        onTap: () =>
+                            ref.read(soundPlaybackProvider.notifier).stopAll(),
+                        child: Container(
+                          width: 32,
+                          height: 32,
+                          decoration: BoxDecoration(
+                            color: AppColors.primary.withValues(alpha: 0.12),
+                            borderRadius: BorderRadius.circular(10),
+                          ),
+                          child: const Icon(
+                            Icons.stop_rounded,
+                            size: 18,
+                            color: AppColors.primary,
+                          ),
                         ),
-                        child: const Icon(
-                          Icons.stop_rounded,
-                          size: 18,
-                          color: AppColors.primary,
-                        ),
-                      ),
-                    )
-                  else
-                    const SizedBox(width: 32),
-                ],
+                      )
+                    : null,
               ),
               const SizedBox(height: 20),
 
@@ -76,9 +84,11 @@ class SoundsScreen extends ConsumerWidget {
                   const Expanded(child: Divider(color: AppColors.divider)),
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 12),
-                    child: Icon(Icons.pets,
-                        size: 14,
-                        color: AppColors.textSecondary.withValues(alpha: 0.4)),
+                    child: Icon(
+                      Icons.pets,
+                      size: 14,
+                      color: AppColors.textSecondary.withValues(alpha: 0.4),
+                    ),
                   ),
                   const Expanded(child: Divider(color: AppColors.divider)),
                 ],
@@ -137,10 +147,7 @@ class _SectionHeader extends StatelessWidget {
             ),
             Text(
               subtitle,
-              style: TextStyle(
-                fontSize: 11,
-                color: AppColors.textSecondary,
-              ),
+              style: TextStyle(fontSize: 11, color: AppColors.textSecondary),
             ),
           ],
         ),
