@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../../../../core/constants/app_colors.dart';
+import '../../../../core/l10n/app_localizations.dart';
 import '../../data/models/health_record.dart';
 
 class SummaryCards extends StatelessWidget {
@@ -26,13 +27,14 @@ class _WeightCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     final change = summary.weightChange;
     final hasGoal =
         summary.weightGoalMinKg != null || summary.weightGoalMaxKg != null;
     return _SummaryCardBase(
       icon: Icons.monitor_weight_outlined,
       iconColor: const Color(0xFFAB47BC),
-      label: '体重',
+      label: l10n.healthWeight,
       hasWarning: summary.hasWeightWarning,
       value: summary.latestWeight != null
           ? summary.latestWeight!.toStringAsFixed(1)
@@ -62,9 +64,9 @@ class _WeightCard extends StatelessWidget {
                     ),
                   ],
                 )
-              : const Text(
-                  '暂无变化',
-                  style: TextStyle(
+              : Text(
+                  l10n.healthNoChange,
+                  style: const TextStyle(
                     fontSize: 11,
                     color: AppColors.textSecondary,
                   ),
@@ -72,7 +74,7 @@ class _WeightCard extends StatelessWidget {
           if (hasGoal) ...[
             const SizedBox(height: 3),
             Text(
-              _buildGoalText(summary),
+              _buildGoalText(summary, l10n),
               style: TextStyle(
                 fontSize: 10,
                 color: summary.isWeightOutOfGoal
@@ -86,19 +88,20 @@ class _WeightCard extends StatelessWidget {
     );
   }
 
-  String _buildGoalText(HealthSummary summary) {
+  String _buildGoalText(HealthSummary summary, AppLocalizations l10n) {
     final min = summary.weightGoalMinKg;
     final max = summary.weightGoalMaxKg;
     String base = '';
     if (min != null && max != null) {
-      base = '目标 ${min.toStringAsFixed(1)}-${max.toStringAsFixed(1)}kg';
+      base = l10n.healthWeightGoalRange(
+          min.toStringAsFixed(1), max.toStringAsFixed(1));
     } else if (min != null) {
-      base = '目标 >= ${min.toStringAsFixed(1)}kg';
+      base = l10n.healthWeightGoalMin(min.toStringAsFixed(1));
     } else if (max != null) {
-      base = '目标 <= ${max.toStringAsFixed(1)}kg';
+      base = l10n.healthWeightGoalMax(max.toStringAsFixed(1));
     }
     if (base.isEmpty || !summary.isWeightOutOfGoal) return base;
-    return '$base（当前超出）';
+    return '$base${l10n.healthWeightExceeded}';
   }
 }
 
@@ -108,13 +111,14 @@ class _WaterCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     final ratio = summary.targetWaterMl > 0
         ? (summary.todayWaterMl / summary.targetWaterMl).clamp(0.0, 1.0)
         : 0.0;
     return _SummaryCardBase(
       icon: Icons.water_drop_outlined,
       iconColor: AppColors.info,
-      label: '饮水',
+      label: l10n.healthWater,
       value: summary.todayWaterMl.toStringAsFixed(0),
       unit: 'ml',
       footer: Column(
@@ -131,7 +135,8 @@ class _WaterCard extends StatelessWidget {
           ),
           const SizedBox(height: 3),
           Text(
-            '目标 ${summary.targetWaterMl.toStringAsFixed(0)}ml',
+            l10n.healthWaterTarget(
+                summary.targetWaterMl.toStringAsFixed(0)),
             style: const TextStyle(
               fontSize: 10,
               color: AppColors.textSecondary,
@@ -149,14 +154,17 @@ class _DietCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     return _SummaryCardBase(
       icon: Icons.restaurant,
       iconColor: AppColors.primary,
-      label: '饮食',
+      label: l10n.healthDiet,
       value: '${summary.todayMeals}',
-      unit: '/${summary.targetMeals}次',
+      unit: l10n.healthDietMealsUnit(summary.targetMeals),
       footer: Text(
-        summary.todayMeals >= summary.targetMeals ? '已完成' : '进行中',
+        summary.todayMeals >= summary.targetMeals
+            ? l10n.healthDietDone
+            : l10n.healthDietInProgress,
         style: TextStyle(
           fontSize: 11,
           color: summary.todayMeals >= summary.targetMeals

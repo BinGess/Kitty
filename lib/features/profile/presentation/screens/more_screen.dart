@@ -2,36 +2,38 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import '../../../../core/constants/app_colors.dart';
 import '../../../../core/constants/app_dimensions.dart';
+import '../../../../core/l10n/app_localizations.dart';
 
 class MoreScreen extends StatelessWidget {
   const MoreScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     return Scaffold(
-      appBar: AppBar(title: const Text('更多')),
+      appBar: AppBar(title: Text(l10n.moreTitle)),
       body: ListView(
         padding: const EdgeInsets.all(AppDimensions.spacingM),
         children: [
           _buildMenuItem(
             context,
             icon: Icons.pets,
-            title: '猫咪档案',
-            subtitle: '管理你的猫咪信息',
+            title: l10n.moreCatProfile,
+            subtitle: l10n.moreCatProfileSubtitle,
             onTap: () => context.push('/more/cats'),
           ),
           _buildMenuItem(
             context,
             icon: Icons.settings,
-            title: '设置',
-            subtitle: '应用设置',
+            title: l10n.moreSettings,
+            subtitle: l10n.moreSettingsSubtitle,
             onTap: () => context.push('/more/settings'),
           ),
           _buildMenuItem(
             context,
             icon: Icons.info_outline,
-            title: '关于',
-            subtitle: '版本信息与反馈',
+            title: l10n.moreAbout,
+            subtitle: l10n.moreAboutSubtitle,
             onTap: () => context.push('/more/about'),
           ),
         ],

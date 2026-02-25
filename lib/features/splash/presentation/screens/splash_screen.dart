@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import '../../../../core/constants/app_colors.dart';
+import '../../../../core/l10n/app_localizations.dart';
 import '../../../sounds/data/repositories/sound_repository.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});
 
-  static const String slogan = '懂猫，听猫咪说';
   static const String iconAsset = 'assets/images/icons/app_icon.png';
 
   @override
@@ -62,6 +62,7 @@ class _SplashScreenState extends State<SplashScreen>
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     return Scaffold(
       backgroundColor: AppColors.background,
       body: Stack(
@@ -96,7 +97,7 @@ class _SplashScreenState extends State<SplashScreen>
                   FadeTransition(
                     opacity: _textOpacity,
                     child: Text(
-                      '瞄~瞄~',
+                      l10n.splashTagline,
                       style: TextStyle(
                         fontSize: 14,
                         color: AppColors.onBackground.withValues(alpha: 0.6),
@@ -105,9 +106,9 @@ class _SplashScreenState extends State<SplashScreen>
                     ),
                   ),
                   const SizedBox(height: 18),
-                  const Text(
-                    '猫咪说',
-                    style: TextStyle(
+                  Text(
+                    l10n.splashAppName,
+                    style: const TextStyle(
                       fontSize: 22,
                       fontWeight: FontWeight.w700,
                       color: AppColors.onBackground,
@@ -116,7 +117,7 @@ class _SplashScreenState extends State<SplashScreen>
                   ),
                   const SizedBox(height: 8),
                   Text(
-                    SplashScreen.slogan,
+                    l10n.splashSlogan,
                     style: TextStyle(
                       fontSize: 14,
                       color: AppColors.textSecondary,

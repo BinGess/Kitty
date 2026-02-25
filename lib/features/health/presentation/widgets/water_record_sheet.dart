@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../../core/constants/app_colors.dart';
 import '../../../../core/database/app_database.dart';
+import '../../../../core/l10n/app_localizations.dart';
 import '../../../../core/providers/current_cat_provider.dart';
 import '../../../../core/providers/database_provider.dart';
 
@@ -19,7 +20,6 @@ class _WaterRecordSheetState extends ConsumerState<WaterRecordSheet> {
   double _target = 200;
 
   static const _quickAmounts = [20.0, 50.0, 100.0, 200.0];
-  static const _quickLabels = ['小口', '半杯', '一杯', '满碗'];
 
   @override
   void initState() {
@@ -43,9 +43,10 @@ class _WaterRecordSheetState extends ConsumerState<WaterRecordSheet> {
   }
 
   Future<void> _save() async {
+    final l10n = AppLocalizations.of(context)!;
     final cat = ref.read(currentCatProvider);
     if (cat == null) {
-      _showError('请先添加一只猫咪');
+      _showError(l10n.commonNoCat);
       return;
     }
     try {
@@ -57,12 +58,22 @@ class _WaterRecordSheetState extends ConsumerState<WaterRecordSheet> {
       ));
       if (mounted) Navigator.pop(context, true);
     } catch (e) {
-      _showError('保存失败：$e');
+      if (mounted) {
+        _showError(
+            AppLocalizations.of(context)!.commonSaveFailed(e.toString()));
+      }
     }
   }
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+    final quickLabels = [
+      l10n.waterQuickSmall,
+      l10n.waterQuickHalf,
+      l10n.waterQuickOne,
+      l10n.waterQuickFull,
+    ];
     final newTotal = _todayTotal + _amount;
     final ratio = _target > 0 ? (newTotal / _target).clamp(0.0, 1.0) : 0.0;
 
@@ -82,11 +93,13 @@ class _WaterRecordSheetState extends ConsumerState<WaterRecordSheet> {
         children: [
           _handle(),
           const SizedBox(height: 12),
-          const Text('💧 饮水记录',
-              style: TextStyle(
-                  fontSize: 18,
-                  fontWeight: FontWeight.w700,
-                  color: AppColors.onBackground)),
+          Text(
+            l10n.waterSheetTitle,
+            style: const TextStyle(
+                fontSize: 18,
+                fontWeight: FontWeight.w700,
+                color: AppColors.onBackground),
+          ),
           const SizedBox(height: 24),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -112,7 +125,7 @@ class _WaterRecordSheetState extends ConsumerState<WaterRecordSheet> {
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       Text(
-                        '${_quickAmounts[i].toStringAsFixed(0)}',
+                        _quickAmounts[i].toStringAsFixed(0),
                         style: TextStyle(
                           fontSize: 14,
                           fontWeight: FontWeight.w700,
@@ -120,7 +133,7 @@ class _WaterRecordSheetState extends ConsumerState<WaterRecordSheet> {
                         ),
                       ),
                       Text(
-                        _quickLabels[i],
+                        quickLabels[i],
                         style: TextStyle(
                           fontSize: 9,
                           color: sel
@@ -159,7 +172,8 @@ class _WaterRecordSheetState extends ConsumerState<WaterRecordSheet> {
                 max: 300,
                 divisions: 59,
                 value: _amount,
-                onChanged: (v) => setState(() => _amount = v.roundToDouble()),
+                onChanged: (v) =>
+                    setState(() => _amount = v.roundToDouble()),
               ),
             ),
           ),
@@ -175,7 +189,10 @@ class _WaterRecordSheetState extends ConsumerState<WaterRecordSheet> {
           ),
           const SizedBox(height: 6),
           Text(
-            '今日目标：${newTotal.toStringAsFixed(0)}/${_target.toStringAsFixed(0)}ml',
+            l10n.waterTodayTarget(
+              newTotal.toStringAsFixed(0),
+              _target.toStringAsFixed(0),
+            ),
             style: const TextStyle(
                 fontSize: 13, color: AppColors.textSecondary),
           ),
@@ -192,9 +209,11 @@ class _WaterRecordSheetState extends ConsumerState<WaterRecordSheet> {
                     borderRadius: BorderRadius.circular(16)),
                 elevation: 0,
               ),
-              child: const Text('保存',
-                  style:
-                      TextStyle(fontSize: 16, fontWeight: FontWeight.w600)),
+              child: Text(
+                l10n.commonSave,
+                style: const TextStyle(
+                    fontSize: 16, fontWeight: FontWeight.w600),
+              ),
             ),
           ),
         ],
@@ -204,16 +223,17 @@ class _WaterRecordSheetState extends ConsumerState<WaterRecordSheet> {
 
   void _showError(String message) {
     if (!mounted) return;
+    final l10n = AppLocalizations.of(context)!;
     showDialog(
       context: context,
       builder: (ctx) => AlertDialog(
-        title: const Text('提示'),
+        title: Text(l10n.commonTip),
         content: Text(message),
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(ctx),
-            child: const Text('确定'),
+            child: Text(l10n.commonOk),
           ),
         ],
       ),

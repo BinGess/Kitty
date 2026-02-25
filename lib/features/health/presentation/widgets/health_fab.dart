@@ -2,6 +2,7 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import '../../../../core/constants/app_colors.dart';
+import '../../../../core/l10n/app_localizations.dart';
 
 class HealthFab extends StatefulWidget {
   final VoidCallback onDiet;
@@ -26,16 +27,11 @@ class _HealthFabState extends State<HealthFab>
   late final AnimationController _ctrl;
   bool _open = false;
 
-  static const _items = <_FabItem>[
-    _FabItem(
-        icon: Icons.restaurant, label: '饮食', color: AppColors.primary),
-    _FabItem(
-        icon: Icons.water_drop_outlined, label: '饮水', color: AppColors.info),
-    _FabItem(
-        icon: Icons.monitor_weight_outlined,
-        label: '体重',
-        color: Color(0xFFAB47BC)),
-    _FabItem(icon: Icons.pets, label: '排泄', color: AppColors.success),
+  List<_FabItem> _buildItems(AppLocalizations l10n) => [
+    _FabItem(icon: Icons.restaurant, label: l10n.healthDiet, color: AppColors.primary),
+    _FabItem(icon: Icons.water_drop_outlined, label: l10n.healthWater, color: AppColors.info),
+    _FabItem(icon: Icons.monitor_weight_outlined, label: l10n.healthWeight, color: const Color(0xFFAB47BC)),
+    _FabItem(icon: Icons.pets, label: l10n.healthExcretion, color: AppColors.success),
   ];
 
   @override
@@ -75,14 +71,16 @@ class _HealthFabState extends State<HealthFab>
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+    final items = _buildItems(l10n);
     // 使用 Column 垂直布局，每个按钮间距 12px，避免重叠
     return Column(
       mainAxisSize: MainAxisSize.min,
       crossAxisAlignment: CrossAxisAlignment.end,
       children: [
         // 展开的子按钮 (从上到下: 排泄, 体重, 饮水, 饮食)
-        ..._items.reversed.toList().asMap().entries.map((e) {
-          final reversedIndex = _items.length - 1 - e.key;
+        ...items.reversed.toList().asMap().entries.map((e) {
+          final reversedIndex = items.length - 1 - e.key;
           final item = e.value;
           return _AnimatedFabChild(
             controller: _ctrl,

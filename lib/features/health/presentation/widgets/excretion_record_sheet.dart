@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../../core/constants/app_colors.dart';
 import '../../../../core/database/app_database.dart';
+import '../../../../core/l10n/app_localizations.dart';
 import '../../../../core/providers/current_cat_provider.dart';
 import '../../../../core/providers/database_provider.dart';
 
@@ -40,9 +41,10 @@ class _ExcretionRecordSheetState extends ConsumerState<ExcretionRecordSheet>
       (!_isPoop && _urineAmount != null);
 
   Future<void> _save() async {
+    final l10n = AppLocalizations.of(context)!;
     final cat = ref.read(currentCatProvider);
     if (cat == null) {
-      _showError('请先添加一只猫咪');
+      _showError(l10n.commonNoCat);
       return;
     }
     try {
@@ -58,12 +60,15 @@ class _ExcretionRecordSheetState extends ConsumerState<ExcretionRecordSheet>
       ));
       if (mounted) Navigator.pop(context, true);
     } catch (e) {
-      _showError('保存失败：$e');
+      if (mounted) {
+        _showError(AppLocalizations.of(context)!.commonSaveFailed(e.toString()));
+      }
     }
   }
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     return Container(
       padding: EdgeInsets.only(
         left: 24,
@@ -80,8 +85,8 @@ class _ExcretionRecordSheetState extends ConsumerState<ExcretionRecordSheet>
         children: [
           _handle(),
           const SizedBox(height: 12),
-          const Text('🐾 排泄记录',
-              style: TextStyle(
+          Text(l10n.excretionSheetTitle,
+              style: const TextStyle(
                   fontSize: 18,
                   fontWeight: FontWeight.w700,
                   color: AppColors.onBackground)),
@@ -101,19 +106,19 @@ class _ExcretionRecordSheetState extends ConsumerState<ExcretionRecordSheet>
               labelColor: AppColors.primaryDark,
               unselectedLabelColor: AppColors.textSecondary,
               dividerColor: Colors.transparent,
-              tabs: const [
-                Tab(text: '粑粑 💩'),
-                Tab(text: '尿尿 💧'),
+              tabs: [
+                Tab(text: l10n.excretionTabPoop),
+                Tab(text: l10n.excretionTabUrine),
               ],
             ),
           ),
           const SizedBox(height: 24),
           AnimatedSwitcher(
             duration: const Duration(milliseconds: 200),
-            child: _isPoop ? _poopSelector() : _urineSelector(),
+            child: _isPoop ? _poopSelector(l10n) : _urineSelector(l10n),
           ),
           const SizedBox(height: 20),
-          _anomalyCheckbox(),
+          _anomalyCheckbox(l10n),
           const SizedBox(height: 24),
           SizedBox(
             width: double.infinity,
@@ -128,9 +133,9 @@ class _ExcretionRecordSheetState extends ConsumerState<ExcretionRecordSheet>
                     borderRadius: BorderRadius.circular(16)),
                 elevation: 0,
               ),
-              child: const Text('保存',
+              child: Text(l10n.commonSave,
                   style:
-                      TextStyle(fontSize: 16, fontWeight: FontWeight.w600)),
+                      const TextStyle(fontSize: 16, fontWeight: FontWeight.w600)),
             ),
           ),
         ],
@@ -138,12 +143,12 @@ class _ExcretionRecordSheetState extends ConsumerState<ExcretionRecordSheet>
     );
   }
 
-  Widget _poopSelector() {
-    const items = [
-      (1, '🔵', '干燥球状', '偏硬，注意饮水'),
-      (2, '🟢', '完美香蕉', '健康标准'),
-      (3, '🟡', '软便无形', '消化不良'),
-      (4, '🔴', '水样拉稀', '建议就医'),
+  Widget _poopSelector(AppLocalizations l10n) {
+    final items = [
+      (1, '🔵', l10n.excretionPoop1Name, l10n.excretionPoop1Desc),
+      (2, '🟢', l10n.excretionPoop2Name, l10n.excretionPoop2Desc),
+      (3, '🟡', l10n.excretionPoop3Name, l10n.excretionPoop3Desc),
+      (4, '🔴', l10n.excretionPoop4Name, l10n.excretionPoop4Desc),
     ];
 
     return Wrap(
@@ -208,11 +213,11 @@ class _ExcretionRecordSheetState extends ConsumerState<ExcretionRecordSheet>
     }
   }
 
-  Widget _urineSelector() {
-    const items = [
-      (1, '小团', 48.0),
-      (2, '中团', 64.0),
-      (3, '大团', 80.0),
+  Widget _urineSelector(AppLocalizations l10n) {
+    final items = [
+      (1, l10n.excretionUrineSmall, 48.0),
+      (2, l10n.excretionUrineMedium, 64.0),
+      (3, l10n.excretionUrineLarge, 80.0),
     ];
 
     return Row(
@@ -261,7 +266,7 @@ class _ExcretionRecordSheetState extends ConsumerState<ExcretionRecordSheet>
     );
   }
 
-  Widget _anomalyCheckbox() {
+  Widget _anomalyCheckbox(AppLocalizations l10n) {
     return GestureDetector(
       onTap: () => setState(() => _hasAnomaly = !_hasAnomaly),
       child: Container(
@@ -286,7 +291,7 @@ class _ExcretionRecordSheetState extends ConsumerState<ExcretionRecordSheet>
             ),
             const SizedBox(width: 10),
             Text(
-              '发现异常（血丝/异物）',
+              l10n.excretionAnomaly,
               style: TextStyle(
                 fontSize: 14,
                 fontWeight: _hasAnomaly ? FontWeight.w600 : FontWeight.w400,
@@ -306,16 +311,17 @@ class _ExcretionRecordSheetState extends ConsumerState<ExcretionRecordSheet>
 
   void _showError(String message) {
     if (!mounted) return;
+    final l10n = AppLocalizations.of(context)!;
     showDialog(
       context: context,
       builder: (ctx) => AlertDialog(
-        title: const Text('提示'),
+        title: Text(l10n.commonTip),
         content: Text(message),
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(ctx),
-            child: const Text('确定'),
+            child: Text(l10n.commonOk),
           ),
         ],
       ),

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../../../../core/constants/app_colors.dart';
+import '../../../../core/l10n/app_localizations.dart';
 import '../../data/models/health_record.dart';
 
 class HealthTimeline extends StatelessWidget {
@@ -10,6 +11,7 @@ class HealthTimeline extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     if (entries.isEmpty) {
       return Center(
         child: Padding(
@@ -19,10 +21,10 @@ class HealthTimeline extends StatelessWidget {
               Icon(Icons.timeline,
                   size: 48, color: AppColors.textSecondary.withValues(alpha: 0.4)),
               const SizedBox(height: 12),
-              const Text(
-                '今天还没有记录\n点击右下角 + 开始记录吧',
+              Text(
+                l10n.healthTimelineEmpty,
                 textAlign: TextAlign.center,
-                style: TextStyle(
+                style: const TextStyle(
                   fontSize: 14,
                   color: AppColors.textSecondary,
                   height: 1.6,
@@ -57,23 +59,26 @@ class HealthTimeline extends StatelessWidget {
           confirmDismiss: (_) async {
             return await showDialog<bool>(
               context: context,
-              builder: (ctx) => AlertDialog(
-                title: const Text('确认删除'),
-                content: const Text('确定要删除这条记录吗？'),
-                shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(20)),
-                actions: [
-                  TextButton(
-                    onPressed: () => Navigator.pop(ctx, false),
-                    child: const Text('取消'),
-                  ),
-                  TextButton(
-                    onPressed: () => Navigator.pop(ctx, true),
-                    child: const Text('删除',
-                        style: TextStyle(color: AppColors.error)),
-                  ),
-                ],
-              ),
+              builder: (ctx) {
+                final dl10n = AppLocalizations.of(ctx)!;
+                return AlertDialog(
+                  title: Text(dl10n.healthTimelineDeleteTitle),
+                  content: Text(dl10n.healthTimelineDeleteContent),
+                  shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(20)),
+                  actions: [
+                    TextButton(
+                      onPressed: () => Navigator.pop(ctx, false),
+                      child: Text(dl10n.commonCancel),
+                    ),
+                    TextButton(
+                      onPressed: () => Navigator.pop(ctx, true),
+                      child: Text(dl10n.commonDelete,
+                          style: const TextStyle(color: AppColors.error)),
+                    ),
+                  ],
+                );
+              },
             );
           },
           onDismissed: (_) => onDelete?.call(entry),
@@ -94,8 +99,47 @@ class _TimelineItem extends StatelessWidget {
     return '${dt.hour.toString().padLeft(2, '0')}:${dt.minute.toString().padLeft(2, '0')}';
   }
 
+  String _buildTitle(AppLocalizations l10n) {
+    final v = entry.numericValue;
+    switch (entry.type) {
+      case HealthRecordType.weight:
+        return v != null ? l10n.healthTimelineWeight(v.toStringAsFixed(2)) : l10n.healthWeight;
+      case HealthRecordType.diet:
+        return v != null ? l10n.healthTimelineDiet(v.toStringAsFixed(0)) : l10n.healthDiet;
+      case HealthRecordType.water:
+        return v != null ? l10n.healthTimelineWater(v.toStringAsFixed(0)) : l10n.healthWater;
+      case HealthRecordType.excretion:
+        return entry.subtype == 'poop' ? l10n.healthTimelinePoop : l10n.healthTimelineUrine;
+    }
+  }
+
+  String _buildSubtitle(AppLocalizations l10n) {
+    if (entry.subtitle.isNotEmpty) return entry.subtitle;
+    if (entry.type == HealthRecordType.excretion) {
+      final scale = entry.numericValue?.toInt();
+      if (entry.subtype == 'poop' && scale != null) {
+        switch (scale) {
+          case 1: return l10n.excretionPoop1Name;
+          case 2: return l10n.excretionPoop2Name;
+          case 3: return l10n.excretionPoop3Name;
+          case 4: return l10n.excretionPoop4Name;
+        }
+      } else if (entry.subtype == 'urine' && scale != null) {
+        switch (scale) {
+          case 1: return l10n.excretionUrineSmall;
+          case 2: return l10n.excretionUrineMedium;
+          case 3: return l10n.excretionUrineLarge;
+        }
+      }
+    }
+    return '';
+  }
+
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+    final title = _buildTitle(l10n);
+    final subtitle = _buildSubtitle(l10n);
     return IntrinsicHeight(
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -177,18 +221,18 @@ class _TimelineItem extends StatelessWidget {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          entry.title,
+                          title,
                           style: const TextStyle(
                             fontSize: 14,
                             fontWeight: FontWeight.w600,
                             color: AppColors.onBackground,
                           ),
                         ),
-                        if (entry.subtitle.isNotEmpty)
+                        if (subtitle.isNotEmpty)
                           Padding(
                             padding: const EdgeInsets.only(top: 2),
                             child: Text(
-                              entry.subtitle,
+                              subtitle,
                               style: const TextStyle(
                                 fontSize: 12,
                                 color: AppColors.textSecondary,

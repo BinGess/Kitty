@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import '../../../../core/constants/app_colors.dart';
 import '../../../../core/constants/app_dimensions.dart';
+import '../../../../core/l10n/app_localizations.dart';
 import '../../../../core/widgets/centered_page_title.dart';
 import '../../data/models/question.dart';
 import '../providers/test_provider.dart';
@@ -12,6 +13,7 @@ class TestIntroScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final l10n = AppLocalizations.of(context)!;
     return Scaffold(
       backgroundColor: AppColors.background,
       body: SafeArea(
@@ -19,8 +21,8 @@ class TestIntroScreen extends ConsumerWidget {
           padding: const EdgeInsets.fromLTRB(16, 8, 16, 24),
           child: Column(
             children: [
-              const CenteredPageTitle(
-                title: '16喵格测试',
+              CenteredPageTitle(
+                title: l10n.testTitle,
                 padding: EdgeInsets.zero,
               ),
               const SizedBox(height: AppDimensions.spacingL),
@@ -39,9 +41,9 @@ class TestIntroScreen extends ConsumerWidget {
                 ),
               ),
               const SizedBox(height: AppDimensions.spacingL),
-              const Text(
-                '测测你家猫的隐藏性格',
-                style: TextStyle(
+              Text(
+                l10n.testSubtitle,
+                style: const TextStyle(
                   fontSize: 22,
                   fontWeight: FontWeight.bold,
                   color: AppColors.onBackground,
@@ -49,7 +51,7 @@ class TestIntroScreen extends ConsumerWidget {
               ),
               const SizedBox(height: AppDimensions.spacingS),
               Text(
-                '基于 MBTI 理论，通过观察猫咪的日常行为\n揭示它独特的性格密码',
+                l10n.testTheoryDesc,
                 textAlign: TextAlign.center,
                 style: TextStyle(
                   fontSize: 14,
@@ -64,7 +66,7 @@ class TestIntroScreen extends ConsumerWidget {
                 mode: TestMode.basic,
                 icon: Icons.flash_on,
                 color: AppColors.primary,
-                subtitle: '快速了解猫咪基本性格倾向',
+                subtitle: l10n.testBasicModeDesc,
                 onTap: () => _startTest(context, ref, TestMode.basic),
               ),
               const SizedBox(height: AppDimensions.spacingM),
@@ -72,7 +74,7 @@ class TestIntroScreen extends ConsumerWidget {
                 mode: TestMode.advanced,
                 icon: Icons.auto_awesome,
                 color: AppColors.primaryDark,
-                subtitle: '更全面的性格分析，识别双重性格',
+                subtitle: l10n.testAdvancedModeDesc,
                 onTap: () => _startTest(context, ref, TestMode.advanced),
               ),
 
@@ -97,7 +99,7 @@ class TestIntroScreen extends ConsumerWidget {
                     const SizedBox(width: AppDimensions.spacingS),
                     Expanded(
                       child: Text(
-                        '回答时请基于猫咪的日常表现，没有对错之分哦~',
+                        l10n.testTip,
                         style: TextStyle(
                           fontSize: 13,
                           color: AppColors.textSecondary,
@@ -138,6 +140,7 @@ class _ModeCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     return GestureDetector(
       onTap: onTap,
       child: Container(
@@ -191,7 +194,7 @@ class _ModeCard extends StatelessWidget {
                           borderRadius: BorderRadius.circular(8),
                         ),
                         child: Text(
-                          '${mode.questionCount}题',
+                          l10n.testQuestionCount(mode.questionCount),
                           style: TextStyle(
                             fontSize: 12,
                             fontWeight: FontWeight.w500,

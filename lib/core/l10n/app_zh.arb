@@ -1,6 +1,6 @@
 {
   "@@locale": "zh",
-  "appTitle": "猫咪语言",
+  "appTitle": "猫咪说",
 
   "tabSounds": "声音",
   "tabTest": "性格",
@@ -8,15 +8,29 @@
   "tabGames": "游戏",
   "tabMore": "更多",
 
+  "soundsPageTitle": "猫咪语言",
   "soundsTitle": "猫鸣模拟器",
   "soundCategoryCalling": "呼唤",
   "soundCategoryEmotion": "情感",
   "soundCategoryEnvironment": "环境",
+  "soundsSubtitleEmotion": "猫咪的情绪表达",
+  "soundsSubtitleCalling": "召唤猫咪与环境音",
+  "soundLooping": "循环中",
 
   "testTitle": "16喵格测试",
+  "testSubtitle": "测测你家猫的隐藏性格",
   "testBasicMode": "基础版 (12题)",
   "testAdvancedMode": "进阶版 (24题)",
-  "testSubtitle": "测测你家猫的隐藏性格",
+  "testBasicModeDesc": "快速了解猫咪基本性格倾向",
+  "testAdvancedModeDesc": "更全面的性格分析，识别双重性格",
+  "testTheoryDesc": "基于 MBTI 理论，通过观察猫咪的日常行为\n揭示它独特的性格密码",
+  "testTip": "回答时请基于猫咪的日常表现，没有对错之分哦~",
+  "testQuestionCount": "{count}题",
+  "@testQuestionCount": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
   "testAnalyzing": "正在分析猫咪性格...",
   "testProgressLabel": "第{current}题 / 共{total}题",
   "@testProgressLabel": {
@@ -26,11 +40,88 @@
     }
   },
 
+  "analyzingTitle": "正在分析中...",
+  "analyzingStep1": "分析行为模式...",
+  "analyzingStep2": "识别性格维度...",
+  "analyzingStep3": "计算匹配度...",
+  "analyzingStep4": "生成性格报告...",
+
+  "testResultTitle": "测试结果",
+  "testResultDualPersonality": "具有双重性格特质",
+  "testResultDimAnalysis": "维度分析",
+  "testResultDescription": "性格描述",
+  "testResultAdvice": "喂养建议",
+  "testResultRetake": "重新测试",
+  "testResultPoster": "生成海报",
+
+  "healthDashboardTitle": "猫咪健康",
   "healthTitle": "健康记录",
+  "healthPreparing": "正在准备...",
+  "healthTodayRecords": "今日记录",
+  "healthSwitchCat": "切换猫咪",
+  "healthWeightOutOfGoalWarning": "体重已超出档案目标区间，建议近期增加称重和饮食观察。",
   "healthWeight": "体重",
   "healthWater": "饮水",
   "healthDiet": "饮食",
   "healthExcretion": "排泄",
+  "healthNoChange": "暂无变化",
+  "healthWaterTarget": "目标 {target}ml",
+  "@healthWaterTarget": {
+    "placeholders": {
+      "target": { "type": "String" }
+    }
+  },
+  "healthDietDone": "已完成",
+  "healthDietInProgress": "进行中",
+  "healthDietMealsUnit": "/{count}次",
+  "@healthDietMealsUnit": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+  "healthTimelineWeight": "称重 {value}kg",
+  "@healthTimelineWeight": {
+    "placeholders": {
+      "value": { "type": "String" }
+    }
+  },
+  "healthTimelineDiet": "干饭时刻 {value}g",
+  "@healthTimelineDiet": {
+    "placeholders": {
+      "value": { "type": "String" }
+    }
+  },
+  "healthTimelineWater": "饮水 {value}ml",
+  "@healthTimelineWater": {
+    "placeholders": {
+      "value": { "type": "String" }
+    }
+  },
+  "healthTimelinePoop": "排便",
+  "healthTimelineUrine": "排尿",
+  "healthTimelineEmpty": "今天还没有记录\n点击右下角 + 开始记录吧",
+  "healthTimelineDeleteTitle": "确认删除",
+  "healthTimelineDeleteContent": "确定要删除这条记录吗？",
+  "healthWeightGoalRange": "目标 {min}-{max}kg",
+  "@healthWeightGoalRange": {
+    "placeholders": {
+      "min": { "type": "String" },
+      "max": { "type": "String" }
+    }
+  },
+  "healthWeightGoalMin": "目标 >= {min}kg",
+  "@healthWeightGoalMin": {
+    "placeholders": {
+      "min": { "type": "String" }
+    }
+  },
+  "healthWeightGoalMax": "目标 <= {max}kg",
+  "@healthWeightGoalMax": {
+    "placeholders": {
+      "max": { "type": "String" }
+    }
+  },
+  "healthWeightExceeded": "（当前超出）",
   "healthWeightAlert": "近30天体重变化超过{percent}%",
   "@healthWeightAlert": {
     "placeholders": {
@@ -38,7 +129,105 @@
     }
   },
 
+  "weightSheetTitle": "⚖️ 体重记录",
+  "weightLastRecord": "上次记录：{weight}kg（{date}）",
+  "@weightLastRecord": {
+    "placeholders": {
+      "weight": { "type": "String" },
+      "date": { "type": "String" }
+    }
+  },
+  "weightLastRecordToday": "今天",
+  "weightDaysAgo": "{days}天前",
+  "@weightDaysAgo": {
+    "placeholders": {
+      "days": { "type": "int" }
+    }
+  },
+  "weightMoodLabel": "称重配合度",
+  "weightMoodCooperative": "配合",
+  "weightMoodNeutral": "一般",
+  "weightMoodResistant": "暴躁",
+  "weightOutOfGoalTitle": "超出目标区间",
+  "weightOutOfGoalContent": "当前体重 {weight}kg 已超出档案目标，是否继续保存？",
+  "@weightOutOfGoalContent": {
+    "placeholders": {
+      "weight": { "type": "String" }
+    }
+  },
+  "weightContinueSave": "继续保存",
+  "weightGoalRange": "目标区间 {min} - {max} kg",
+  "@weightGoalRange": {
+    "placeholders": {
+      "min": { "type": "String" },
+      "max": { "type": "String" }
+    }
+  },
+  "weightGoalMinLimit": "目标下限 {min} kg",
+  "@weightGoalMinLimit": {
+    "placeholders": {
+      "min": { "type": "String" }
+    }
+  },
+  "weightGoalMaxLimit": "目标上限 {max} kg",
+  "@weightGoalMaxLimit": {
+    "placeholders": {
+      "max": { "type": "String" }
+    }
+  },
+  "weightGoalExceeded": "（当前超出）",
+
+  "dietSheetTitle": "🍚 饮食记录",
+  "dietTodayMeals": "今日喂食：{current}/{target} 次（保存后）",
+  "@dietTodayMeals": {
+    "placeholders": {
+      "current": { "type": "int" },
+      "target": { "type": "int" }
+    }
+  },
+  "dietBrandSection": "品牌/种类",
+  "dietFoodTypeSection": "食物类型",
+  "dietAmountSection": "进食量 (g)",
+  "dietSameAsLast": "同前一次记录",
+  "dietTapToChangeTime": "点击修改时间",
+  "dietConfirmLargeAmount": "输入的数值较大（{amount}g），确定吗？",
+  "@dietConfirmLargeAmount": {
+    "placeholders": {
+      "amount": { "type": "String" }
+    }
+  },
+
+  "waterSheetTitle": "💧 饮水记录",
+  "waterQuickSmall": "小口",
+  "waterQuickHalf": "半杯",
+  "waterQuickOne": "一杯",
+  "waterQuickFull": "满碗",
+  "waterTodayTarget": "今日目标：{current}/{target}ml",
+  "@waterTodayTarget": {
+    "placeholders": {
+      "current": { "type": "String" },
+      "target": { "type": "String" }
+    }
+  },
+
+  "excretionSheetTitle": "🐾 排泄记录",
+  "excretionTabPoop": "粑粑 💩",
+  "excretionTabUrine": "尿尿 💧",
+  "excretionPoop1Name": "干燥球状",
+  "excretionPoop1Desc": "偏硬，注意饮水",
+  "excretionPoop2Name": "完美香蕉",
+  "excretionPoop2Desc": "健康标准",
+  "excretionPoop3Name": "软便无形",
+  "excretionPoop3Desc": "消化不良",
+  "excretionPoop4Name": "水样拉稀",
+  "excretionPoop4Desc": "建议就医",
+  "excretionUrineSmall": "小团",
+  "excretionUrineMedium": "中团",
+  "excretionUrineLarge": "大团",
+  "excretionAnomaly": "发现异常（血丝/异物）",
+
   "gamesTitle": "互动游戏",
+  "gamesPageTitle": "玩个游戏",
   "gameLaser": "激光点",
   "gameMouseHunt": "抓老鼠",
   "gameRainbow": "追彩虹",
@@ -46,17 +235,200 @@
 
   "moreTitle": "更多",
   "moreCatProfile": "猫咪档案",
+  "moreCatProfileSubtitle": "管理你的猫咪信息",
+  "moreSettings": "设置",
+  "moreSettingsSubtitle": "应用设置",
+  "moreAbout": "关于",
+  "moreAboutSubtitle": "版本信息与反馈",
   "moreTheater": "喵剧场",
   "moreAI": "AI 识别",
-  "moreSettings": "设置",
 
+  "settingsPageTitle": "设置",
+  "settingsGameSection": "游戏设置",
+  "gameSettingsTitle": "{gameName} 设置",
+  "@gameSettingsTitle": {
+    "placeholders": {
+      "gameName": { "type": "String" }
+    }
+  },
+  "gameSettingsSpeedFrequency": "出现频率",
+  "gameSettingsSpeedMovement": "移动速度",
+  "gameSettingsSound": "音效",
+  "gameSettingsSoundDesc": "游戏过程中播放音效",
+  "gameSettingsVibration": "震动反馈",
+  "gameSettingsVibrationDesc": "猫咪触碰目标时震动",
+  "gameSettingsDescription": "游戏说明",
+  "gameSettingsStart": "开始游戏",
+  "posterTitle": "我的猫咪性格报告",
+  "posterSave": "保存到相册",
+  "posterSaveComingSoon": "海报保存功能开发中...",
+  "posterShare": "分享给好友",
+  "posterShareComingSoon": "分享功能开发中...",
+  "posterFooter": "猫咪语言 · 16喵格测试",
+  "settingsLanguageSection": "语言",
+  "settingsLanguageDesc": "选择应用显示语言",
+  "settingsLanguageChinese": "中文",
+  "settingsLanguageEnglish": "English",
+  "settingsLanguageSystem": "跟随系统",
+
+  "aboutPageTitle": "关于",
+  "aboutAppName": "猫咪说",
+  "aboutFeedbackEmail": "反馈邮箱",
+  "aboutPrivacyPolicy": "隐私协议",
+  "aboutPrivacyPolicySubtitle": "点击查看详细隐私政策",
+  "aboutCannotOpenLink": "无法打开链接",
+
+  "splashTagline": "瞄~瞄~",
+  "splashAppName": "猫咪说",
+  "splashSlogan": "懂猫，听猫咪说",
+
+  "catProfileTitle": "猫咪档案",
   "catProfileEmpty": "还没有猫咪",
-  "catProfileAddFirst": "点击添加你的第一只猫咪",
+  "catProfileAddFirst": "点击右下角添加你的第一只猫咪",
   "catProfileManage": "管理你的猫咪信息",
+  "catAdded": "已添加猫咪档案",
+  "catUpdated": "已更新猫咪档案",
+  "catDeleted": "已删除猫咪档案",
+  "catMinimumOne": "至少保留一只猫咪档案",
+  "catCannotDeleteTitle": "无法删除",
+  "catCannotDeleteContent": "该猫咪已有健康记录，请先处理历史记录后再删除。",
+  "catGotIt": "知道了",
+  "catDeleteTitle": "删除猫咪档案",
+  "catDeleteConfirm": "确认删除「{name}」吗？",
+  "@catDeleteConfirm": {
+    "placeholders": {
+      "name": { "type": "String" }
+    }
+  },
+  "catSwitched": "已切换到 {name}",
+  "@catSwitched": {
+    "placeholders": {
+      "name": { "type": "String" }
+    }
+  },
+  "catLoadFailed": "加载失败：{error}",
+  "@catLoadFailed": {
+    "placeholders": {
+      "error": { "type": "String" }
+    }
+  },
+  "catAddButton": "添加猫咪",
+  "catCurrentBadge": "当前",
+  "catNoBreed": "未设置品种",
+  "catUnknownAge": "未知年龄",
+  "catAgeMonths": "{months} 个月",
+  "@catAgeMonths": {
+    "placeholders": {
+      "months": { "type": "int" }
+    }
+  },
+  "catAgeYears": "{years} 岁",
+  "@catAgeYears": {
+    "placeholders": {
+      "years": { "type": "int" }
+    }
+  },
+  "catAgeYearsMonths": "{years} 岁 {months} 个月",
+  "@catAgeYearsMonths": {
+    "placeholders": {
+      "years": { "type": "int" },
+      "months": { "type": "int" }
+    }
+  },
+  "catSexMale": "公猫",
+  "catSexFemale": "母猫",
+  "catSexUnknown": "性别未知",
+  "catNeutered": "已绝育",
+  "catNotNeutered": "未绝育",
+  "catWeightGoalRange": "体重目标 {min}-{max} kg",
+  "@catWeightGoalRange": {
+    "placeholders": {
+      "min": { "type": "String" },
+      "max": { "type": "String" }
+    }
+  },
+  "catWeightGoalMin": "体重目标 ≥ {min} kg",
+  "@catWeightGoalMin": {
+    "placeholders": {
+      "min": { "type": "String" }
+    }
+  },
+  "catWeightGoalMax": "体重目标 ≤ {max} kg",
+  "@catWeightGoalMax": {
+    "placeholders": {
+      "max": { "type": "String" }
+    }
+  },
+  "catDailyTargets": "目标饮水 {water} ml / 日 · 目标喂食 {meals} 次 / 日",
+  "@catDailyTargets": {
+    "placeholders": {
+      "water": { "type": "String" },
+      "meals": { "type": "int" }
+    }
+  },
+  "catLoadingTrend": "加载健康趋势中...",
+  "catTrend7DaysWater": "近7天日均饮水 {amount}ml",
+  "@catTrend7DaysWater": {
+    "placeholders": {
+      "amount": { "type": "String" }
+    }
+  },
+  "catTrendMeals": "喂食 {count} 次",
+  "@catTrendMeals": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+  "catTrendWeightNoData": "体重 无数据",
+  "catTrendWeightChange": "体重 {change}kg",
+  "@catTrendWeightChange": {
+    "placeholders": {
+      "change": { "type": "String" }
+    }
+  },
+  "catFormBasicInfo": "基础信息",
+  "catFormName": "猫咪名称 *",
+  "catFormNameHint": "请输入猫咪名称",
+  "catFormNameRequired": "请输入猫咪名称",
+  "catFormBreed": "品种",
+  "catFormBreedHint": "例如：英短、美短",
+  "catFormSex": "性别",
+  "catFormSexUnknown": "未知",
+  "catFormSexMale": "公猫",
+  "catFormSexFemale": "母猫",
+  "catFormBirthDate": "出生日期",
+  "catFormBirthDateNotSet": "未设置",
+  "catFormNeutered": "已绝育",
+  "catFormHealthGoals": "健康目标",
+  "catFormWeightMin": "体重目标下限 (kg)",
+  "catFormWeightMinHint": "例如：3.5",
+  "catFormWeightMax": "体重目标上限 (kg)",
+  "catFormWeightMaxHint": "例如：5.0",
+  "catFormWaterTarget": "每日饮水目标 (ml)",
+  "catFormWaterHint": "例如：200",
+  "catFormMealsTarget": "每日喂食目标 (次)",
+  "catFormMealsHint": "例如：3",
+  "catFormSave": "保存修改",
+  "catFormCreate": "创建档案",
+  "catFormEditTitle": "编辑猫咪档案",
+  "catFormNewTitle": "新增猫咪档案",
+  "catFormInvalidWater": "请填写正确的饮水目标",
+  "catFormInvalidMeals": "请填写正确的喂食次数（1-20）",
+  "catFormInvalidWeight": "请填写正确的体重目标（kg）",
+  "catFormWeightRangeError": "体重区间下限不能大于上限",
 
   "commonSave": "保存",
   "commonCancel": "取消",
   "commonDelete": "删除",
   "commonConfirm": "确认",
-  "commonEdit": "编辑"
+  "commonEdit": "编辑",
+  "commonNoCat": "请先添加一只猫咪",
+  "commonSaveFailed": "保存失败：{error}",
+  "@commonSaveFailed": {
+    "placeholders": {
+      "error": { "type": "String" }
+    }
+  },
+  "commonTip": "提示",
+  "commonOk": "确定"
 }

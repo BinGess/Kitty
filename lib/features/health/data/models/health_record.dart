@@ -13,6 +13,10 @@ class HealthTimelineEntry {
   final IconData icon;
   final Color color;
   final bool isWarning;
+  // Raw numeric value for widget-layer localization (weight kg, water ml, diet g, bristol/urine scale)
+  final double? numericValue;
+  // 'poop' | 'urine' for excretion entries
+  final String? subtype;
 
   const HealthTimelineEntry({
     required this.id,
@@ -23,6 +27,8 @@ class HealthTimelineEntry {
     required this.icon,
     required this.color,
     this.isWarning = false,
+    this.numericValue,
+    this.subtype,
   });
 }
 
@@ -53,16 +59,8 @@ class HealthSummary {
   });
 }
 
-/// 排泄状态文案映射
+/// 排泄图标/颜色辅助
 class ExcretionLabels {
-  static const Map<int, String> bristolLabels = {
-    1: '干燥球状',
-    2: '完美香蕉',
-    3: '软便无形',
-    4: '水样拉稀',
-  };
-  static const Map<int, String> urineLabels = {1: '小团', 2: '中团', 3: '大团'};
-
   static IconData iconForBristol(int scale) {
     switch (scale) {
       case 1:

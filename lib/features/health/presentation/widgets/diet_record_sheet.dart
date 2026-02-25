@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../../core/constants/app_colors.dart';
 import '../../../../core/database/app_database.dart';
+import '../../../../core/l10n/app_localizations.dart';
 import '../../../../core/providers/current_cat_provider.dart';
 import '../../../../core/providers/database_provider.dart';
 
@@ -22,6 +23,7 @@ class _DietRecordSheetState extends ConsumerState<DietRecordSheet> {
   int _todayMeals = 0;
   int _mealTarget = 3;
 
+  // Brand/food type values stored in DB — not localized to preserve data consistency
   static const _brands = ['渴望', '巅峰', '皇家', '自制', '零食', '其他'];
   static const _types = ['主粮', '罐头', '零食', '冻干'];
 
@@ -55,9 +57,10 @@ class _DietRecordSheetState extends ConsumerState<DietRecordSheet> {
   }
 
   Future<void> _save() async {
+    final l10n = AppLocalizations.of(context)!;
     final cat = ref.read(currentCatProvider);
     if (cat == null) {
-      _showError('请先添加一只猫咪');
+      _showError(l10n.commonNoCat);
       return;
     }
 
@@ -65,19 +68,20 @@ class _DietRecordSheetState extends ConsumerState<DietRecordSheet> {
       final confirm = await showDialog<bool>(
         context: context,
         builder: (ctx) => AlertDialog(
-          title: const Text('确认'),
-          content: Text('输入的数值较大（${_amount.toStringAsFixed(0)}g），确定吗？'),
+          title: Text(l10n.commonConfirm),
+          content: Text(
+              l10n.dietConfirmLargeAmount(_amount.toStringAsFixed(0))),
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(20),
           ),
           actions: [
             TextButton(
               onPressed: () => Navigator.pop(ctx, false),
-              child: const Text('取消'),
+              child: Text(l10n.commonCancel),
             ),
             TextButton(
               onPressed: () => Navigator.pop(ctx, true),
-              child: const Text('确定'),
+              child: Text(l10n.commonConfirm),
             ),
           ],
         ),
@@ -98,22 +102,26 @@ class _DietRecordSheetState extends ConsumerState<DietRecordSheet> {
       );
       if (mounted) Navigator.pop(context, true);
     } catch (e) {
-      _showError('保存失败：$e');
+      if (mounted) {
+        _showError(
+            AppLocalizations.of(context)!.commonSaveFailed(e.toString()));
+      }
     }
   }
 
   void _showError(String message) {
     if (!mounted) return;
+    final l10n = AppLocalizations.of(context)!;
     showDialog(
       context: context,
       builder: (ctx) => AlertDialog(
-        title: const Text('提示'),
+        title: Text(l10n.commonTip),
         content: Text(message),
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(ctx),
-            child: const Text('确定'),
+            child: Text(l10n.commonOk),
           ),
         ],
       ),
@@ -122,6 +130,7 @@ class _DietRecordSheetState extends ConsumerState<DietRecordSheet> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     return Container(
       padding: EdgeInsets.only(
         left: 24,
@@ -139,9 +148,9 @@ class _DietRecordSheetState extends ConsumerState<DietRecordSheet> {
           children: [
             _handle(),
             const SizedBox(height: 12),
-            const Text(
-              '🍚 饮食记录',
-              style: TextStyle(
+            Text(
+              l10n.dietSheetTitle,
+              style: const TextStyle(
                 fontSize: 18,
                 fontWeight: FontWeight.w700,
                 color: AppColors.onBackground,
@@ -161,14 +170,14 @@ class _DietRecordSheetState extends ConsumerState<DietRecordSheet> {
             ),
             const SizedBox(height: 4),
             Text(
-              '今日喂食：${_todayMeals + 1}/$_mealTarget 次（保存后）',
+              l10n.dietTodayMeals(_todayMeals + 1, _mealTarget),
               style: const TextStyle(
                 fontSize: 12,
                 color: AppColors.textSecondary,
               ),
             ),
             const SizedBox(height: 20),
-            _sectionLabel('品牌/种类'),
+            _sectionLabel(l10n.dietBrandSection),
             const SizedBox(height: 8),
             Wrap(
               spacing: 8,
@@ -195,7 +204,7 @@ class _DietRecordSheetState extends ConsumerState<DietRecordSheet> {
               }).toList(),
             ),
             const SizedBox(height: 16),
-            _sectionLabel('食物类型'),
+            _sectionLabel(l10n.dietFoodTypeSection),
             const SizedBox(height: 8),
             Wrap(
               spacing: 8,
@@ -221,7 +230,7 @@ class _DietRecordSheetState extends ConsumerState<DietRecordSheet> {
               }).toList(),
             ),
             const SizedBox(height: 24),
-            _sectionLabel('进食量 (g)'),
+            _sectionLabel(l10n.dietAmountSection),
             const SizedBox(height: 8),
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
@@ -245,18 +254,18 @@ class _DietRecordSheetState extends ConsumerState<DietRecordSheet> {
               ],
             ),
             if (_loadedLast)
-              const Padding(
-                padding: EdgeInsets.only(top: 4),
+              Padding(
+                padding: const EdgeInsets.only(top: 4),
                 child: Text(
-                  '同前一次记录',
-                  style: TextStyle(
+                  l10n.dietSameAsLast,
+                  style: const TextStyle(
                     fontSize: 11,
                     color: AppColors.textSecondary,
                   ),
                 ),
               ),
             const SizedBox(height: 20),
-            _timeSelector(),
+            _timeSelector(l10n),
             const SizedBox(height: 24),
             SizedBox(
               width: double.infinity,
@@ -271,9 +280,10 @@ class _DietRecordSheetState extends ConsumerState<DietRecordSheet> {
                   ),
                   elevation: 0,
                 ),
-                child: const Text(
-                  '保存',
-                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
+                child: Text(
+                  l10n.commonSave,
+                  style: const TextStyle(
+                      fontSize: 16, fontWeight: FontWeight.w600),
                 ),
               ),
             ),
@@ -325,7 +335,7 @@ class _DietRecordSheetState extends ConsumerState<DietRecordSheet> {
     ),
   );
 
-  Widget _timeSelector() => GestureDetector(
+  Widget _timeSelector(AppLocalizations l10n) => GestureDetector(
     onTap: () async {
       final picked = await showTimePicker(
         context: context,
@@ -360,12 +370,14 @@ class _DietRecordSheetState extends ConsumerState<DietRecordSheet> {
           const SizedBox(width: 8),
           Text(
             '${_time.hour.toString().padLeft(2, '0')}:${_time.minute.toString().padLeft(2, '0')}',
-            style: const TextStyle(fontSize: 15, color: AppColors.onBackground),
+            style: const TextStyle(
+                fontSize: 15, color: AppColors.onBackground),
           ),
           const Spacer(),
-          const Text(
-            '点击修改时间',
-            style: TextStyle(fontSize: 12, color: AppColors.textSecondary),
+          Text(
+            l10n.dietTapToChangeTime,
+            style: const TextStyle(
+                fontSize: 12, color: AppColors.textSecondary),
           ),
         ],
       ),

@@ -74,10 +74,11 @@ final healthTimelineProvider =
             id: w.id,
             type: HealthRecordType.weight,
             recordedAt: w.recordedAt,
-            title: '称重 ${w.weightKg.toStringAsFixed(2)}kg',
+            title: '',
             subtitle: w.moodAnnotation ?? '',
             icon: Icons.monitor_weight_outlined,
             color: AppColors.info,
+            numericValue: w.weightKg,
           ),
         );
       }
@@ -87,10 +88,11 @@ final healthTimelineProvider =
             id: d.id,
             type: HealthRecordType.diet,
             recordedAt: d.recordedAt,
-            title: '干饭时刻 ${d.amountGrams.toStringAsFixed(0)}g',
+            title: '',
             subtitle: d.brandTag ?? d.foodType,
             icon: Icons.restaurant,
             color: AppColors.primary,
+            numericValue: d.amountGrams,
           ),
         );
       }
@@ -100,30 +102,30 @@ final healthTimelineProvider =
             id: w.id,
             type: HealthRecordType.water,
             recordedAt: w.recordedAt,
-            title: '饮水 ${w.amountMl.toStringAsFixed(0)}ml',
+            title: '',
             subtitle: '',
             icon: Icons.water_drop_outlined,
             color: AppColors.info,
+            numericValue: w.amountMl,
           ),
         );
       }
       for (final e in excRecords) {
         final isP = e.excretionType == 'poop';
-        final label = isP
-            ? ExcretionLabels.bristolLabels[e.bristolScale] ?? '排便'
-            : ExcretionLabels.urineLabels[e.urineAmount] ?? '排尿';
         entries.add(
           HealthTimelineEntry(
             id: e.id,
             type: HealthRecordType.excretion,
             recordedAt: e.recordedAt,
-            title: isP ? '排便' : '排尿',
-            subtitle: label,
+            title: '',
+            subtitle: '',
             icon: isP ? Icons.circle : Icons.water_drop,
             color: (e.hasBlood || e.hasAnomaly)
                 ? AppColors.error
                 : AppColors.success,
             isWarning: e.hasBlood || e.hasAnomaly,
+            numericValue: isP ? (e.bristolScale ?? 1).toDouble() : (e.urineAmount ?? 1).toDouble(),
+            subtype: isP ? 'poop' : 'urine',
           ),
         );
       }

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../../core/constants/app_colors.dart';
+import '../../../../core/l10n/app_localizations.dart';
 import '../../data/models/sound_item.dart';
 import '../providers/sounds_provider.dart';
 
@@ -75,7 +76,7 @@ class SoundCard extends ConsumerWidget {
               height: 14,
               child: isLooping
                   ? Text(
-                      '循环中',
+                      AppLocalizations.of(context)!.soundLooping,
                       textAlign: TextAlign.center,
                       style: TextStyle(
                         fontSize: 9,

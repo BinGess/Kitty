@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../../core/constants/app_colors.dart';
 import '../../../../core/constants/app_dimensions.dart';
+import '../../../../core/l10n/app_localizations.dart';
 import '../../data/models/game_item.dart';
 import '../providers/game_config_provider.dart';
 
@@ -12,6 +13,7 @@ class GameSettingsSheet extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final l10n = AppLocalizations.of(context)!;
     final config = ref.watch(gameConfigProvider);
     return Container(
       decoration: const BoxDecoration(
@@ -45,7 +47,7 @@ class GameSettingsSheet extends ConsumerWidget {
                     Icon(mode.icon, size: 22, color: mode.color),
                     const SizedBox(width: 8),
                     Text(
-                      '${mode.title} 设置',
+                      l10n.gameSettingsTitle(mode.title),
                       style: const TextStyle(
                         fontSize: 18,
                         fontWeight: FontWeight.w600,
@@ -58,7 +60,7 @@ class GameSettingsSheet extends ConsumerWidget {
 
                 // Speed / 频率 slider
                 _SettingLabel(
-                    title: mode == GameMode.shadowPeek ? '出现频率' : '移动速度'),
+                    title: mode == GameMode.shadowPeek ? l10n.gameSettingsSpeedFrequency : l10n.gameSettingsSpeedMovement),
                 const SizedBox(height: 8),
                 Row(
                   children: [
@@ -85,8 +87,8 @@ class GameSettingsSheet extends ConsumerWidget {
 
                 // Sound toggle
                 _SettingSwitch(
-                  title: '音效',
-                  subtitle: '游戏过程中播放音效',
+                  title: l10n.gameSettingsSound,
+                  subtitle: l10n.gameSettingsSoundDesc,
                   icon: Icons.volume_up,
                   value: config.soundEnabled,
                   color: mode.color,
@@ -97,8 +99,8 @@ class GameSettingsSheet extends ConsumerWidget {
 
                 // Vibration toggle
                 _SettingSwitch(
-                  title: '震动反馈',
-                  subtitle: '猫咪触碰目标时震动',
+                  title: l10n.gameSettingsVibration,
+                  subtitle: l10n.gameSettingsVibrationDesc,
                   icon: Icons.vibration,
                   value: config.vibrationEnabled,
                   color: mode.color,
@@ -126,8 +128,8 @@ class GameSettingsSheet extends ConsumerWidget {
                           Icon(Icons.info_outline,
                               size: 16, color: AppColors.textSecondary),
                           const SizedBox(width: 6),
-                          const Text(
-                            '游戏说明',
+                          Text(
+                            l10n.gameSettingsDescription,
                             style: TextStyle(
                               fontSize: 13,
                               fontWeight: FontWeight.w600,
@@ -163,7 +165,7 @@ class GameSettingsSheet extends ConsumerWidget {
                             BorderRadius.circular(AppDimensions.radiusMedium),
                       ),
                     ),
-                    child: const Text('开始游戏'),
+                    child: Text(l10n.gameSettingsStart),
                   ),
                 ),
                 SizedBox(

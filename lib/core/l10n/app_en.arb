@@ -8,15 +8,29 @@
   "tabGames": "Games",
   "tabMore": "More",
 
+  "soundsPageTitle": "Cat Language",
   "soundsTitle": "Cat Sound Simulator",
   "soundCategoryCalling": "Calling",
   "soundCategoryEmotion": "Emotion",
   "soundCategoryEnvironment": "Environment",
+  "soundsSubtitleEmotion": "Cat's Emotional Expressions",
+  "soundsSubtitleCalling": "Calling & Environment Sounds",
+  "soundLooping": "Looping",
 
   "testTitle": "16 Cat Personalities",
+  "testSubtitle": "Discover your cat's hidden personality",
   "testBasicMode": "Basic (12 questions)",
   "testAdvancedMode": "Advanced (24 questions)",
-  "testSubtitle": "Discover your cat's hidden personality",
+  "testBasicModeDesc": "Quickly understand your cat's basic personality",
+  "testAdvancedModeDesc": "More comprehensive analysis, identify dual personality",
+  "testTheoryDesc": "Based on MBTI theory, reveal your cat's unique personality\nthrough daily behavior observations",
+  "testTip": "Answer based on your cat's daily behavior, there are no right or wrong answers~",
+  "testQuestionCount": "{count} questions",
+  "@testQuestionCount": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
   "testAnalyzing": "Analyzing cat personality...",
   "testProgressLabel": "Question {current} / {total}",
   "@testProgressLabel": {
@@ -26,11 +40,88 @@
     }
   },
 
+  "analyzingTitle": "Analyzing...",
+  "analyzingStep1": "Analyzing behavior patterns...",
+  "analyzingStep2": "Identifying personality dimensions...",
+  "analyzingStep3": "Calculating match score...",
+  "analyzingStep4": "Generating personality report...",
+
+  "testResultTitle": "Test Result",
+  "testResultDualPersonality": "Has dual personality traits",
+  "testResultDimAnalysis": "Dimension Analysis",
+  "testResultDescription": "Personality Description",
+  "testResultAdvice": "Care Advice",
+  "testResultRetake": "Retake Test",
+  "testResultPoster": "Share Poster",
+
+  "healthDashboardTitle": "Cat Health",
   "healthTitle": "Health Tracking",
+  "healthPreparing": "Preparing...",
+  "healthTodayRecords": "Today's Records",
+  "healthSwitchCat": "Switch Cat",
+  "healthWeightOutOfGoalWarning": "Weight is outside the target range. Consider more frequent weighing and diet monitoring.",
   "healthWeight": "Weight",
   "healthWater": "Water",
   "healthDiet": "Diet",
   "healthExcretion": "Excretion",
+  "healthNoChange": "No change",
+  "healthWaterTarget": "Target {target}ml",
+  "@healthWaterTarget": {
+    "placeholders": {
+      "target": { "type": "String" }
+    }
+  },
+  "healthDietDone": "Completed",
+  "healthDietInProgress": "In progress",
+  "healthDietMealsUnit": "/{count}x",
+  "@healthDietMealsUnit": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+  "healthTimelineWeight": "Weigh {value}kg",
+  "@healthTimelineWeight": {
+    "placeholders": {
+      "value": { "type": "String" }
+    }
+  },
+  "healthTimelineDiet": "Meal {value}g",
+  "@healthTimelineDiet": {
+    "placeholders": {
+      "value": { "type": "String" }
+    }
+  },
+  "healthTimelineWater": "Water {value}ml",
+  "@healthTimelineWater": {
+    "placeholders": {
+      "value": { "type": "String" }
+    }
+  },
+  "healthTimelinePoop": "Poop",
+  "healthTimelineUrine": "Urine",
+  "healthTimelineEmpty": "No records today\nTap + to start recording",
+  "healthTimelineDeleteTitle": "Confirm Delete",
+  "healthTimelineDeleteContent": "Delete this record?",
+  "healthWeightGoalRange": "Goal {min}-{max}kg",
+  "@healthWeightGoalRange": {
+    "placeholders": {
+      "min": { "type": "String" },
+      "max": { "type": "String" }
+    }
+  },
+  "healthWeightGoalMin": "Goal >= {min}kg",
+  "@healthWeightGoalMin": {
+    "placeholders": {
+      "min": { "type": "String" }
+    }
+  },
+  "healthWeightGoalMax": "Goal <= {max}kg",
+  "@healthWeightGoalMax": {
+    "placeholders": {
+      "max": { "type": "String" }
+    }
+  },
+  "healthWeightExceeded": " (exceeded)",
   "healthWeightAlert": "Weight changed more than {percent}% in 30 days",
   "@healthWeightAlert": {
     "placeholders": {
@@ -38,7 +129,105 @@
     }
   },
 
+  "weightSheetTitle": "⚖️ Weight Record",
+  "weightLastRecord": "Last: {weight}kg ({date})",
+  "@weightLastRecord": {
+    "placeholders": {
+      "weight": { "type": "String" },
+      "date": { "type": "String" }
+    }
+  },
+  "weightLastRecordToday": "Today",
+  "weightDaysAgo": "{days} days ago",
+  "@weightDaysAgo": {
+    "placeholders": {
+      "days": { "type": "int" }
+    }
+  },
+  "weightMoodLabel": "Weighing Cooperation",
+  "weightMoodCooperative": "Cooperative",
+  "weightMoodNeutral": "Neutral",
+  "weightMoodResistant": "Resistant",
+  "weightOutOfGoalTitle": "Outside Target Range",
+  "weightOutOfGoalContent": "Current weight {weight}kg is outside the target. Continue saving?",
+  "@weightOutOfGoalContent": {
+    "placeholders": {
+      "weight": { "type": "String" }
+    }
+  },
+  "weightContinueSave": "Continue Saving",
+  "weightGoalRange": "Goal range {min} - {max} kg",
+  "@weightGoalRange": {
+    "placeholders": {
+      "min": { "type": "String" },
+      "max": { "type": "String" }
+    }
+  },
+  "weightGoalMinLimit": "Goal lower limit {min} kg",
+  "@weightGoalMinLimit": {
+    "placeholders": {
+      "min": { "type": "String" }
+    }
+  },
+  "weightGoalMaxLimit": "Goal upper limit {max} kg",
+  "@weightGoalMaxLimit": {
+    "placeholders": {
+      "max": { "type": "String" }
+    }
+  },
+  "weightGoalExceeded": " (exceeded)",
+
+  "dietSheetTitle": "🍚 Diet Record",
+  "dietTodayMeals": "Today's meals: {current}/{target} (after saving)",
+  "@dietTodayMeals": {
+    "placeholders": {
+      "current": { "type": "int" },
+      "target": { "type": "int" }
+    }
+  },
+  "dietBrandSection": "Brand/Type",
+  "dietFoodTypeSection": "Food Type",
+  "dietAmountSection": "Amount (g)",
+  "dietSameAsLast": "Same as last record",
+  "dietTapToChangeTime": "Tap to change time",
+  "dietConfirmLargeAmount": "The amount is large ({amount}g), are you sure?",
+  "@dietConfirmLargeAmount": {
+    "placeholders": {
+      "amount": { "type": "String" }
+    }
+  },
+
+  "waterSheetTitle": "💧 Water Record",
+  "waterQuickSmall": "Sip",
+  "waterQuickHalf": "Half Cup",
+  "waterQuickOne": "One Cup",
+  "waterQuickFull": "Full Bowl",
+  "waterTodayTarget": "Today's target: {current}/{target}ml",
+  "@waterTodayTarget": {
+    "placeholders": {
+      "current": { "type": "String" },
+      "target": { "type": "String" }
+    }
+  },
+
+  "excretionSheetTitle": "🐾 Excretion Record",
+  "excretionTabPoop": "Poop 💩",
+  "excretionTabUrine": "Urine 💧",
+  "excretionPoop1Name": "Dry Pellets",
+  "excretionPoop1Desc": "Hard, increase water intake",
+  "excretionPoop2Name": "Perfect Banana",
+  "excretionPoop2Desc": "Healthy standard",
+  "excretionPoop3Name": "Soft Formless",
+  "excretionPoop3Desc": "Poor digestion",
+  "excretionPoop4Name": "Watery Diarrhea",
+  "excretionPoop4Desc": "See a vet",
+  "excretionUrineSmall": "Small",
+  "excretionUrineMedium": "Medium",
+  "excretionUrineLarge": "Large",
+  "excretionAnomaly": "Found anomaly (blood/foreign matter)",
+
   "gamesTitle": "Interactive Games",
+  "gamesPageTitle": "Let's Play",
   "gameLaser": "Laser Dot",
   "gameMouseHunt": "Mouse Hunt",
   "gameRainbow": "Rainbow Chase",
@@ -46,17 +235,200 @@
 
   "moreTitle": "More",
   "moreCatProfile": "Cat Profiles",
+  "moreCatProfileSubtitle": "Manage cat information",
+  "moreSettings": "Settings",
+  "moreSettingsSubtitle": "App Settings",
+  "moreAbout": "About",
+  "moreAboutSubtitle": "Version info & feedback",
   "moreTheater": "Cat Theater",
   "moreAI": "AI Recognition",
-  "moreSettings": "Settings",
 
+  "settingsPageTitle": "Settings",
+  "settingsGameSection": "Game Settings",
+  "gameSettingsTitle": "{gameName} Settings",
+  "@gameSettingsTitle": {
+    "placeholders": {
+      "gameName": { "type": "String" }
+    }
+  },
+  "gameSettingsSpeedFrequency": "Appearance Frequency",
+  "gameSettingsSpeedMovement": "Movement Speed",
+  "gameSettingsSound": "Sound Effects",
+  "gameSettingsSoundDesc": "Play sounds during gameplay",
+  "gameSettingsVibration": "Haptic Feedback",
+  "gameSettingsVibrationDesc": "Vibrate when cat touches target",
+  "gameSettingsDescription": "How to Play",
+  "gameSettingsStart": "Start Game",
+  "posterTitle": "My Cat's Personality Report",
+  "posterSave": "Save to Album",
+  "posterSaveComingSoon": "Save feature coming soon...",
+  "posterShare": "Share with Friends",
+  "posterShareComingSoon": "Share feature coming soon...",
+  "posterFooter": "Cat Language · 16 Purr-sonality Test",
+  "settingsLanguageSection": "Language",
+  "settingsLanguageDesc": "Choose app display language",
+  "settingsLanguageChinese": "中文",
+  "settingsLanguageEnglish": "English",
+  "settingsLanguageSystem": "Follow System",
+
+  "aboutPageTitle": "About",
+  "aboutAppName": "MeowTalk",
+  "aboutFeedbackEmail": "Feedback Email",
+  "aboutPrivacyPolicy": "Privacy Policy",
+  "aboutPrivacyPolicySubtitle": "Tap to view privacy policy",
+  "aboutCannotOpenLink": "Cannot open link",
+
+  "splashTagline": "Meow~",
+  "splashAppName": "MeowTalk",
+  "splashSlogan": "Understand your cat, hear what they say",
+
+  "catProfileTitle": "Cat Profiles",
   "catProfileEmpty": "No cats yet",
-  "catProfileAddFirst": "Tap to add your first cat",
+  "catProfileAddFirst": "Tap the + button to add your first cat",
   "catProfileManage": "Manage your cat profiles",
+  "catAdded": "Cat profile added",
+  "catUpdated": "Cat profile updated",
+  "catDeleted": "Cat profile deleted",
+  "catMinimumOne": "At least one cat profile is required",
+  "catCannotDeleteTitle": "Cannot Delete",
+  "catCannotDeleteContent": "This cat has health records. Please handle those records first.",
+  "catGotIt": "Got it",
+  "catDeleteTitle": "Delete Cat Profile",
+  "catDeleteConfirm": "Confirm deletion of \"{name}\"?",
+  "@catDeleteConfirm": {
+    "placeholders": {
+      "name": { "type": "String" }
+    }
+  },
+  "catSwitched": "Switched to {name}",
+  "@catSwitched": {
+    "placeholders": {
+      "name": { "type": "String" }
+    }
+  },
+  "catLoadFailed": "Load failed: {error}",
+  "@catLoadFailed": {
+    "placeholders": {
+      "error": { "type": "String" }
+    }
+  },
+  "catAddButton": "Add Cat",
+  "catCurrentBadge": "Current",
+  "catNoBreed": "No breed set",
+  "catUnknownAge": "Unknown age",
+  "catAgeMonths": "{months} months",
+  "@catAgeMonths": {
+    "placeholders": {
+      "months": { "type": "int" }
+    }
+  },
+  "catAgeYears": "{years} years old",
+  "@catAgeYears": {
+    "placeholders": {
+      "years": { "type": "int" }
+    }
+  },
+  "catAgeYearsMonths": "{years} years {months} months",
+  "@catAgeYearsMonths": {
+    "placeholders": {
+      "years": { "type": "int" },
+      "months": { "type": "int" }
+    }
+  },
+  "catSexMale": "Male",
+  "catSexFemale": "Female",
+  "catSexUnknown": "Unknown sex",
+  "catNeutered": "Neutered",
+  "catNotNeutered": "Not neutered",
+  "catWeightGoalRange": "Weight goal {min}-{max} kg",
+  "@catWeightGoalRange": {
+    "placeholders": {
+      "min": { "type": "String" },
+      "max": { "type": "String" }
+    }
+  },
+  "catWeightGoalMin": "Weight goal ≥ {min} kg",
+  "@catWeightGoalMin": {
+    "placeholders": {
+      "min": { "type": "String" }
+    }
+  },
+  "catWeightGoalMax": "Weight goal ≤ {max} kg",
+  "@catWeightGoalMax": {
+    "placeholders": {
+      "max": { "type": "String" }
+    }
+  },
+  "catDailyTargets": "Water {water} ml/day · Meals {meals} times/day",
+  "@catDailyTargets": {
+    "placeholders": {
+      "water": { "type": "String" },
+      "meals": { "type": "int" }
+    }
+  },
+  "catLoadingTrend": "Loading health trends...",
+  "catTrend7DaysWater": "7-day avg water {amount}ml",
+  "@catTrend7DaysWater": {
+    "placeholders": {
+      "amount": { "type": "String" }
+    }
+  },
+  "catTrendMeals": "Fed {count} times",
+  "@catTrendMeals": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+  "catTrendWeightNoData": "Weight: No data",
+  "catTrendWeightChange": "Weight {change}kg",
+  "@catTrendWeightChange": {
+    "placeholders": {
+      "change": { "type": "String" }
+    }
+  },
+  "catFormBasicInfo": "Basic Info",
+  "catFormName": "Cat Name *",
+  "catFormNameHint": "Enter cat name",
+  "catFormNameRequired": "Please enter a cat name",
+  "catFormBreed": "Breed",
+  "catFormBreedHint": "e.g. British Shorthair",
+  "catFormSex": "Sex",
+  "catFormSexUnknown": "Unknown",
+  "catFormSexMale": "Male",
+  "catFormSexFemale": "Female",
+  "catFormBirthDate": "Birth Date",
+  "catFormBirthDateNotSet": "Not set",
+  "catFormNeutered": "Neutered",
+  "catFormHealthGoals": "Health Goals",
+  "catFormWeightMin": "Min Weight Goal (kg)",
+  "catFormWeightMinHint": "e.g. 3.5",
+  "catFormWeightMax": "Max Weight Goal (kg)",
+  "catFormWeightMaxHint": "e.g. 5.0",
+  "catFormWaterTarget": "Daily Water Target (ml)",
+  "catFormWaterHint": "e.g. 200",
+  "catFormMealsTarget": "Daily Meals Target",
+  "catFormMealsHint": "e.g. 3",
+  "catFormSave": "Save Changes",
+  "catFormCreate": "Create Profile",
+  "catFormEditTitle": "Edit Cat Profile",
+  "catFormNewTitle": "New Cat Profile",
+  "catFormInvalidWater": "Please enter a valid water target",
+  "catFormInvalidMeals": "Please enter a valid meal count (1-20)",
+  "catFormInvalidWeight": "Please enter a valid weight goal (kg)",
+  "catFormWeightRangeError": "Min weight goal cannot exceed max",
 
   "commonSave": "Save",
   "commonCancel": "Cancel",
   "commonDelete": "Delete",
   "commonConfirm": "Confirm",
-  "commonEdit": "Edit"
+  "commonEdit": "Edit",
+  "commonNoCat": "Please add a cat first",
+  "commonSaveFailed": "Save failed: {error}",
+  "@commonSaveFailed": {
+    "placeholders": {
+      "error": { "type": "String" }
+    }
+  },
+  "commonTip": "Notice",
+  "commonOk": "OK"
 }

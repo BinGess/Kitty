@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import '../../../../core/constants/app_colors.dart';
+import '../../../../core/l10n/app_localizations.dart';
 import '../providers/test_provider.dart';
 
 class AnalyzingScreen extends ConsumerStatefulWidget {
@@ -18,7 +19,6 @@ class _AnalyzingScreenState extends ConsumerState<AnalyzingScreen>
   late Animation<double> _pulseAnimation;
   late Animation<double> _progressAnimation;
 
-  final _steps = ['分析行为模式...', '识别性格维度...', '计算匹配度...', '生成性格报告...'];
   int _currentStep = 0;
 
   @override
@@ -50,7 +50,7 @@ class _AnalyzingScreenState extends ConsumerState<AnalyzingScreen>
   }
 
   Future<void> _runAnalysis() async {
-    for (int i = 0; i < _steps.length; i++) {
+    for (int i = 0; i < 4; i++) {
       await Future.delayed(const Duration(milliseconds: 700));
       if (mounted) setState(() => _currentStep = i);
     }
@@ -71,6 +71,14 @@ class _AnalyzingScreenState extends ConsumerState<AnalyzingScreen>
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+    final steps = [
+      l10n.analyzingStep1,
+      l10n.analyzingStep2,
+      l10n.analyzingStep3,
+      l10n.analyzingStep4,
+    ];
+
     return PopScope(
       canPop: false,
       child: Scaffold(
@@ -104,9 +112,9 @@ class _AnalyzingScreenState extends ConsumerState<AnalyzingScreen>
                 ),
                 const SizedBox(height: 40),
 
-                const Text(
-                  '正在分析中...',
-                  style: TextStyle(
+                Text(
+                  l10n.analyzingTitle,
+                  style: const TextStyle(
                     fontSize: 22,
                     fontWeight: FontWeight.bold,
                     color: AppColors.onBackground,
@@ -146,7 +154,7 @@ class _AnalyzingScreenState extends ConsumerState<AnalyzingScreen>
                 const SizedBox(height: 32),
 
                 // Analysis steps
-                ...List.generate(_steps.length, (index) {
+                ...List.generate(steps.length, (index) {
                   final isActive = index <= _currentStep;
                   final isCurrent = index == _currentStep;
                   return AnimatedOpacity(
@@ -170,7 +178,7 @@ class _AnalyzingScreenState extends ConsumerState<AnalyzingScreen>
                           ),
                           const SizedBox(width: 8),
                           Text(
-                            _steps[index],
+                            steps[index],
                             style: TextStyle(
                               fontSize: 15,
                               color: isActive

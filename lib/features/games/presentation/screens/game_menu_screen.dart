@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import '../../../../core/constants/app_colors.dart';
+import '../../../../core/l10n/app_localizations.dart';
 import '../../../../core/widgets/centered_page_title.dart';
 import '../../data/models/game_item.dart';
 import '../providers/game_provider.dart';
@@ -12,6 +13,7 @@ class GameMenuScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final l10n = AppLocalizations.of(context)!;
     return Scaffold(
       backgroundColor: AppColors.background,
       body: SafeArea(
@@ -19,8 +21,8 @@ class GameMenuScreen extends ConsumerWidget {
           padding: const EdgeInsets.fromLTRB(16, 8, 16, 24),
           child: Column(
             children: [
-              const CenteredPageTitle(
-                title: '玩个游戏',
+              CenteredPageTitle(
+                title: l10n.gamesPageTitle,
                 padding: EdgeInsets.zero,
               ),
               const SizedBox(height: 16),

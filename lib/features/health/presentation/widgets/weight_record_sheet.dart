@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../../core/constants/app_colors.dart';
 import '../../../../core/database/app_database.dart';
+import '../../../../core/l10n/app_localizations.dart';
 import '../../../../core/providers/current_cat_provider.dart';
 import '../../../../core/providers/database_provider.dart';
 
@@ -18,14 +19,16 @@ class _WeightRecordSheetState extends ConsumerState<WeightRecordSheet> {
   int _decPart = 50;
   String? _mood;
   double? _lastWeight;
-  String? _lastDate;
+  int? _lastDays;
   double? _goalMinKg;
   double? _goalMaxKg;
 
   final _intCtrl = FixedExtentScrollController(initialItem: 4);
   final _decCtrl = FixedExtentScrollController(initialItem: 50);
 
-  static const _moods = [('😊', '配合'), ('😐', '一般'), ('😾', '暴躁')];
+  // Mood keys (stored in DB) + emoji; display labels come from l10n in build
+  static const _moodKeys = ['cooperative', 'neutral', 'resistant'];
+  static const _moodEmojis = ['😊', '😐', '😾'];
 
   @override
   void initState() {
@@ -55,7 +58,7 @@ class _WeightRecordSheetState extends ConsumerState<WeightRecordSheet> {
         final days = DateTime.now().difference(last.recordedAt).inDays;
         setState(() {
           _lastWeight = last.weightKg;
-          _lastDate = days == 0 ? '今天' : '$days天前';
+          _lastDays = days;
           _intPart = last.weightKg.floor();
           _decPart = ((last.weightKg - _intPart) * 100).round();
           _intCtrl.jumpToItem(_intPart);
@@ -73,30 +76,32 @@ class _WeightRecordSheetState extends ConsumerState<WeightRecordSheet> {
     return false;
   }
 
-  String? get _goalText {
+  String? _buildGoalText(AppLocalizations l10n) {
     if (_goalMinKg == null && _goalMaxKg == null) return null;
     if (_goalMinKg != null && _goalMaxKg != null) {
-      return '目标区间 ${_goalMinKg!.toStringAsFixed(1)} - ${_goalMaxKg!.toStringAsFixed(1)} kg';
+      return l10n.weightGoalRange(
+          _goalMinKg!.toStringAsFixed(1), _goalMaxKg!.toStringAsFixed(1));
     }
     if (_goalMinKg != null) {
-      return '目标下限 ${_goalMinKg!.toStringAsFixed(1)} kg';
+      return l10n.weightGoalMinLimit(_goalMinKg!.toStringAsFixed(1));
     }
-    return '目标上限 ${_goalMaxKg!.toStringAsFixed(1)} kg';
+    return l10n.weightGoalMaxLimit(_goalMaxKg!.toStringAsFixed(1));
   }
 
   Future<void> _save() async {
+    final l10n = AppLocalizations.of(context)!;
     final cat = ref.read(currentCatProvider);
     if (cat == null) {
-      _showError('请先添加一只猫咪');
+      _showError(l10n.commonNoCat);
       return;
     }
     if (_isOutOfGoal) {
       final goOn = await showDialog<bool>(
         context: context,
         builder: (ctx) => AlertDialog(
-          title: const Text('超出目标区间'),
+          title: Text(l10n.weightOutOfGoalTitle),
           content: Text(
-            '当前体重 ${_currentWeight.toStringAsFixed(2)}kg 已超出档案目标，是否继续保存？',
+            l10n.weightOutOfGoalContent(_currentWeight.toStringAsFixed(2)),
           ),
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(20),
@@ -104,11 +109,11 @@ class _WeightRecordSheetState extends ConsumerState<WeightRecordSheet> {
           actions: [
             TextButton(
               onPressed: () => Navigator.pop(ctx, false),
-              child: const Text('取消'),
+              child: Text(l10n.commonCancel),
             ),
             TextButton(
               onPressed: () => Navigator.pop(ctx, true),
-              child: const Text('继续保存'),
+              child: Text(l10n.weightContinueSave),
             ),
           ],
         ),
@@ -127,13 +132,25 @@ class _WeightRecordSheetState extends ConsumerState<WeightRecordSheet> {
       );
       if (mounted) Navigator.pop(context, true);
     } catch (e) {
-      _showError('保存失败：$e');
+      if (mounted) {
+        _showError(AppLocalizations.of(context)!.commonSaveFailed(e.toString()));
+      }
     }
   }
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+    final goalText = _buildGoalText(l10n);
     final diff = _lastWeight != null ? _currentWeight - _lastWeight! : null;
+    final lastDateText = _lastDays == null
+        ? null
+        : (_lastDays == 0 ? l10n.weightLastRecordToday : l10n.weightDaysAgo(_lastDays!));
+    final moodLabels = [
+      l10n.weightMoodCooperative,
+      l10n.weightMoodNeutral,
+      l10n.weightMoodResistant,
+    ];
 
     return Container(
       padding: EdgeInsets.only(
@@ -151,15 +168,15 @@ class _WeightRecordSheetState extends ConsumerState<WeightRecordSheet> {
         children: [
           _handle(),
           const SizedBox(height: 12),
-          const Text(
-            '⚖️ 体重记录',
-            style: TextStyle(
+          Text(
+            l10n.weightSheetTitle,
+            style: const TextStyle(
               fontSize: 18,
               fontWeight: FontWeight.w700,
               color: AppColors.onBackground,
             ),
           ),
-          if (_goalText != null) ...[
+          if (goalText != null) ...[
             const SizedBox(height: 8),
             Container(
               padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
@@ -173,7 +190,9 @@ class _WeightRecordSheetState extends ConsumerState<WeightRecordSheet> {
                 ),
               ),
               child: Text(
-                _isOutOfGoal ? '$_goalText（当前超出）' : _goalText!,
+                _isOutOfGoal
+                    ? '$goalText${l10n.weightGoalExceeded}'
+                    : goalText,
                 style: TextStyle(
                   fontSize: 12,
                   color: _isOutOfGoal
@@ -183,10 +202,11 @@ class _WeightRecordSheetState extends ConsumerState<WeightRecordSheet> {
               ),
             ),
           ],
-          if (_lastWeight != null) ...[
+          if (_lastWeight != null && lastDateText != null) ...[
             const SizedBox(height: 6),
             Text(
-              '上次记录：${_lastWeight!.toStringAsFixed(2)}kg（$_lastDate）',
+              l10n.weightLastRecord(
+                  _lastWeight!.toStringAsFixed(2), lastDateText),
               style: const TextStyle(
                 fontSize: 12,
                 color: AppColors.textSecondary,
@@ -260,11 +280,11 @@ class _WeightRecordSheetState extends ConsumerState<WeightRecordSheet> {
             ),
           ],
           const SizedBox(height: 20),
-          const Align(
+          Align(
             alignment: Alignment.centerLeft,
             child: Text(
-              '称重配合度',
-              style: TextStyle(
+              l10n.weightMoodLabel,
+              style: const TextStyle(
                 fontSize: 13,
                 fontWeight: FontWeight.w600,
                 color: AppColors.textSecondary,
@@ -274,12 +294,15 @@ class _WeightRecordSheetState extends ConsumerState<WeightRecordSheet> {
           const SizedBox(height: 8),
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
-            children: _moods.map((m) {
-              final sel = _mood == m.$2;
+            children: List.generate(_moodKeys.length, (i) {
+              final key = _moodKeys[i];
+              final emoji = _moodEmojis[i];
+              final label = moodLabels[i];
+              final sel = _mood == key;
               return Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 12),
                 child: GestureDetector(
-                  onTap: () => setState(() => _mood = sel ? null : m.$2),
+                  onTap: () => setState(() => _mood = sel ? null : key),
                   child: AnimatedContainer(
                     duration: const Duration(milliseconds: 200),
                     padding: const EdgeInsets.symmetric(
@@ -297,10 +320,10 @@ class _WeightRecordSheetState extends ConsumerState<WeightRecordSheet> {
                     ),
                     child: Column(
                       children: [
-                        Text(m.$1, style: const TextStyle(fontSize: 24)),
+                        Text(emoji, style: const TextStyle(fontSize: 24)),
                         const SizedBox(height: 2),
                         Text(
-                          m.$2,
+                          label,
                           style: TextStyle(
                             fontSize: 11,
                             color: sel
@@ -313,7 +336,7 @@ class _WeightRecordSheetState extends ConsumerState<WeightRecordSheet> {
                   ),
                 ),
               );
-            }).toList(),
+            }),
           ),
           const SizedBox(height: 24),
           SizedBox(
@@ -329,9 +352,10 @@ class _WeightRecordSheetState extends ConsumerState<WeightRecordSheet> {
                 ),
                 elevation: 0,
               ),
-              child: const Text(
-                '保存',
-                style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
+              child: Text(
+                l10n.commonSave,
+                style:
+                    const TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
               ),
             ),
           ),
@@ -342,16 +366,17 @@ class _WeightRecordSheetState extends ConsumerState<WeightRecordSheet> {
 
   void _showError(String message) {
     if (!mounted) return;
+    final l10n = AppLocalizations.of(context)!;
     showDialog(
       context: context,
       builder: (ctx) => AlertDialog(
-        title: const Text('提示'),
+        title: Text(l10n.commonTip),
         content: Text(message),
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(ctx),
-            child: const Text('确定'),
+            child: Text(l10n.commonOk),
           ),
         ],
       ),
@@ -389,7 +414,8 @@ class _WeightRecordSheetState extends ConsumerState<WeightRecordSheet> {
         childDelegate: ListWheelChildBuilderDelegate(
           childCount: count,
           builder: (_, index) {
-            final label = padZero ? index.toString().padLeft(2, '0') : '$index';
+            final label =
+                padZero ? index.toString().padLeft(2, '0') : '$index';
             return Center(
               child: Text(
                 '$label$suffix',

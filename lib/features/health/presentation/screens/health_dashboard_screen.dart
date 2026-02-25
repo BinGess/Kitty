@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../../core/constants/app_colors.dart';
+import '../../../../core/l10n/app_localizations.dart';
 import '../../../../core/providers/current_cat_provider.dart';
 import '../../../../core/providers/database_provider.dart';
 import '../../../../core/widgets/centered_page_title.dart';
@@ -55,20 +56,24 @@ class _HealthDashboardScreenState extends ConsumerState<HealthDashboardScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     final cat = ref.watch(currentCatProvider);
     final summaryAsync = ref.watch(healthSummaryProvider);
     final timelineAsync = ref.watch(healthTimelineProvider);
 
     if (cat == null) {
-      return const Scaffold(
+      return Scaffold(
         backgroundColor: AppColors.background,
         body: Center(
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              CircularProgressIndicator(color: AppColors.primary),
-              SizedBox(height: 16),
-              Text('正在准备...', style: TextStyle(color: AppColors.textSecondary)),
+              const CircularProgressIndicator(color: AppColors.primary),
+              const SizedBox(height: 16),
+              Text(
+                l10n.healthPreparing,
+                style: const TextStyle(color: AppColors.textSecondary),
+              ),
             ],
           ),
         ),
@@ -86,7 +91,7 @@ class _HealthDashboardScreenState extends ConsumerState<HealthDashboardScreen> {
                   child: Column(
                     children: [
                       CenteredPageTitle(
-                        title: '猫咪健康',
+                        title: l10n.healthDashboardTitle,
                         trailing: _CatSwitcher(),
                       ),
                       Padding(
@@ -111,16 +116,17 @@ class _HealthDashboardScreenState extends ConsumerState<HealthDashboardScreen> {
                                         color: AppColors.warning.withValues(
                                           alpha: 0.12,
                                         ),
-                                        borderRadius: BorderRadius.circular(14),
+                                        borderRadius:
+                                            BorderRadius.circular(14),
                                         border: Border.all(
                                           color: AppColors.warning.withValues(
                                             alpha: 0.6,
                                           ),
                                         ),
                                       ),
-                                      child: const Text(
-                                        '体重已超出档案目标区间，建议近期增加称重和饮食观察。',
-                                        style: TextStyle(
+                                      child: Text(
+                                        l10n.healthWeightOutOfGoalWarning,
+                                        style: const TextStyle(
                                           fontSize: 12,
                                           color: AppColors.warning,
                                           fontWeight: FontWeight.w500,
@@ -142,7 +148,7 @@ class _HealthDashboardScreenState extends ConsumerState<HealthDashboardScreen> {
                                   const SizedBox(height: 100),
                             ),
                             const SizedBox(height: 24),
-                            _sectionTitle(),
+                            _sectionTitle(l10n),
                             const SizedBox(height: 12),
                           ],
                         ),
@@ -188,7 +194,7 @@ class _HealthDashboardScreenState extends ConsumerState<HealthDashboardScreen> {
     );
   }
 
-  Widget _sectionTitle() {
+  Widget _sectionTitle(AppLocalizations l10n) {
     return Row(
       children: [
         Container(
@@ -200,9 +206,9 @@ class _HealthDashboardScreenState extends ConsumerState<HealthDashboardScreen> {
           ),
         ),
         const SizedBox(width: 8),
-        const Text(
-          '今日记录',
-          style: TextStyle(
+        Text(
+          l10n.healthTodayRecords,
+          style: const TextStyle(
             fontSize: 16,
             fontWeight: FontWeight.w700,
             color: AppColors.onBackground,
@@ -254,6 +260,7 @@ class _CatSwitcher extends ConsumerWidget {
   }
 
   void _showCatPicker(BuildContext context, WidgetRef ref) async {
+    final l10n = AppLocalizations.of(context)!;
     final cats = await ref.read(catDaoProvider).getAllCats();
     if (!context.mounted || cats.length <= 1) return;
 
@@ -269,9 +276,9 @@ class _CatSwitcher extends ConsumerWidget {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            const Text(
-              '切换猫咪',
-              style: TextStyle(
+            Text(
+              l10n.healthSwitchCat,
+              style: const TextStyle(
                 fontSize: 16,
                 fontWeight: FontWeight.w700,
                 color: AppColors.onBackground,

@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import '../../../../core/constants/app_colors.dart';
 import '../../../../core/constants/app_dimensions.dart';
+import '../../../../core/l10n/app_localizations.dart';
 import '../../data/models/question.dart';
 import '../providers/test_provider.dart';
 import '../widgets/result_poster.dart';
@@ -32,7 +33,7 @@ class ResultScreen extends ConsumerWidget {
       },
       child: Scaffold(
         appBar: AppBar(
-          title: const Text('测试结果'),
+          title: Text(AppLocalizations.of(context)!.testResultTitle),
           leading: IconButton(
             icon: const Icon(Icons.close),
             onPressed: () {
@@ -134,9 +135,9 @@ class ResultScreen extends ConsumerWidget {
                           color: AppColors.warning.withValues(alpha: 0.2),
                           borderRadius: BorderRadius.circular(12),
                         ),
-                        child: const Text(
-                          '具有双重性格特质',
-                          style: TextStyle(
+                        child: Text(
+                          AppLocalizations.of(context)!.testResultDualPersonality,
+                          style: const TextStyle(
                             fontSize: 12,
                             color: AppColors.onBackground,
                             fontWeight: FontWeight.w500,
@@ -162,9 +163,9 @@ class ResultScreen extends ConsumerWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    const Text(
-                      '维度分析',
-                      style: TextStyle(
+                    Text(
+                      AppLocalizations.of(context)!.testResultDimAnalysis,
+                      style: const TextStyle(
                         fontSize: 16,
                         fontWeight: FontWeight.w600,
                         color: AppColors.onBackground,
@@ -188,7 +189,7 @@ class ResultScreen extends ConsumerWidget {
 
               // Description card
               _InfoCard(
-                title: '性格描述',
+                title: AppLocalizations.of(context)!.testResultDescription,
                 icon: Icons.description,
                 content: personality.description,
               ),
@@ -196,7 +197,7 @@ class ResultScreen extends ConsumerWidget {
 
               // Advice card
               _InfoCard(
-                title: '喂养建议',
+                title: AppLocalizations.of(context)!.testResultAdvice,
                 icon: Icons.lightbulb,
                 content: personality.advice,
               ),
@@ -241,7 +242,7 @@ class ResultScreen extends ConsumerWidget {
                         context.pop();
                       },
                       icon: const Icon(Icons.refresh),
-                      label: const Text('重新测试'),
+                      label: Text(AppLocalizations.of(context)!.testResultRetake),
                       style: OutlinedButton.styleFrom(
                         padding: const EdgeInsets.symmetric(vertical: 14),
                         side: const BorderSide(color: AppColors.primary),
@@ -258,7 +259,7 @@ class ResultScreen extends ConsumerWidget {
                     child: FilledButton.icon(
                       onPressed: () => _showPoster(context, ref),
                       icon: const Icon(Icons.share),
-                      label: const Text('生成海报'),
+                      label: Text(AppLocalizations.of(context)!.testResultPoster),
                       style: FilledButton.styleFrom(
                         padding: const EdgeInsets.symmetric(vertical: 14),
                         backgroundColor: AppColors.primary,

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../../core/constants/app_colors.dart';
+import '../../../../core/l10n/app_localizations.dart';
 import '../../../../core/widgets/centered_page_title.dart';
 import '../../data/models/sound_item.dart';
 import '../../data/repositories/sound_repository.dart';
@@ -29,6 +30,7 @@ class _SoundsScreenState extends ConsumerState<SoundsScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     final playbackState = ref.watch(soundPlaybackProvider);
     final isPlaying = playbackState.playingId != null;
     final listenSounds = ref.watch(listenSoundsProvider);
@@ -44,7 +46,7 @@ class _SoundsScreenState extends ConsumerState<SoundsScreen> {
             children: [
               // ── 顶部标题栏 ──
               CenteredPageTitle(
-                title: '猫咪语言',
+                title: l10n.soundsPageTitle,
                 padding: EdgeInsets.zero,
                 trailing: isPlaying
                     ? GestureDetector(
@@ -68,11 +70,11 @@ class _SoundsScreenState extends ConsumerState<SoundsScreen> {
               ),
               const SizedBox(height: 20),
 
-              // ── 分区1: 嗨，听听它 ──
+              // ── 分区1 ──
               _SectionHeader(
                 title: SoundCategory.listen.label,
                 icon: Icons.headphones_rounded,
-                subtitle: '猫咪的情绪表达',
+                subtitle: l10n.soundsSubtitleEmotion,
               ),
               const SizedBox(height: 12),
               _SoundGrid(sounds: listenSounds),
@@ -95,11 +97,11 @@ class _SoundsScreenState extends ConsumerState<SoundsScreen> {
               ),
               const SizedBox(height: 24),
 
-              // ── 分区2: 或，叫它玩 ──
+              // ── 分区2 ──
               _SectionHeader(
                 title: SoundCategory.play.label,
                 icon: Icons.music_note_rounded,
-                subtitle: '召唤猫咪与环境音',
+                subtitle: l10n.soundsSubtitleCalling,
               ),
               const SizedBox(height: 12),
               _SoundGrid(sounds: playSounds),

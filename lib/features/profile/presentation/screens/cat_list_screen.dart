@@ -5,6 +5,7 @@ import 'package:go_router/go_router.dart';
 import '../../../../core/constants/app_colors.dart';
 import '../../../../core/constants/app_dimensions.dart';
 import '../../../../core/database/app_database.dart';
+import '../../../../core/l10n/app_localizations.dart';
 import '../../../../core/providers/current_cat_provider.dart';
 import '../../../../core/providers/database_provider.dart';
 
@@ -67,9 +68,10 @@ class _CatListScreenState extends ConsumerState<CatListScreen> {
         await currentNotifier.select(created);
       }
       if (!mounted) return;
+      if (!mounted) return;
       ScaffoldMessenger.of(
         context,
-      ).showSnackBar(const SnackBar(content: Text('已添加猫咪档案')));
+      ).showSnackBar(SnackBar(content: Text(AppLocalizations.of(context)!.catAdded)));
       return;
     }
 
@@ -92,14 +94,14 @@ class _CatListScreenState extends ConsumerState<CatListScreen> {
     if (!mounted) return;
     ScaffoldMessenger.of(
       context,
-    ).showSnackBar(const SnackBar(content: Text('已更新猫咪档案')));
+    ).showSnackBar(SnackBar(content: Text(AppLocalizations.of(context)!.catUpdated)));
   }
 
   Future<void> _deleteCat(Cat cat, int totalCount) async {
     if (totalCount <= 1) {
       ScaffoldMessenger.of(
         context,
-      ).showSnackBar(const SnackBar(content: Text('至少保留一只猫咪档案')));
+      ).showSnackBar(SnackBar(content: Text(AppLocalizations.of(context)!.catMinimumOne)));
       return;
     }
 
@@ -107,15 +109,16 @@ class _CatListScreenState extends ConsumerState<CatListScreen> {
     final hasRecords = await healthDao.hasAnyRecordsForCat(cat.id);
     if (hasRecords) {
       if (!mounted) return;
+      final l10n = AppLocalizations.of(context)!;
       await showDialog<void>(
         context: context,
         builder: (_) => AlertDialog(
-          title: const Text('无法删除'),
-          content: const Text('该猫咪已有健康记录，请先处理历史记录后再删除。'),
+          title: Text(l10n.catCannotDeleteTitle),
+          content: Text(l10n.catCannotDeleteContent),
           actions: [
             TextButton(
               onPressed: () => Navigator.pop(context),
-              child: const Text('知道了'),
+              child: Text(l10n.catGotIt),
             ),
           ],
         ),
@@ -124,19 +127,20 @@ class _CatListScreenState extends ConsumerState<CatListScreen> {
     }
 
     if (!mounted) return;
+    final l10nDelete = AppLocalizations.of(context)!;
     final confirmed = await showDialog<bool>(
       context: context,
       builder: (_) => AlertDialog(
-        title: const Text('删除猫咪档案'),
-        content: Text('确认删除「${cat.name}」吗？'),
+        title: Text(l10nDelete.catDeleteTitle),
+        content: Text(l10nDelete.catDeleteConfirm(cat.name)),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context, false),
-            child: const Text('取消'),
+            child: Text(l10nDelete.commonCancel),
           ),
           FilledButton(
             onPressed: () => Navigator.pop(context, true),
-            child: const Text('删除'),
+            child: Text(l10nDelete.commonDelete),
           ),
         ],
       ),
@@ -149,7 +153,7 @@ class _CatListScreenState extends ConsumerState<CatListScreen> {
     if (!mounted) return;
     ScaffoldMessenger.of(
       context,
-    ).showSnackBar(const SnackBar(content: Text('已删除猫咪档案')));
+    ).showSnackBar(SnackBar(content: Text(AppLocalizations.of(context)!.catDeleted)));
   }
 
   Future<void> _selectCat(Cat cat) async {
@@ -157,7 +161,7 @@ class _CatListScreenState extends ConsumerState<CatListScreen> {
     if (!mounted) return;
     ScaffoldMessenger.of(
       context,
-    ).showSnackBar(SnackBar(content: Text('已切换到 ${cat.name}')));
+    ).showSnackBar(SnackBar(content: Text(AppLocalizations.of(context)!.catSwitched(cat.name))));
   }
 
   @override
@@ -180,7 +184,7 @@ class _CatListScreenState extends ConsumerState<CatListScreen> {
             }
           },
         ),
-        title: const Text('猫咪档案'),
+        title: Text(AppLocalizations.of(context)!.catProfileTitle),
         centerTitle: true,
       ),
       body: catsAsync.when(
@@ -217,7 +221,7 @@ class _CatListScreenState extends ConsumerState<CatListScreen> {
         ),
         error: (err, _) => Center(
           child: Text(
-            '加载失败：$err',
+            AppLocalizations.of(context)!.catLoadFailed(err.toString()),
             style: const TextStyle(color: AppColors.textSecondary),
           ),
         ),
@@ -226,7 +230,7 @@ class _CatListScreenState extends ConsumerState<CatListScreen> {
         onPressed: () => _openForm(),
         backgroundColor: AppColors.primary,
         icon: const Icon(Icons.add),
-        label: const Text('添加猫咪'),
+        label: Text(AppLocalizations.of(context)!.catAddButton),
       ),
     );
   }
@@ -249,11 +253,12 @@ class _CatCard extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final ageText = _formatAge(cat.birthDate);
-    final breedText = (cat.breed ?? '').trim().isEmpty ? '未设置品种' : cat.breed!;
-    final sexText = _sexLabel(cat.sex);
-    final neuteredText = cat.isNeutered ? '已绝育' : '未绝育';
-    final weightGoalText = _formatWeightGoal(cat);
+    final l10n = AppLocalizations.of(context)!;
+    final ageText = _formatAge(cat.birthDate, l10n);
+    final breedText = (cat.breed ?? '').trim().isEmpty ? l10n.catNoBreed : cat.breed!;
+    final sexText = _sexLabel(cat.sex, l10n);
+    final neuteredText = cat.isNeutered ? l10n.catNeutered : l10n.catNotNeutered;
+    final weightGoalText = _formatWeightGoal(cat, l10n);
     final trendAsync = ref.watch(catHealthTrendProvider(cat.id));
 
     return Card(
@@ -296,9 +301,9 @@ class _CatCard extends ConsumerWidget {
                         color: AppColors.primary.withValues(alpha: 0.14),
                         borderRadius: BorderRadius.circular(999),
                       ),
-                      child: const Text(
-                        '当前',
-                        style: TextStyle(
+                      child: Text(
+                        l10n.catCurrentBadge,
+                        style: const TextStyle(
                           fontSize: 12,
                           fontWeight: FontWeight.w600,
                           color: AppColors.primaryDark,
@@ -335,8 +340,10 @@ class _CatCard extends ConsumerWidget {
               ],
               const SizedBox(height: AppDimensions.spacingS),
               Text(
-                '目标饮水 ${cat.targetWaterMl.toStringAsFixed(0)} ml / 日 · '
-                '目标喂食 ${cat.targetMealsPerDay} 次 / 日',
+                l10n.catDailyTargets(
+                  cat.targetWaterMl.toStringAsFixed(0),
+                  cat.targetMealsPerDay,
+                ),
                 style: const TextStyle(
                   fontSize: 12,
                   color: AppColors.onSurface,
@@ -345,13 +352,13 @@ class _CatCard extends ConsumerWidget {
               const SizedBox(height: AppDimensions.spacingS),
               trendAsync.when(
                 data: (trend) => _CatHealthTrendPanel(trend: trend),
-                loading: () => const SizedBox(
+                loading: () => SizedBox(
                   height: 20,
                   child: Align(
                     alignment: Alignment.centerLeft,
                     child: Text(
-                      '加载健康趋势中...',
-                      style: TextStyle(
+                      l10n.catLoadingTrend,
+                      style: const TextStyle(
                         fontSize: 11,
                         color: AppColors.textSecondary,
                       ),
@@ -366,7 +373,7 @@ class _CatCard extends ConsumerWidget {
                   TextButton.icon(
                     onPressed: onEdit,
                     icon: const Icon(Icons.edit_outlined, size: 18),
-                    label: const Text('编辑'),
+                    label: Text(l10n.commonEdit),
                   ),
                   const SizedBox(width: 4),
                   TextButton.icon(
@@ -376,9 +383,9 @@ class _CatCard extends ConsumerWidget {
                       size: 18,
                       color: AppColors.error,
                     ),
-                    label: const Text(
-                      '删除',
-                      style: TextStyle(color: AppColors.error),
+                    label: Text(
+                      l10n.commonDelete,
+                      style: const TextStyle(color: AppColors.error),
                     ),
                   ),
                 ],
@@ -390,44 +397,44 @@ class _CatCard extends ConsumerWidget {
     );
   }
 
-  static String _formatAge(DateTime? birthDate) {
-    if (birthDate == null) return '未知年龄';
+  static String _formatAge(DateTime? birthDate, AppLocalizations l10n) {
+    if (birthDate == null) return l10n.catUnknownAge;
     final now = DateTime.now();
     int months =
         (now.year - birthDate.year) * 12 + (now.month - birthDate.month);
     if (now.day < birthDate.day) {
       months -= 1;
     }
-    if (months < 0) return '未知年龄';
-    if (months < 12) return '$months 个月';
+    if (months < 0) return l10n.catUnknownAge;
+    if (months < 12) return l10n.catAgeMonths(months);
     final years = months ~/ 12;
     final restMonths = months % 12;
-    if (restMonths == 0) return '$years 岁';
-    return '$years 岁 $restMonths 个月';
+    if (restMonths == 0) return l10n.catAgeYears(years);
+    return l10n.catAgeYearsMonths(years, restMonths);
   }
 
-  static String _sexLabel(String sex) {
+  static String _sexLabel(String sex, AppLocalizations l10n) {
     switch (sex) {
       case 'male':
-        return '公猫';
+        return l10n.catSexMale;
       case 'female':
-        return '母猫';
+        return l10n.catSexFemale;
       default:
-        return '性别未知';
+        return l10n.catSexUnknown;
     }
   }
 
-  static String? _formatWeightGoal(Cat cat) {
+  static String? _formatWeightGoal(Cat cat, AppLocalizations l10n) {
     final min = cat.weightGoalMinKg;
     final max = cat.weightGoalMaxKg;
     if (min == null && max == null) return null;
     if (min != null && max != null) {
-      return '体重目标 ${min.toStringAsFixed(1)}-${max.toStringAsFixed(1)} kg';
+      return l10n.catWeightGoalRange(min.toStringAsFixed(1), max.toStringAsFixed(1));
     }
     if (min != null) {
-      return '体重目标 ≥ ${min.toStringAsFixed(1)} kg';
+      return l10n.catWeightGoalMin(min.toStringAsFixed(1));
     }
-    return '体重目标 ≤ ${max!.toStringAsFixed(1)} kg';
+    return l10n.catWeightGoalMax(max!.toStringAsFixed(1));
   }
 }
 
@@ -438,10 +445,11 @@ class _CatHealthTrendPanel extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     final weight = trend.weightChangeKg;
     final weightText = weight == null
-        ? '体重 无数据'
-        : '体重 ${weight >= 0 ? '+' : '-'}${weight.abs().toStringAsFixed(2)}kg';
+        ? l10n.catTrendWeightNoData
+        : l10n.catTrendWeightChange('${weight >= 0 ? '+' : '-'}${weight.abs().toStringAsFixed(2)}');
 
     return Container(
       width: double.infinity,
@@ -455,7 +463,7 @@ class _CatHealthTrendPanel extends StatelessWidget {
         children: [
           Expanded(
             child: Text(
-              '近7天日均饮水 ${trend.avgWaterPerDayMl.toStringAsFixed(0)}ml',
+              l10n.catTrend7DaysWater(trend.avgWaterPerDayMl.toStringAsFixed(0)),
               style: const TextStyle(
                 fontSize: 11,
                 color: AppColors.textSecondary,
@@ -464,7 +472,7 @@ class _CatHealthTrendPanel extends StatelessWidget {
           ),
           Expanded(
             child: Text(
-              '喂食 ${trend.mealsCount} 次',
+              l10n.catTrendMeals(trend.mealsCount),
               textAlign: TextAlign.center,
               style: const TextStyle(
                 fontSize: 11,
@@ -507,17 +515,18 @@ class _CatEmptyState extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const Center(
+    final l10n = AppLocalizations.of(context)!;
+    return Center(
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          Icon(Icons.pets, size: 64, color: AppColors.primary),
-          SizedBox(height: 16),
-          Text('还没有猫咪', style: TextStyle(fontSize: 20)),
-          SizedBox(height: 8),
+          const Icon(Icons.pets, size: 64, color: AppColors.primary),
+          const SizedBox(height: 16),
+          Text(l10n.catProfileEmpty, style: const TextStyle(fontSize: 20)),
+          const SizedBox(height: 8),
           Text(
-            '点击右下角添加你的第一只猫咪',
-            style: TextStyle(color: AppColors.textSecondary),
+            l10n.catProfileAddFirst,
+            style: const TextStyle(color: AppColors.textSecondary),
           ),
         ],
       ),
@@ -595,6 +604,7 @@ class _CatFormScreenState extends State<_CatFormScreen> {
 
   void _submit() {
     if (!_formKey.currentState!.validate()) return;
+    final l10n = AppLocalizations.of(context)!;
 
     final water = double.tryParse(_waterController.text.trim());
     final meals = int.tryParse(_mealsController.text.trim());
@@ -603,25 +613,25 @@ class _CatFormScreenState extends State<_CatFormScreen> {
     if (water == null || water <= 0) {
       ScaffoldMessenger.of(
         context,
-      ).showSnackBar(const SnackBar(content: Text('请填写正确的饮水目标')));
+      ).showSnackBar(SnackBar(content: Text(l10n.catFormInvalidWater)));
       return;
     }
     if (meals == null || meals <= 0 || meals > 20) {
       ScaffoldMessenger.of(
         context,
-      ).showSnackBar(const SnackBar(content: Text('请填写正确的喂食次数（1-20）')));
+      ).showSnackBar(SnackBar(content: Text(l10n.catFormInvalidMeals)));
       return;
     }
     if (weightMin == -1 || weightMax == -1) {
       ScaffoldMessenger.of(
         context,
-      ).showSnackBar(const SnackBar(content: Text('请填写正确的体重目标（kg）')));
+      ).showSnackBar(SnackBar(content: Text(l10n.catFormInvalidWeight)));
       return;
     }
     if (weightMin != null && weightMax != null && weightMin > weightMax) {
       ScaffoldMessenger.of(
         context,
-      ).showSnackBar(const SnackBar(content: Text('体重区间下限不能大于上限')));
+      ).showSnackBar(SnackBar(content: Text(l10n.catFormWeightRangeError)));
       return;
     }
 
@@ -689,11 +699,12 @@ class _CatFormScreenState extends State<_CatFormScreen> {
   @override
   Widget build(BuildContext context) {
     final isEdit = widget.initial != null;
+    final l10n = AppLocalizations.of(context)!;
 
     return Scaffold(
       backgroundColor: AppColors.background,
       appBar: AppBar(
-        title: Text(isEdit ? '编辑猫咪档案' : '新增猫咪档案'),
+        title: Text(isEdit ? l10n.catFormEditTitle : l10n.catFormNewTitle),
         centerTitle: true,
       ),
       body: SafeArea(
@@ -710,43 +721,43 @@ class _CatFormScreenState extends State<_CatFormScreen> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  const Text(
-                    '基础信息',
-                    style: TextStyle(
+                  Text(
+                    l10n.catFormBasicInfo,
+                    style: const TextStyle(
                       fontSize: 14,
                       fontWeight: FontWeight.w700,
                       color: AppColors.textSecondary,
                     ),
                   ),
                   const SizedBox(height: 12),
-                  _fieldLabel('猫咪名称 *'),
+                  _fieldLabel(l10n.catFormName),
                   TextFormField(
                     controller: _nameController,
-                    decoration: _formDecoration(hint: '请输入猫咪名称'),
+                    decoration: _formDecoration(hint: l10n.catFormNameHint),
                     validator: (v) {
-                      if (v == null || v.trim().isEmpty) return '请输入猫咪名称';
+                      if (v == null || v.trim().isEmpty) return l10n.catFormNameRequired;
                       return null;
                     },
                   ),
                   const SizedBox(height: 12),
-                  _fieldLabel('品种'),
+                  _fieldLabel(l10n.catFormBreed),
                   TextFormField(
                     controller: _breedController,
-                    decoration: _formDecoration(hint: '例如：英短、美短'),
+                    decoration: _formDecoration(hint: l10n.catFormBreedHint),
                   ),
                   const SizedBox(height: 12),
-                  _fieldLabel('性别'),
+                  _fieldLabel(l10n.catFormSex),
                   DropdownButtonFormField<String>(
                     initialValue: _sex,
-                    decoration: _formDecoration(hint: '请选择性别'),
+                    decoration: _formDecoration(hint: l10n.catFormSex),
                     style: const TextStyle(
                       fontSize: 17,
                       color: AppColors.onBackground,
                     ),
-                    items: const [
-                      DropdownMenuItem(value: 'unknown', child: Text('未知')),
-                      DropdownMenuItem(value: 'male', child: Text('公猫')),
-                      DropdownMenuItem(value: 'female', child: Text('母猫')),
+                    items: [
+                      DropdownMenuItem(value: 'unknown', child: Text(l10n.catFormSexUnknown)),
+                      DropdownMenuItem(value: 'male', child: Text(l10n.catFormSexMale)),
+                      DropdownMenuItem(value: 'female', child: Text(l10n.catFormSexFemale)),
                     ],
                     onChanged: (value) {
                       if (value == null) return;
@@ -754,15 +765,15 @@ class _CatFormScreenState extends State<_CatFormScreen> {
                     },
                   ),
                   const SizedBox(height: 12),
-                  _fieldLabel('出生日期'),
+                  _fieldLabel(l10n.catFormBirthDate),
                   InkWell(
                     onTap: _pickBirthDate,
                     borderRadius: BorderRadius.circular(16),
                     child: InputDecorator(
-                      decoration: _formDecoration(hint: '请选择出生日期'),
+                      decoration: _formDecoration(hint: l10n.catFormBirthDate),
                       child: Text(
                         _birthDate == null
-                            ? '未设置'
+                            ? l10n.catFormBirthDateNotSet
                             : '${_birthDate!.year}-${_birthDate!.month.toString().padLeft(2, '0')}-${_birthDate!.day.toString().padLeft(2, '0')}',
                         style: TextStyle(
                           fontSize: 17,
@@ -785,9 +796,9 @@ class _CatFormScreenState extends State<_CatFormScreen> {
                     ),
                     child: Row(
                       children: [
-                        const Text(
-                          '已绝育',
-                          style: TextStyle(
+                        Text(
+                          l10n.catFormNeutered,
+                          style: const TextStyle(
                             fontSize: 15,
                             fontWeight: FontWeight.w600,
                             color: AppColors.onSurface,
@@ -803,9 +814,9 @@ class _CatFormScreenState extends State<_CatFormScreen> {
                     ),
                   ),
                   const SizedBox(height: AppDimensions.spacingM),
-                  const Text(
-                    '健康目标',
-                    style: TextStyle(
+                  Text(
+                    l10n.catFormHealthGoals,
+                    style: const TextStyle(
                       fontSize: 14,
                       fontWeight: FontWeight.w700,
                       color: AppColors.textSecondary,
@@ -818,14 +829,14 @@ class _CatFormScreenState extends State<_CatFormScreen> {
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            _fieldLabel('体重目标下限 (kg)'),
+                            _fieldLabel(l10n.catFormWeightMin),
                             TextFormField(
                               controller: _weightMinController,
                               keyboardType:
                                   const TextInputType.numberWithOptions(
                                     decimal: true,
                                   ),
-                              decoration: _formDecoration(hint: '例如：3.5'),
+                              decoration: _formDecoration(hint: l10n.catFormWeightMinHint),
                             ),
                           ],
                         ),
@@ -835,14 +846,14 @@ class _CatFormScreenState extends State<_CatFormScreen> {
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            _fieldLabel('体重目标上限 (kg)'),
+                            _fieldLabel(l10n.catFormWeightMax),
                             TextFormField(
                               controller: _weightMaxController,
                               keyboardType:
                                   const TextInputType.numberWithOptions(
                                     decimal: true,
                                   ),
-                              decoration: _formDecoration(hint: '例如：5.0'),
+                              decoration: _formDecoration(hint: l10n.catFormWeightMaxHint),
                             ),
                           ],
                         ),
@@ -850,20 +861,20 @@ class _CatFormScreenState extends State<_CatFormScreen> {
                     ],
                   ),
                   const SizedBox(height: 12),
-                  _fieldLabel('每日饮水目标 (ml)'),
+                  _fieldLabel(l10n.catFormWaterTarget),
                   TextFormField(
                     controller: _waterController,
                     keyboardType: const TextInputType.numberWithOptions(
                       decimal: true,
                     ),
-                    decoration: _formDecoration(hint: '例如：200'),
+                    decoration: _formDecoration(hint: l10n.catFormWaterHint),
                   ),
                   const SizedBox(height: 12),
-                  _fieldLabel('每日喂食目标 (次)'),
+                  _fieldLabel(l10n.catFormMealsTarget),
                   TextFormField(
                     controller: _mealsController,
                     keyboardType: TextInputType.number,
-                    decoration: _formDecoration(hint: '例如：3'),
+                    decoration: _formDecoration(hint: l10n.catFormMealsHint),
                   ),
                   const SizedBox(height: AppDimensions.spacingL),
                   SizedBox(
@@ -876,7 +887,7 @@ class _CatFormScreenState extends State<_CatFormScreen> {
                           borderRadius: BorderRadius.circular(999),
                         ),
                       ),
-                      child: Text(isEdit ? '保存修改' : '创建档案'),
+                      child: Text(isEdit ? l10n.catFormSave : l10n.catFormCreate),
                     ),
                   ),
                   SizedBox(height: MediaQuery.of(context).padding.bottom + 8),

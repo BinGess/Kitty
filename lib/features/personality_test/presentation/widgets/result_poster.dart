@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../../../../core/constants/app_colors.dart';
 import '../../../../core/constants/app_dimensions.dart';
+import '../../../../core/l10n/app_localizations.dart';
 import '../../data/models/personality_type.dart';
 import '../../data/models/question.dart';
 import 'dimension_bar.dart';
@@ -12,6 +13,7 @@ class ResultPoster extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     final personality = result.personality;
 
     return Container(
@@ -40,8 +42,8 @@ class ResultPoster extends StatelessWidget {
               padding: const EdgeInsets.all(AppDimensions.spacingL),
               child: Column(
                 children: [
-                  const Text(
-                    '我的猫咪性格报告',
+                  Text(
+                    l10n.posterTitle,
                     style: TextStyle(
                       fontSize: 14,
                       color: AppColors.textSecondary,
@@ -66,11 +68,11 @@ class ResultPoster extends StatelessWidget {
                             // TODO: Save to gallery
                             Navigator.pop(context);
                             ScaffoldMessenger.of(context).showSnackBar(
-                              const SnackBar(content: Text('海报保存功能开发中...')),
+                              SnackBar(content: Text(l10n.posterSaveComingSoon)),
                             );
                           },
                           icon: const Icon(Icons.save_alt),
-                          label: const Text('保存到相册'),
+                          label: Text(l10n.posterSave),
                           style: OutlinedButton.styleFrom(
                             padding: const EdgeInsets.symmetric(vertical: 12),
                             side: const BorderSide(color: AppColors.primary),
@@ -89,11 +91,11 @@ class ResultPoster extends StatelessWidget {
                             // TODO: Share
                             Navigator.pop(context);
                             ScaffoldMessenger.of(context).showSnackBar(
-                              const SnackBar(content: Text('分享功能开发中...')),
+                              SnackBar(content: Text(l10n.posterShareComingSoon)),
                             );
                           },
                           icon: const Icon(Icons.share),
-                          label: const Text('分享给好友'),
+                          label: Text(l10n.posterShare),
                           style: FilledButton.styleFrom(
                             padding: const EdgeInsets.symmetric(vertical: 12),
                             backgroundColor: AppColors.primary,
@@ -128,6 +130,7 @@ class _PosterContent extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     return Container(
       width: double.infinity,
       padding: const EdgeInsets.all(AppDimensions.spacingL),
@@ -240,7 +243,7 @@ class _PosterContent extends StatelessWidget {
               const Icon(Icons.pets, size: 14, color: AppColors.primary),
               const SizedBox(width: 4),
               Text(
-                '猫咪语言 · 16喵格测试',
+                l10n.posterFooter,
                 style: TextStyle(
                   fontSize: 11,
                   color: AppColors.textSecondary,

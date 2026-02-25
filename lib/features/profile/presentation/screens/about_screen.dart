@@ -3,6 +3,7 @@ import 'package:package_info_plus/package_info_plus.dart';
 import 'package:url_launcher/url_launcher.dart';
 import '../../../../core/constants/app_colors.dart';
 import '../../../../core/constants/app_dimensions.dart';
+import '../../../../core/l10n/app_localizations.dart';
 
 class AboutScreen extends StatefulWidget {
   const AboutScreen({super.key});
@@ -33,8 +34,9 @@ class _AboutScreenState extends State<AboutScreen> {
     final uri = Uri.parse(url);
     if (!await launchUrl(uri, mode: LaunchMode.externalApplication)) {
       if (mounted) {
+        final l10n = AppLocalizations.of(context)!;
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('无法打开链接')),
+          SnackBar(content: Text(l10n.aboutCannotOpenLink)),
         );
       }
     }
@@ -42,8 +44,9 @@ class _AboutScreenState extends State<AboutScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     return Scaffold(
-      appBar: AppBar(title: const Text('关于')),
+      appBar: AppBar(title: Text(l10n.aboutPageTitle)),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(AppDimensions.spacingL),
         child: Column(
@@ -70,18 +73,18 @@ class _AboutScreenState extends State<AboutScreen> {
               ),
             ),
             const SizedBox(height: AppDimensions.spacingM),
-            
+
             // App Name
-            const Text(
-              '猫咪说',
-              style: TextStyle(
+            Text(
+              l10n.aboutAppName,
+              style: const TextStyle(
                 fontSize: 24,
                 fontWeight: FontWeight.bold,
                 color: AppColors.onBackground,
               ),
             ),
             const SizedBox(height: AppDimensions.spacingS),
-            
+
             // Version
             Text(
               'Version $_version ($_buildNumber)',
@@ -90,25 +93,25 @@ class _AboutScreenState extends State<AboutScreen> {
                 color: AppColors.textSecondary,
               ),
             ),
-            
+
             const SizedBox(height: AppDimensions.spacingXXL),
-            
+
             // Links
             _buildLinkItem(
-              title: '反馈邮箱',
+              title: l10n.aboutFeedbackEmail,
               subtitle: 'baibin1989@foxmail.com',
               icon: Icons.email_outlined,
             ),
             const SizedBox(height: AppDimensions.spacingM),
             _buildLinkItem(
-              title: '隐私协议',
-              subtitle: '点击查看详细隐私政策',
+              title: l10n.aboutPrivacyPolicy,
+              subtitle: l10n.aboutPrivacyPolicySubtitle,
               icon: Icons.privacy_tip_outlined,
               onTap: () => _launchUrl('https://lucky-geranium-802.notion.site/311407f7a701809d9450dea81459ae79'),
             ),
-            
+
             const SizedBox(height: AppDimensions.spacingXXL),
-            
+
             // Copyright
             Text(
               '© ${DateTime.now().year} MeowTalk. All rights reserved.',
