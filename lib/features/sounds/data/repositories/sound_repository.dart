@@ -133,12 +133,12 @@ class SoundRepository {
       isLoopable: true,
     ),
     SoundItem(
-      id: 'feather',
+      id: 'can_open',
       category: SoundCategory.play,
       label: '开罐头',
-      imagePath: '$_img/feather.png',
+      imagePath: '$_img/can_opener.png',
       icon: Icons.takeout_dining,
-      assetPath: 'sounds/environment/16.mp3',
+      assetPath: 'sounds/calling/16.mp3',
     ),
     SoundItem(
       id: 'comeback',
@@ -146,7 +146,7 @@ class SoundRepository {
       label: '你回来了',
       imagePath: '$_img/comeback.png',
       icon: Icons.home,
-      assetPath: 'sounds/environment/17.mp3',
+      assetPath: 'sounds/calling/17.mp3',
     ),
     SoundItem(
       id: 'squeaky_toys',
@@ -154,7 +154,7 @@ class SoundRepository {
       label: '响纸玩具',
       imagePath: '$_img/squeaky_toys.png',
       icon: Icons.auto_awesome,
-      assetPath: 'sounds/environment/18.mp3',
+      assetPath: 'sounds/calling/18.mp3',
     ),
   ];
 
