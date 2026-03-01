@@ -1,9 +1,25 @@
+import java.util.Properties
+
 plugins {
     id("com.android.application")
     id("kotlin-android")
     // The Flutter Gradle Plugin must be applied after the Android and Kotlin Gradle plugins.
     id("dev.flutter.flutter-gradle-plugin")
 }
+
+// Load key.properties for release signing (optional)
+val keystorePropertiesFile = rootProject.file("key.properties")
+val keystoreProperties = Properties()
+if (keystorePropertiesFile.exists()) {
+    keystorePropertiesFile.inputStream().use { keystoreProperties.load(it) }
+}
+fun prop(name: String): String? = keystoreProperties.getProperty(name)?.trim()?.takeIf { it.isNotEmpty() }
+
+val useReleaseSigning = keystorePropertiesFile.exists() &&
+    prop("storePassword") != null &&
+    prop("keyAlias") != null &&
+    prop("storeFile") != null &&
+    rootProject.file(prop("storeFile")!!).exists()
 
 android {
     namespace = "com.meowtalk.meow_talk"
@@ -16,14 +32,22 @@ android {
     }
 
     kotlinOptions {
-        jvmTarget = JavaVersion.VERSION_17.toString()
+        jvmTarget = "17"
+    }
+
+    signingConfigs {
+        if (useReleaseSigning) {
+            create("release") {
+                keyAlias = prop("keyAlias")
+                keyPassword = prop("keyPassword") ?: prop("storePassword")
+                storeFile = prop("storeFile")?.let { rootProject.file(it) }
+                storePassword = prop("storePassword")
+            }
+        }
     }
 
     defaultConfig {
-        // TODO: Specify your own unique Application ID (https://developer.android.com/studio/build/application-id.html).
         applicationId = "com.meowtalk.meow_talk"
-        // You can update the following values to match your application needs.
-        // For more information, see: https://flutter.dev/to/review-gradle-config.
         minSdk = flutter.minSdkVersion
         targetSdk = flutter.targetSdkVersion
         versionCode = flutter.versionCode
@@ -32,9 +56,11 @@ android {
 
     buildTypes {
         release {
-            // TODO: Add your own signing config for the release build.
-            // Signing with the debug keys for now, so `flutter run --release` works.
-            signingConfig = signingConfigs.getByName("debug")
+            signingConfig = if (useReleaseSigning) {
+                signingConfigs.getByName("release")
+            } else {
+                signingConfigs.getByName("debug")
+            }
         }
     }
 }
