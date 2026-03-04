@@ -13,7 +13,8 @@ class MeowTalkApp extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final locale = ref.watch(localeProvider);
     return MaterialApp.router(
-      title: 'MeowTalk',
+      onGenerateTitle: (context) =>
+          AppLocalizations.of(context)?.appTitle ?? 'MeowTalk',
       debugShowCheckedModeBanner: false,
       theme: AppTheme.lightTheme,
       routerConfig: appRouter,
@@ -23,14 +24,12 @@ class MeowTalkApp extends ConsumerWidget {
         GlobalWidgetsLocalizations.delegate,
         GlobalCupertinoLocalizations.delegate,
       ],
-      supportedLocales: const [
-        Locale('zh'),
-        Locale('en'),
-      ],
+      supportedLocales: const [Locale('zh'), Locale('en'), Locale('ja')],
       locale: locale,
       localeResolutionCallback: (deviceLocale, supportedLocales) {
         if (locale != null) return locale;
         if (deviceLocale?.languageCode == 'en') return const Locale('en');
+        if (deviceLocale?.languageCode == 'ja') return const Locale('ja');
         return const Locale('zh');
       },
     );

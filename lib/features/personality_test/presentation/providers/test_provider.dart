@@ -79,7 +79,11 @@ class TestNotifier extends Notifier<TestState> {
   TestState build() => const TestState();
 
   void startTest(TestMode mode, {int? catId, required String languageCode}) {
-    final normalizedLanguageCode = languageCode == 'en' ? 'en' : 'zh';
+    final normalizedLanguageCode = switch (languageCode) {
+      'en' => 'en',
+      'ja' => 'ja',
+      _ => 'zh',
+    };
     final questions = QuestionRepository.getQuestions(
       mode,
       languageCode: normalizedLanguageCode,

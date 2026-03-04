@@ -426,6 +426,36 @@ class AppLocalizationsZh extends AppLocalizations {
   String get dietFoodTypeSection => '食物类型';
 
   @override
+  String get dietBrandOrijen => '渴望';
+
+  @override
+  String get dietBrandZiwi => '巅峰';
+
+  @override
+  String get dietBrandRoyalCanin => '皇家';
+
+  @override
+  String get dietBrandHomemade => '自制';
+
+  @override
+  String get dietBrandTreats => '零食';
+
+  @override
+  String get dietBrandOther => '其他';
+
+  @override
+  String get dietFoodTypeStaple => '主粮';
+
+  @override
+  String get dietFoodTypeCanned => '罐头';
+
+  @override
+  String get dietFoodTypeTreats => '零食';
+
+  @override
+  String get dietFoodTypeFreezeDried => '冻干';
+
+  @override
   String get dietAmountSection => '进食量 (g)';
 
   @override
@@ -674,6 +704,9 @@ class AppLocalizationsZh extends AppLocalizations {
   String get moreTheater => '喵剧场';
 
   @override
+  String get theaterSubtitle => '精选猫咪视频内容';
+
+  @override
   String get moreAI => 'AI 识别';
 
   @override
@@ -742,6 +775,9 @@ class AppLocalizationsZh extends AppLocalizations {
   String get settingsLanguageEnglish => 'English';
 
   @override
+  String get settingsLanguageJapanese => '日本語';
+
+  @override
   String get settingsLanguageSystem => '跟随系统';
 
   @override
@@ -761,6 +797,16 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get aboutCannotOpenLink => '无法打开链接';
+
+  @override
+  String aboutVersionLabel(String version, String build) {
+    return '版本 $version（$build）';
+  }
+
+  @override
+  String aboutCopyright(String year) {
+    return '© $year MeowTalk. 保留所有权利。';
+  }
 
   @override
   String get splashTagline => '瞄~瞄~';

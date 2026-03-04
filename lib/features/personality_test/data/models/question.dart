@@ -6,6 +6,8 @@ enum Dimension {
     zhRightName: '内向',
     enLeftName: 'Extraverted',
     enRightName: 'Introverted',
+    jaLeftName: '外向型',
+    jaRightName: '内向型',
   ),
   NS(
     'N',
@@ -14,6 +16,8 @@ enum Dimension {
     zhRightName: '实感',
     enLeftName: 'Intuitive',
     enRightName: 'Sensing',
+    jaLeftName: '直観型',
+    jaRightName: '感覚型',
   ),
   FT(
     'F',
@@ -22,6 +26,8 @@ enum Dimension {
     zhRightName: '理性',
     enLeftName: 'Feeling',
     enRightName: 'Thinking',
+    jaLeftName: '感情型',
+    jaRightName: '思考型',
   ),
   PJ(
     'P',
@@ -30,6 +36,8 @@ enum Dimension {
     zhRightName: '规律',
     enLeftName: 'Perceiving',
     enRightName: 'Judging',
+    jaLeftName: '柔軟型',
+    jaRightName: '計画型',
   );
 
   final String leftLabel;
@@ -38,6 +46,8 @@ enum Dimension {
   final String zhRightName;
   final String enLeftName;
   final String enRightName;
+  final String jaLeftName;
+  final String jaRightName;
 
   const Dimension(
     this.leftLabel,
@@ -46,13 +56,21 @@ enum Dimension {
     required this.zhRightName,
     required this.enLeftName,
     required this.enRightName,
+    required this.jaLeftName,
+    required this.jaRightName,
   });
 
-  String leftName(String languageCode) =>
-      languageCode == 'en' ? enLeftName : zhLeftName;
+  String leftName(String languageCode) {
+    if (languageCode == 'en') return enLeftName;
+    if (languageCode == 'ja') return jaLeftName;
+    return zhLeftName;
+  }
 
-  String rightName(String languageCode) =>
-      languageCode == 'en' ? enRightName : zhRightName;
+  String rightName(String languageCode) {
+    if (languageCode == 'en') return enRightName;
+    if (languageCode == 'ja') return jaRightName;
+    return zhRightName;
+  }
 }
 
 class QuestionOption {

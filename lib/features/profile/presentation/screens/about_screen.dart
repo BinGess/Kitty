@@ -35,9 +35,9 @@ class _AboutScreenState extends State<AboutScreen> {
     if (!await launchUrl(uri, mode: LaunchMode.externalApplication)) {
       if (mounted) {
         final l10n = AppLocalizations.of(context)!;
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text(l10n.aboutCannotOpenLink)),
-        );
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(SnackBar(content: Text(l10n.aboutCannotOpenLink)));
       }
     }
   }
@@ -65,7 +65,7 @@ class _AboutScreenState extends State<AboutScreen> {
                 ),
                 boxShadow: [
                   BoxShadow(
-                    color: Colors.black.withOpacity(0.1),
+                    color: Colors.black.withValues(alpha: 0.1),
                     blurRadius: 10,
                     offset: const Offset(0, 4),
                   ),
@@ -87,7 +87,7 @@ class _AboutScreenState extends State<AboutScreen> {
 
             // Version
             Text(
-              'Version $_version ($_buildNumber)',
+              l10n.aboutVersionLabel(_version, _buildNumber),
               style: const TextStyle(
                 fontSize: 14,
                 color: AppColors.textSecondary,
@@ -107,14 +107,16 @@ class _AboutScreenState extends State<AboutScreen> {
               title: l10n.aboutPrivacyPolicy,
               subtitle: l10n.aboutPrivacyPolicySubtitle,
               icon: Icons.privacy_tip_outlined,
-              onTap: () => _launchUrl('https://lucky-geranium-802.notion.site/311407f7a701809d9450dea81459ae79'),
+              onTap: () => _launchUrl(
+                'https://lucky-geranium-802.notion.site/311407f7a701809d9450dea81459ae79',
+              ),
             ),
 
             const SizedBox(height: AppDimensions.spacingXXL),
 
             // Copyright
             Text(
-              '© ${DateTime.now().year} MeowTalk. All rights reserved.',
+              l10n.aboutCopyright(DateTime.now().year.toString()),
               style: const TextStyle(
                 fontSize: 12,
                 color: AppColors.textSecondary,
@@ -137,7 +139,7 @@ class _AboutScreenState extends State<AboutScreen> {
       color: AppColors.surface,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(AppDimensions.radiusMedium),
-        side: BorderSide(color: AppColors.divider.withOpacity(0.5)),
+        side: BorderSide(color: AppColors.divider.withValues(alpha: 0.5)),
       ),
       child: ListTile(
         leading: Icon(icon, color: AppColors.primary),
@@ -145,8 +147,11 @@ class _AboutScreenState extends State<AboutScreen> {
         subtitle: Text(subtitle, style: const TextStyle(fontSize: 12)),
         trailing: onTap == null
             ? null
-            : const Icon(Icons.chevron_right,
-                size: 20, color: AppColors.textSecondary),
+            : const Icon(
+                Icons.chevron_right,
+                size: 20,
+                color: AppColors.textSecondary,
+              ),
         onTap: onTap,
       ),
     );

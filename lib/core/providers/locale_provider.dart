@@ -14,6 +14,7 @@ class LocaleNotifier extends Notifier<Locale?> {
     final saved = ref.read(sharedPreferencesProvider).getString(_key);
     if (saved == 'zh') return const Locale('zh');
     if (saved == 'en') return const Locale('en');
+    if (saved == 'ja') return const Locale('ja');
     return null; // follow system
   }
 

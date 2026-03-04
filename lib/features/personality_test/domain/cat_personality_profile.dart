@@ -39,7 +39,7 @@ class CatPersonalityProfile {
       dimensionScores: dimensionScores,
       maxScores: maxScores,
       hasDualPersonality: cat.personalityHasDual,
-      languageCode: languageCode == 'en' ? 'en' : 'zh',
+      languageCode: _normalizeLanguageCode(languageCode),
     );
 
     return CatPersonalityProfile(
@@ -51,6 +51,14 @@ class CatPersonalityProfile {
 
   static String encodeScoreMap(Map<String, int> scores) {
     return jsonEncode(scores);
+  }
+
+  static String _normalizeLanguageCode(String languageCode) {
+    return switch (languageCode) {
+      'en' => 'en',
+      'ja' => 'ja',
+      _ => 'zh',
+    };
   }
 
   static TestMode _parseMode(String? raw) {

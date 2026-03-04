@@ -435,6 +435,36 @@ class AppLocalizationsEn extends AppLocalizations {
   String get dietFoodTypeSection => 'Food Type';
 
   @override
+  String get dietBrandOrijen => 'Orijen';
+
+  @override
+  String get dietBrandZiwi => 'Ziwi';
+
+  @override
+  String get dietBrandRoyalCanin => 'Royal Canin';
+
+  @override
+  String get dietBrandHomemade => 'Homemade';
+
+  @override
+  String get dietBrandTreats => 'Treats';
+
+  @override
+  String get dietBrandOther => 'Other';
+
+  @override
+  String get dietFoodTypeStaple => 'Staple Food';
+
+  @override
+  String get dietFoodTypeCanned => 'Canned';
+
+  @override
+  String get dietFoodTypeTreats => 'Treats';
+
+  @override
+  String get dietFoodTypeFreezeDried => 'Freeze-dried';
+
+  @override
   String get dietAmountSection => 'Amount (g)';
 
   @override
@@ -691,6 +721,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get moreTheater => 'Cat Theater';
 
   @override
+  String get theaterSubtitle => 'Curated cat video content';
+
+  @override
   String get moreAI => 'AI Recognition';
 
   @override
@@ -759,6 +792,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get settingsLanguageEnglish => 'English';
 
   @override
+  String get settingsLanguageJapanese => '日本語';
+
+  @override
   String get settingsLanguageSystem => 'Follow System';
 
   @override
@@ -778,6 +814,16 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get aboutCannotOpenLink => 'Cannot open link';
+
+  @override
+  String aboutVersionLabel(String version, String build) {
+    return 'Version $version ($build)';
+  }
+
+  @override
+  String aboutCopyright(String year) {
+    return '© $year MeowTalk. All rights reserved.';
+  }
 
   @override
   String get splashTagline => 'Meow~';

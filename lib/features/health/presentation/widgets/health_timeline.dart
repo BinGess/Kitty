@@ -166,7 +166,23 @@ class _TimelineItem extends StatelessWidget {
   }
 
   String _buildSubtitle(AppLocalizations l10n) {
-    if (entry.subtitle.isNotEmpty) return entry.subtitle;
+    if (entry.subtitle.isNotEmpty) {
+      if (entry.type == HealthRecordType.diet) {
+        return switch (entry.subtitle) {
+          '渴望' => l10n.dietBrandOrijen,
+          '巅峰' => l10n.dietBrandZiwi,
+          '皇家' => l10n.dietBrandRoyalCanin,
+          '自制' => l10n.dietBrandHomemade,
+          '零食' => l10n.dietBrandTreats,
+          '其他' => l10n.dietBrandOther,
+          '主粮' => l10n.dietFoodTypeStaple,
+          '罐头' => l10n.dietFoodTypeCanned,
+          '冻干' => l10n.dietFoodTypeFreezeDried,
+          _ => entry.subtitle,
+        };
+      }
+      return entry.subtitle;
+    }
     if (entry.type == HealthRecordType.excretion) {
       final scale = entry.numericValue?.toInt();
       if (entry.subtype == 'poop' && scale != null) {

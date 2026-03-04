@@ -79,7 +79,7 @@ class HealthSummary {
     this.nextPlayRewardWaterMl = 16,
     this.playReminderIntervalMinutes = 120,
     this.playReminderSuggestion = '',
-    this.playModeLabel = '自动',
+    this.playModeLabel = '',
     this.playModeDescription = '',
     this.playModeKey = 'auto',
   });

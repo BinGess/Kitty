@@ -108,6 +108,14 @@ class SettingsScreen extends ConsumerWidget {
             onTap: () =>
                 ref.read(localeProvider.notifier).setLocale(const Locale('en')),
           ),
+          const SizedBox(height: AppDimensions.spacingXS),
+          _LanguageOption(
+            label: l10n.settingsLanguageJapanese,
+            flag: '🇯🇵',
+            isSelected: currentLocale?.languageCode == 'ja',
+            onTap: () =>
+                ref.read(localeProvider.notifier).setLocale(const Locale('ja')),
+          ),
         ],
       ),
     );

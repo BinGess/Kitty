@@ -6,6 +6,7 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:intl/intl.dart' as intl;
 
 import 'app_localizations_en.dart';
+import 'app_localizations_ja.dart';
 import 'app_localizations_zh.dart';
 
 // ignore_for_file: type=lint
@@ -95,6 +96,7 @@ abstract class AppLocalizations {
   /// A list of this localizations delegate's supported locales.
   static const List<Locale> supportedLocales = <Locale>[
     Locale('en'),
+    Locale('ja'),
     Locale('zh'),
   ];
 
@@ -848,6 +850,66 @@ abstract class AppLocalizations {
   /// **'食物类型'**
   String get dietFoodTypeSection;
 
+  /// No description provided for @dietBrandOrijen.
+  ///
+  /// In zh, this message translates to:
+  /// **'渴望'**
+  String get dietBrandOrijen;
+
+  /// No description provided for @dietBrandZiwi.
+  ///
+  /// In zh, this message translates to:
+  /// **'巅峰'**
+  String get dietBrandZiwi;
+
+  /// No description provided for @dietBrandRoyalCanin.
+  ///
+  /// In zh, this message translates to:
+  /// **'皇家'**
+  String get dietBrandRoyalCanin;
+
+  /// No description provided for @dietBrandHomemade.
+  ///
+  /// In zh, this message translates to:
+  /// **'自制'**
+  String get dietBrandHomemade;
+
+  /// No description provided for @dietBrandTreats.
+  ///
+  /// In zh, this message translates to:
+  /// **'零食'**
+  String get dietBrandTreats;
+
+  /// No description provided for @dietBrandOther.
+  ///
+  /// In zh, this message translates to:
+  /// **'其他'**
+  String get dietBrandOther;
+
+  /// No description provided for @dietFoodTypeStaple.
+  ///
+  /// In zh, this message translates to:
+  /// **'主粮'**
+  String get dietFoodTypeStaple;
+
+  /// No description provided for @dietFoodTypeCanned.
+  ///
+  /// In zh, this message translates to:
+  /// **'罐头'**
+  String get dietFoodTypeCanned;
+
+  /// No description provided for @dietFoodTypeTreats.
+  ///
+  /// In zh, this message translates to:
+  /// **'零食'**
+  String get dietFoodTypeTreats;
+
+  /// No description provided for @dietFoodTypeFreezeDried.
+  ///
+  /// In zh, this message translates to:
+  /// **'冻干'**
+  String get dietFoodTypeFreezeDried;
+
   /// No description provided for @dietAmountSection.
   ///
   /// In zh, this message translates to:
@@ -1308,6 +1370,12 @@ abstract class AppLocalizations {
   /// **'喵剧场'**
   String get moreTheater;
 
+  /// No description provided for @theaterSubtitle.
+  ///
+  /// In zh, this message translates to:
+  /// **'精选猫咪视频内容'**
+  String get theaterSubtitle;
+
   /// No description provided for @moreAI.
   ///
   /// In zh, this message translates to:
@@ -1440,6 +1508,12 @@ abstract class AppLocalizations {
   /// **'English'**
   String get settingsLanguageEnglish;
 
+  /// No description provided for @settingsLanguageJapanese.
+  ///
+  /// In zh, this message translates to:
+  /// **'日本語'**
+  String get settingsLanguageJapanese;
+
   /// No description provided for @settingsLanguageSystem.
   ///
   /// In zh, this message translates to:
@@ -1481,6 +1555,18 @@ abstract class AppLocalizations {
   /// In zh, this message translates to:
   /// **'无法打开链接'**
   String get aboutCannotOpenLink;
+
+  /// No description provided for @aboutVersionLabel.
+  ///
+  /// In zh, this message translates to:
+  /// **'版本 {version}（{build}）'**
+  String aboutVersionLabel(String version, String build);
+
+  /// No description provided for @aboutCopyright.
+  ///
+  /// In zh, this message translates to:
+  /// **'© {year} MeowTalk. 保留所有权利。'**
+  String aboutCopyright(String year);
 
   /// No description provided for @splashTagline.
   ///
@@ -1998,7 +2084,7 @@ class _AppLocalizationsDelegate
 
   @override
   bool isSupported(Locale locale) =>
-      <String>['en', 'zh'].contains(locale.languageCode);
+      <String>['en', 'ja', 'zh'].contains(locale.languageCode);
 
   @override
   bool shouldReload(_AppLocalizationsDelegate old) => false;
@@ -2009,6 +2095,8 @@ AppLocalizations lookupAppLocalizations(Locale locale) {
   switch (locale.languageCode) {
     case 'en':
       return AppLocalizationsEn();
+    case 'ja':
+      return AppLocalizationsJa();
     case 'zh':
       return AppLocalizationsZh();
   }

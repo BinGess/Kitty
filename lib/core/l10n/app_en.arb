@@ -244,6 +244,16 @@
   },
   "dietBrandSection": "Brand/Type",
   "dietFoodTypeSection": "Food Type",
+  "dietBrandOrijen": "Orijen",
+  "dietBrandZiwi": "Ziwi",
+  "dietBrandRoyalCanin": "Royal Canin",
+  "dietBrandHomemade": "Homemade",
+  "dietBrandTreats": "Treats",
+  "dietBrandOther": "Other",
+  "dietFoodTypeStaple": "Staple Food",
+  "dietFoodTypeCanned": "Canned",
+  "dietFoodTypeTreats": "Treats",
+  "dietFoodTypeFreezeDried": "Freeze-dried",
   "dietAmountSection": "Amount (g)",
   "dietSameAsLast": "Same as last record",
   "dietTapToChangeTime": "Tap to change time",
@@ -358,6 +368,7 @@
   "moreAbout": "About",
   "moreAboutSubtitle": "Version info & feedback",
   "moreTheater": "Cat Theater",
+  "theaterSubtitle": "Curated cat video content",
   "moreAI": "AI Recognition",
 
   "settingsPageTitle": "Settings",
@@ -386,6 +397,7 @@
   "settingsLanguageDesc": "Choose app display language",
   "settingsLanguageChinese": "中文",
   "settingsLanguageEnglish": "English",
+  "settingsLanguageJapanese": "日本語",
   "settingsLanguageSystem": "Follow System",
 
   "aboutPageTitle": "About",
@@ -394,6 +406,19 @@
   "aboutPrivacyPolicy": "Privacy Policy",
   "aboutPrivacyPolicySubtitle": "Tap to view privacy policy",
   "aboutCannotOpenLink": "Cannot open link",
+  "aboutVersionLabel": "Version {version} ({build})",
+  "@aboutVersionLabel": {
+    "placeholders": {
+      "version": { "type": "String" },
+      "build": { "type": "String" }
+    }
+  },
+  "aboutCopyright": "© {year} MeowTalk. All rights reserved.",
+  "@aboutCopyright": {
+    "placeholders": {
+      "year": { "type": "String" }
+    }
+  },
 
   "splashTagline": "Meow~",
   "splashAppName": "MeowTalk",

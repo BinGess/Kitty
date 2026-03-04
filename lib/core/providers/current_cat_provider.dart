@@ -1,3 +1,5 @@
+import 'dart:ui';
+
 import 'package:drift/drift.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -14,6 +16,8 @@ final currentCatProvider = NotifierProvider<CurrentCatNotifier, Cat?>(
 );
 
 class CurrentCatNotifier extends Notifier<Cat?> {
+  static const _localeKey = 'app_locale';
+
   @override
   Cat? build() {
     _loadLastSelected();
@@ -43,10 +47,21 @@ class CurrentCatNotifier extends Notifier<Cat?> {
   }
 
   Future<void> _createDefaultCat() async {
+    final languageCode = _resolveLanguageCode();
+    final defaultName = switch (languageCode) {
+      'en' => 'My Cat',
+      'ja' => 'うちの猫',
+      _ => '我的猫咪',
+    };
+    final defaultBreed = switch (languageCode) {
+      'en' => 'Unknown Breed',
+      'ja' => '不明な品種',
+      _ => '未知品种',
+    };
     final id = await _catDao.insertCat(
       CatsCompanion(
-        name: const Value('我的猫咪'),
-        breed: const Value('未知品种'),
+        name: Value(defaultName),
+        breed: Value(defaultBreed),
         targetWaterMl: const Value(200.0),
         targetMealsPerDay: const Value(3),
       ),
@@ -84,5 +99,17 @@ class CurrentCatNotifier extends Notifier<Cat?> {
     if (!stillExists) {
       await select(cats.first);
     }
+  }
+
+  String _resolveLanguageCode() {
+    final saved = _prefs.getString(_localeKey);
+    if (saved == 'zh') return 'zh';
+    if (saved == 'en') return 'en';
+    if (saved == 'ja') return 'ja';
+    final system = PlatformDispatcher.instance.locale.languageCode;
+    if (system == 'zh') return 'zh';
+    if (system == 'en') return 'en';
+    if (system == 'ja') return 'ja';
+    return 'zh';
   }
 }

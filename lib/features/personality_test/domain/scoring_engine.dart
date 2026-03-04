@@ -3,6 +3,14 @@ import '../data/models/personality_type.dart';
 import '../data/repositories/result_repository.dart';
 
 class ScoringEngine {
+  static String _normalizeLanguageCode(String languageCode) {
+    return switch (languageCode) {
+      'en' => 'en',
+      'ja' => 'ja',
+      _ => 'zh',
+    };
+  }
+
   /// Calculate test result from answers.
   /// [answers] is a map of question number to selected score (0 or 1).
   /// [mode] determines the threshold for each dimension.
@@ -66,7 +74,7 @@ class ScoringEngine {
       dimensionScores: dimensionScores,
       maxScores: dimensionMaxes,
       hasDualPersonality: hasDual,
-      languageCode: languageCode == 'en' ? 'en' : 'zh',
+      languageCode: _normalizeLanguageCode(languageCode),
     );
   }
 

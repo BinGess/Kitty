@@ -9,22 +9,60 @@ import 'current_cat_provider.dart';
 enum PlayIntensityMode { auto, gentle, balanced, active }
 
 extension PlayIntensityModeX on PlayIntensityMode {
-  String get labelZh {
-    return switch (this) {
-      PlayIntensityMode.auto => '自动',
-      PlayIntensityMode.gentle => '温和',
-      PlayIntensityMode.balanced => '标准',
-      PlayIntensityMode.active => '活跃',
-    };
+  String label(String languageCode) {
+    switch (languageCode) {
+      case 'en':
+        return switch (this) {
+          PlayIntensityMode.auto => 'Auto',
+          PlayIntensityMode.gentle => 'Gentle',
+          PlayIntensityMode.balanced => 'Balanced',
+          PlayIntensityMode.active => 'Active',
+        };
+      case 'ja':
+        return switch (this) {
+          PlayIntensityMode.auto => '自動',
+          PlayIntensityMode.gentle => 'やさしめ',
+          PlayIntensityMode.balanced => '標準',
+          PlayIntensityMode.active => '活発',
+        };
+      default:
+        return switch (this) {
+          PlayIntensityMode.auto => '自动',
+          PlayIntensityMode.gentle => '温和',
+          PlayIntensityMode.balanced => '标准',
+          PlayIntensityMode.active => '活跃',
+        };
+    }
   }
 
-  String get descriptionZh {
-    return switch (this) {
-      PlayIntensityMode.auto => '根据年龄、性格和目标体重自动调节',
-      PlayIntensityMode.gentle => '低刺激、低频次，适合敏感或高龄猫咪',
-      PlayIntensityMode.balanced => '日常推荐强度，兼顾互动和休息',
-      PlayIntensityMode.active => '高频互动，适合精力充沛的猫咪',
-    };
+  String description(String languageCode) {
+    switch (languageCode) {
+      case 'en':
+        return switch (this) {
+          PlayIntensityMode.auto =>
+            'Auto-adjusted by age, personality and weight goals',
+          PlayIntensityMode.gentle =>
+            'Lower stimulation and lower frequency for sensitive or senior cats',
+          PlayIntensityMode.balanced =>
+            'Recommended daily intensity balancing interaction and rest',
+          PlayIntensityMode.active =>
+            'Higher-frequency interaction for energetic cats',
+        };
+      case 'ja':
+        return switch (this) {
+          PlayIntensityMode.auto => '年齢・性格・体重目標に応じて自動調整',
+          PlayIntensityMode.gentle => '刺激と頻度を抑え、敏感な猫やシニア猫向け',
+          PlayIntensityMode.balanced => '日常向けの推奨強度で、遊びと休息を両立',
+          PlayIntensityMode.active => '元気な猫向けの高頻度インタラクション',
+        };
+      default:
+        return switch (this) {
+          PlayIntensityMode.auto => '根据年龄、性格和目标体重自动调节',
+          PlayIntensityMode.gentle => '低刺激、低频次，适合敏感或高龄猫咪',
+          PlayIntensityMode.balanced => '日常推荐强度，兼顾互动和休息',
+          PlayIntensityMode.active => '高频互动，适合精力充沛的猫咪',
+        };
+    }
   }
 }
 
@@ -68,7 +106,13 @@ class PlayStrategyService {
   PlayStrategyPlan resolvePlan({
     required Cat cat,
     required PlayIntensityMode mode,
+    String languageCode = 'zh',
   }) {
+    final normalizedLanguageCode = switch (languageCode) {
+      'en' => 'en',
+      'ja' => 'ja',
+      _ => 'zh',
+    };
     final resolvedMode = mode == PlayIntensityMode.auto ? _autoMode(cat) : mode;
 
     final baseGoal = _baseCaptureGoalByAge(cat.birthDate);
@@ -104,12 +148,32 @@ class PlayStrategyService {
       math.min(45, (targetWater * ratio).round()),
     );
 
-    final autoPrefix = mode == PlayIntensityMode.auto
-        ? '自动档（按${resolvedMode.labelZh}强度）'
-        : '${resolvedMode.labelZh}档';
-    final reasoning =
+    final resolvedLabel = resolvedMode.label(normalizedLanguageCode);
+    final autoPrefix = switch (normalizedLanguageCode) {
+      'en' =>
+        mode == PlayIntensityMode.auto
+            ? 'Auto mode ($resolvedLabel intensity)'
+            : '$resolvedLabel mode',
+      'ja' =>
+        mode == PlayIntensityMode.auto
+            ? '自動モード（$resolvedLabel強度）'
+            : '$resolvedLabelモード',
+      _ =>
+        mode == PlayIntensityMode.auto
+            ? '自动档（按$resolvedLabel强度）'
+            : '$resolvedLabel档',
+    };
+    final reasoning = switch (normalizedLanguageCode) {
+      'en' =>
+        '$autoPrefix: Daily target $captureGoal captures, hydration suggestion '
+            '+${rewardWaterMlPerCapture}ml each, reminder every ~$reminderIntervalMinutes min',
+      'ja' =>
+        '$autoPrefix：1日の目標は $captureGoal 回、1回ごとの補水目安 '
+            '+${rewardWaterMlPerCapture}ml、リマインド間隔は約 $reminderIntervalMinutes 分',
+      _ =>
         '$autoPrefix：推荐每日收尾目标 $captureGoal 次，每次补水建议 '
-        '+${rewardWaterMlPerCapture}ml，提醒节奏约每 $reminderIntervalMinutes 分钟';
+            '+${rewardWaterMlPerCapture}ml，提醒节奏约每 $reminderIntervalMinutes 分钟',
+    };
 
     return PlayStrategyPlan(
       mode: resolvedMode,

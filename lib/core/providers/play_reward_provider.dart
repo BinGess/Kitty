@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:ui';
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -15,6 +16,7 @@ final playRewardServiceProvider = Provider<PlayRewardService>((ref) {
 
 class PlayRewardService {
   static const String _storagePrefix = 'cat_play_reward_v1';
+  static const String _localeKey = 'app_locale';
 
   final SharedPreferences _prefs;
   final PlayStrategyService _strategyService;
@@ -23,9 +25,20 @@ class PlayRewardService {
 
   Future<PlayRewardStats> getTodayStats(Cat cat) async {
     final mode = await _strategyService.getMode(cat.id);
-    final plan = _strategyService.resolvePlan(cat: cat, mode: mode);
+    final languageCode = _resolveLanguageCode();
+    final plan = _strategyService.resolvePlan(
+      cat: cat,
+      mode: mode,
+      languageCode: languageCode,
+    );
     final raw = _readRawStats(cat.id, _todayKey());
-    return _buildStats(plan, raw, lastRewardMl: 0, lastLoggedMl: 0);
+    return _buildStats(
+      plan,
+      raw,
+      languageCode: languageCode,
+      lastRewardMl: 0,
+      lastLoggedMl: 0,
+    );
   }
 
   Future<PlayRewardStats> recordSession({
@@ -35,7 +48,12 @@ class PlayRewardService {
     required Duration sessionDuration,
   }) async {
     final mode = await _strategyService.getMode(cat.id);
-    final plan = _strategyService.resolvePlan(cat: cat, mode: mode);
+    final languageCode = _resolveLanguageCode();
+    final plan = _strategyService.resolvePlan(
+      cat: cat,
+      mode: mode,
+      languageCode: languageCode,
+    );
     final dateKey = _todayKey();
     final raw = _readRawStats(cat.id, dateKey);
 
@@ -60,6 +78,7 @@ class PlayRewardService {
     return _buildStats(
       plan,
       next,
+      languageCode: languageCode,
       lastRewardMl: captured ? rewardStep : 0,
       lastLoggedMl: 0,
     );
@@ -70,7 +89,12 @@ class PlayRewardService {
     int? amountMl,
   }) async {
     final mode = await _strategyService.getMode(cat.id);
-    final plan = _strategyService.resolvePlan(cat: cat, mode: mode);
+    final languageCode = _resolveLanguageCode();
+    final plan = _strategyService.resolvePlan(
+      cat: cat,
+      mode: mode,
+      languageCode: languageCode,
+    );
     final dateKey = _todayKey();
     final raw = _readRawStats(cat.id, dateKey);
 
@@ -78,7 +102,13 @@ class PlayRewardService {
     final logged = raw['logged_water_ml'] as int? ?? 0;
     final pending = (rewardTotal - logged).clamp(0, rewardTotal);
     if (pending <= 0) {
-      return _buildStats(plan, raw, lastRewardMl: 0, lastLoggedMl: 0);
+      return _buildStats(
+        plan,
+        raw,
+        languageCode: languageCode,
+        lastRewardMl: 0,
+        lastLoggedMl: 0,
+      );
     }
 
     final toLog = amountMl == null
@@ -90,7 +120,13 @@ class PlayRewardService {
       'updated_at': DateTime.now().toIso8601String(),
     };
     await _prefs.setString(_prefsKey(cat.id, dateKey), jsonEncode(next));
-    return _buildStats(plan, next, lastRewardMl: 0, lastLoggedMl: toLog);
+    return _buildStats(
+      plan,
+      next,
+      languageCode: languageCode,
+      lastRewardMl: 0,
+      lastLoggedMl: toLog,
+    );
   }
 
   Future<List<PlayRewardDailyStats>> getRecentDailyStats(
@@ -125,6 +161,7 @@ class PlayRewardService {
   PlayRewardStats _buildStats(
     PlayStrategyPlan plan,
     Map<String, dynamic> raw, {
+    required String languageCode,
     required int lastRewardMl,
     required int lastLoggedMl,
   }) {
@@ -143,7 +180,7 @@ class PlayRewardService {
       lastRewardMl: lastRewardMl,
       lastLoggedMl: lastLoggedMl,
       lastGameId: raw['last_game_id'] as String?,
-      modeLabel: plan.mode.labelZh,
+      modeLabel: plan.mode.label(languageCode),
       modeDescription: plan.reasoning,
     );
   }
@@ -175,6 +212,18 @@ class PlayRewardService {
 
   String _prefsKey(int catId, String dateKey) {
     return '$_storagePrefix:${catId}_$dateKey';
+  }
+
+  String _resolveLanguageCode() {
+    final saved = _prefs.getString(_localeKey);
+    if (saved == 'zh') return 'zh';
+    if (saved == 'en') return 'en';
+    if (saved == 'ja') return 'ja';
+    final system = PlatformDispatcher.instance.locale.languageCode;
+    if (system == 'zh') return 'zh';
+    if (system == 'en') return 'en';
+    if (system == 'ja') return 'ja';
+    return 'zh';
   }
 }
 

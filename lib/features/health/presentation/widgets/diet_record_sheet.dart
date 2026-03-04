@@ -25,6 +25,28 @@ class _DietRecordSheetState extends ConsumerState<DietRecordSheet> {
   static const _brands = ['渴望', '巅峰', '皇家', '自制', '零食', '其他'];
   static const _types = ['主粮', '罐头', '零食', '冻干'];
 
+  String _localizedBrand(AppLocalizations l10n, String value) {
+    return switch (value) {
+      '渴望' => l10n.dietBrandOrijen,
+      '巅峰' => l10n.dietBrandZiwi,
+      '皇家' => l10n.dietBrandRoyalCanin,
+      '自制' => l10n.dietBrandHomemade,
+      '零食' => l10n.dietBrandTreats,
+      '其他' => l10n.dietBrandOther,
+      _ => value,
+    };
+  }
+
+  String _localizedFoodType(AppLocalizations l10n, String value) {
+    return switch (value) {
+      '主粮' => l10n.dietFoodTypeStaple,
+      '罐头' => l10n.dietFoodTypeCanned,
+      '零食' => l10n.dietFoodTypeTreats,
+      '冻干' => l10n.dietFoodTypeFreezeDried,
+      _ => value,
+    };
+  }
+
   @override
   void initState() {
     super.initState();
@@ -160,7 +182,7 @@ class _DietRecordSheetState extends ConsumerState<DietRecordSheet> {
               children: _brands.map((b) {
                 final sel = b == _selectedBrand;
                 return ChoiceChip(
-                  label: Text(b),
+                  label: Text(_localizedBrand(l10n, b)),
                   selected: sel,
                   onSelected: (_) => setState(() => _selectedBrand = b),
                   selectedColor: AppColors.primary.withValues(alpha: 0.2),
@@ -186,7 +208,7 @@ class _DietRecordSheetState extends ConsumerState<DietRecordSheet> {
               children: _types.map((t) {
                 final sel = t == _foodType;
                 return ChoiceChip(
-                  label: Text(t),
+                  label: Text(_localizedFoodType(l10n, t)),
                   selected: sel,
                   onSelected: (_) => setState(() => _foodType = t),
                   selectedColor: AppColors.primary.withValues(alpha: 0.2),

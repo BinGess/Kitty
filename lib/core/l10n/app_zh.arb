@@ -244,6 +244,16 @@
   },
   "dietBrandSection": "品牌/种类",
   "dietFoodTypeSection": "食物类型",
+  "dietBrandOrijen": "渴望",
+  "dietBrandZiwi": "巅峰",
+  "dietBrandRoyalCanin": "皇家",
+  "dietBrandHomemade": "自制",
+  "dietBrandTreats": "零食",
+  "dietBrandOther": "其他",
+  "dietFoodTypeStaple": "主粮",
+  "dietFoodTypeCanned": "罐头",
+  "dietFoodTypeTreats": "零食",
+  "dietFoodTypeFreezeDried": "冻干",
   "dietAmountSection": "进食量 (g)",
   "dietSameAsLast": "同前一次记录",
   "dietTapToChangeTime": "点击修改时间",
@@ -358,6 +368,7 @@
   "moreAbout": "关于",
   "moreAboutSubtitle": "版本信息与反馈",
   "moreTheater": "喵剧场",
+  "theaterSubtitle": "精选猫咪视频内容",
   "moreAI": "AI 识别",
 
   "settingsPageTitle": "设置",
@@ -386,6 +397,7 @@
   "settingsLanguageDesc": "选择应用显示语言",
   "settingsLanguageChinese": "中文",
   "settingsLanguageEnglish": "English",
+  "settingsLanguageJapanese": "日本語",
   "settingsLanguageSystem": "跟随系统",
 
   "aboutPageTitle": "关于",
@@ -394,6 +406,19 @@
   "aboutPrivacyPolicy": "隐私协议",
   "aboutPrivacyPolicySubtitle": "点击查看详细隐私政策",
   "aboutCannotOpenLink": "无法打开链接",
+  "aboutVersionLabel": "版本 {version}（{build}）",
+  "@aboutVersionLabel": {
+    "placeholders": {
+      "version": { "type": "String" },
+      "build": { "type": "String" }
+    }
+  },
+  "aboutCopyright": "© {year} MeowTalk. 保留所有权利。",
+  "@aboutCopyright": {
+    "placeholders": {
+      "year": { "type": "String" }
+    }
+  },
 
   "splashTagline": "瞄~瞄~",
   "splashAppName": "猫咪说",

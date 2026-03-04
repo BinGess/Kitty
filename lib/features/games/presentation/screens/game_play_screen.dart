@@ -119,7 +119,7 @@ class _GamePlayScreenState extends ConsumerState<GamePlayScreen>
                 stats.capturesToday,
                 stats.captureGoal,
               );
-        message = '$message（${stats.modeLabel}）';
+        message = '$message (${stats.modeLabel})';
       } else {
         message = l10n.gameRewardSessionEnd(
           stats.capturesToday,
@@ -526,8 +526,8 @@ class _TimeProgressBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final remaining =
-        (1.0 - elapsed.inMilliseconds / total.inMilliseconds).clamp(0.0, 1.0);
+    final remaining = (1.0 - elapsed.inMilliseconds / total.inMilliseconds)
+        .clamp(0.0, 1.0);
     return SizedBox(
       height: 3,
       child: LinearProgressIndicator(

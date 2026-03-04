@@ -458,17 +458,202 @@ class QuestionRepository {
     ),
   ];
 
+  static const List<Question> _basicJaQuestions = [
+    Question(
+      number: 1,
+      dimension: Dimension.EI,
+      text: '家に知らないお客さんが来たとき、うちの猫は？',
+      optionA: QuestionOption(text: '自分から近づいて匂いを嗅ぎにいく／すり寄る', score: 1),
+      optionB: QuestionOption(text: '隠れるか、高い場所から様子を見る', score: 0),
+    ),
+    Question(
+      number: 2,
+      dimension: Dimension.EI,
+      text: '掃除機やドライヤーを使っているとき、うちの猫は？',
+      optionA: QuestionOption(text: '好奇心を保ちつつ、安全な距離で観察する', score: 1),
+      optionB: QuestionOption(text: 'びっくりして逃げ、身を隠す', score: 0),
+    ),
+    Question(
+      number: 3,
+      dimension: Dimension.EI,
+      text: '名前を大きな声で呼んだときの反応は？',
+      optionA: QuestionOption(text: '走ってくる、または鳴いて返事する', score: 1),
+      optionB: QuestionOption(text: '耳だけ動かして、やっていることを続ける', score: 0),
+    ),
+    Question(
+      number: 4,
+      dimension: Dimension.NS,
+      text: '開けたばかりの段ボール箱を前にすると？',
+      optionA: QuestionOption(text: 'すぐに入ってしばらく探検する', score: 1),
+      optionB: QuestionOption(text: 'ひと嗅ぎして、あまり興味を示さず離れる', score: 0),
+    ),
+    Question(
+      number: 5,
+      dimension: Dimension.NS,
+      text: 'まったく知らない部屋に連れていくと？',
+      optionA: QuestionOption(text: 'しっぽを立てて積極的に巡回する', score: 1),
+      optionB: QuestionOption(text: '壁沿いに慎重に歩き、緊張している', score: 0),
+    ),
+    Question(
+      number: 6,
+      dimension: Dimension.NS,
+      text: '新しくて少し変わったおもちゃを出すと？',
+      optionA: QuestionOption(text: 'すぐ飛びついて確かめる', score: 1),
+      optionB: QuestionOption(text: 'しばらく観察して安全を確かめてから近づく', score: 0),
+    ),
+    Question(
+      number: 7,
+      dimension: Dimension.FT,
+      text: 'あなたが仕事に集中していて構わないときは？',
+      optionA: QuestionOption(text: 'キーボードに乗るなどして注目を求める', score: 1),
+      optionB: QuestionOption(text: '近くで一人遊びするか寝て待つ', score: 0),
+    ),
+    Question(
+      number: 8,
+      dimension: Dimension.FT,
+      text: 'あなたが大笑いしたり泣いたりしているときは？',
+      optionA: QuestionOption(text: '寄ってきて体をこすりつけたり優しく鳴いたりする', score: 1),
+      optionB: QuestionOption(text: '不思議そうに見て、しばらくして離れる', score: 0),
+    ),
+    Question(
+      number: 9,
+      dimension: Dimension.FT,
+      text: '1分以上の抱っこを許してくれる？',
+      optionA: QuestionOption(text: '比較的平気で、喉を鳴らすこともある', score: 1),
+      optionB: QuestionOption(text: 'すぐに嫌がって逃れようとする', score: 0),
+    ),
+    Question(
+      number: 10,
+      dimension: Dimension.PJ,
+      text: '朝のごはんタイム、うちの猫は？',
+      optionA: QuestionOption(text: '気分次第で、空腹でなければ静か', score: 1),
+      optionB: QuestionOption(text: '目覚ましのように毎日正確に催促する', score: 0),
+    ),
+    Question(
+      number: 11,
+      dimension: Dimension.PJ,
+      text: '寝る場所の傾向は？',
+      optionA: QuestionOption(text: '毎日違う場所で寝ることが多い', score: 1),
+      optionB: QuestionOption(text: 'お気に入りの定位置がいくつかある', score: 0),
+    ),
+    Question(
+      number: 12,
+      dimension: Dimension.PJ,
+      text: 'お皿にごはんが残っているときは？',
+      optionA: QuestionOption(text: '遊びながら少しずつ食べる', score: 1),
+      optionB: QuestionOption(text: '出された分をきっちり食べ切る', score: 0),
+    ),
+  ];
+
+  static const List<Question> _advancedJaExtraQuestions = [
+    Question(
+      number: 13,
+      dimension: Dimension.EI,
+      text: '窓の外に鳥や虫がいるときの反応は？',
+      optionA: QuestionOption(text: '窓をカリカリしたり「カカカ」と鳴く', score: 1),
+      optionB: QuestionOption(text: '静かにじっと見つめる', score: 0),
+    ),
+    Question(
+      number: 14,
+      dimension: Dimension.EI,
+      text: '新しい同居動物など新メンバーが来たら？',
+      optionA: QuestionOption(text: '自分から近づいて接触を試みる', score: 1),
+      optionB: QuestionOption(text: '強く警戒し、長くシャーする', score: 0),
+    ),
+    Question(
+      number: 15,
+      dimension: Dimension.EI,
+      text: '「かくれんぼ」系の遊びへの反応は？',
+      optionA: QuestionOption(text: '積極的に参加して追いかける', score: 1),
+      optionB: QuestionOption(text: 'たまに参加するが見ていることが多い', score: 0),
+    ),
+    Question(
+      number: 16,
+      dimension: Dimension.NS,
+      text: '高い場所（登る・ジャンプ）は好き？',
+      optionA: QuestionOption(text: '高所が大好きでどんどん挑戦する', score: 1),
+      optionB: QuestionOption(text: '床や低い場所を好む', score: 0),
+    ),
+    Question(
+      number: 17,
+      dimension: Dimension.NS,
+      text: '猫砂やフードの銘柄を変えたときは？',
+      optionA: QuestionOption(text: '比較的すぐ慣れてあまり気にしない', score: 1),
+      optionB: QuestionOption(text: '嫌がって、使う/食べるのを拒否することがある', score: 0),
+    ),
+    Question(
+      number: 18,
+      dimension: Dimension.NS,
+      text: 'TVやiPadの動く映像を見ると？',
+      optionA: QuestionOption(text: '画面に手を伸ばして捕まえようとする', score: 1),
+      optionB: QuestionOption(text: '見てはいるが「本物ではない」と分かっているようだ', score: 0),
+    ),
+    Question(
+      number: 19,
+      dimension: Dimension.FT,
+      text: '自分から「ふみふみ」しに来る頻度は？',
+      optionA: QuestionOption(text: 'よくある。甘えが強め', score: 1),
+      optionB: QuestionOption(text: 'ほとんどない／まったくしない', score: 0),
+    ),
+    Question(
+      number: 20,
+      dimension: Dimension.FT,
+      text: '数日ぶりに帰宅したときの反応は？',
+      optionA: QuestionOption(text: '激しくすり寄って鳴き、甘える', score: 1),
+      optionB: QuestionOption(text: 'そっけなく、いなかったかのように振る舞う', score: 0),
+    ),
+    Question(
+      number: 21,
+      dimension: Dimension.FT,
+      text: 'いたずらを叱られたときは？',
+      optionA: QuestionOption(text: 'しょんぼりして機嫌を取ろうとする', score: 1),
+      optionB: QuestionOption(text: 'あまり気にせず、むしろ反抗的な態度', score: 0),
+    ),
+    Question(
+      number: 22,
+      dimension: Dimension.PJ,
+      text: '排便後に砂をかける習慣は？',
+      optionA: QuestionOption(text: '気分次第で、雑なときもある', score: 1),
+      optionB: QuestionOption(text: '見えなくなるまで丁寧に埋める', score: 0),
+    ),
+    Question(
+      number: 23,
+      dimension: Dimension.PJ,
+      text: '缶詰やおやつ袋の音への反応は？',
+      optionA: QuestionOption(text: '寝ていても即反応して飛び起きる', score: 1),
+      optionB: QuestionOption(text: '欲しがるが、慌てずゆっくり来る', score: 0),
+    ),
+    Question(
+      number: 24,
+      dimension: Dimension.PJ,
+      text: '毛づくろい（グルーミング）の頻度は？',
+      optionA: QuestionOption(text: '気が向いたときだけで、毛並みが乱れがち', score: 1),
+      optionB: QuestionOption(text: 'こまめに毛づくろいして、いつもきれい', score: 0),
+    ),
+  ];
+
   static List<Question> getQuestions(
     TestMode mode, {
     required String languageCode,
   }) {
-    final isEnglish = languageCode == 'en';
-    final basic = isEnglish ? _basicEnQuestions : _basicZhQuestions;
+    final normalizedLanguageCode = switch (languageCode) {
+      'en' => 'en',
+      'ja' => 'ja',
+      _ => 'zh',
+    };
+
+    final basic = switch (normalizedLanguageCode) {
+      'en' => _basicEnQuestions,
+      'ja' => _basicJaQuestions,
+      _ => _basicZhQuestions,
+    };
     if (mode == TestMode.basic) return basic;
 
-    final advancedExtra = isEnglish
-        ? _advancedEnExtraQuestions
-        : _advancedZhExtraQuestions;
+    final advancedExtra = switch (normalizedLanguageCode) {
+      'en' => _advancedEnExtraQuestions,
+      'ja' => _advancedJaExtraQuestions,
+      _ => _advancedZhExtraQuestions,
+    };
     return [...basic, ...advancedExtra];
   }
 }
