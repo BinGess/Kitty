@@ -69,7 +69,10 @@ class TestIntroScreen extends ConsumerWidget {
                 const SizedBox(height: AppDimensions.spacingXL),
               ] else ...[
                 const SizedBox(height: AppDimensions.spacingL),
-                _SavedResultCard(profile: profile),
+                _SavedResultCard(
+                  profile: profile,
+                  onTap: () => context.push('/test/result'),
+                ),
                 const SizedBox(height: AppDimensions.spacingL),
                 _RetakeDivider(text: l10n.testResultRetake),
                 const SizedBox(height: AppDimensions.spacingL),
@@ -160,8 +163,9 @@ class TestIntroScreen extends ConsumerWidget {
 
 class _SavedResultCard extends StatelessWidget {
   final CatPersonalityProfile profile;
+  final VoidCallback? onTap;
 
-  const _SavedResultCard({required this.profile});
+  const _SavedResultCard({required this.profile, this.onTap});
 
   @override
   Widget build(BuildContext context) {
@@ -169,92 +173,107 @@ class _SavedResultCard extends StatelessWidget {
     final personality = profile.result.personality;
     final timeText = DateFormat('yyyy-MM-dd HH:mm').format(profile.testedAt);
 
-    return Container(
-      width: double.infinity,
-      padding: const EdgeInsets.all(AppDimensions.spacingL),
-      decoration: BoxDecoration(
-        color: AppColors.surface,
+    return Material(
+      color: Colors.transparent,
+      child: InkWell(
         borderRadius: BorderRadius.circular(AppDimensions.radiusLarge),
-        border: Border.all(color: AppColors.divider),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            l10n.testCurrentResultTitle,
-            style: const TextStyle(
-              fontSize: 14,
-              fontWeight: FontWeight.w600,
-              color: AppColors.textSecondary,
-            ),
+        onTap: onTap,
+        child: Container(
+          width: double.infinity,
+          padding: const EdgeInsets.all(AppDimensions.spacingL),
+          decoration: BoxDecoration(
+            color: AppColors.surface,
+            borderRadius: BorderRadius.circular(AppDimensions.radiusLarge),
+            border: Border.all(color: AppColors.divider),
           ),
-          const SizedBox(height: 8),
-          Row(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                personality.code,
+                l10n.testCurrentResultTitle,
                 style: const TextStyle(
-                  fontSize: 28,
-                  fontWeight: FontWeight.bold,
-                  color: AppColors.primary,
-                  letterSpacing: 3,
+                  fontSize: 14,
+                  fontWeight: FontWeight.w600,
+                  color: AppColors.textSecondary,
                 ),
               ),
-              const SizedBox(width: 8),
-              Expanded(
-                child: Text(
-                  personality.title,
-                  style: const TextStyle(
-                    fontSize: 18,
-                    fontWeight: FontWeight.w700,
-                    color: AppColors.onBackground,
+              const SizedBox(height: 8),
+              Row(
+                children: [
+                  Text(
+                    personality.code,
+                    style: const TextStyle(
+                      fontSize: 28,
+                      fontWeight: FontWeight.bold,
+                      color: AppColors.primary,
+                      letterSpacing: 3,
+                    ),
                   ),
+                  const SizedBox(width: 8),
+                  Expanded(
+                    child: Text(
+                      personality.title,
+                      style: const TextStyle(
+                        fontSize: 18,
+                        fontWeight: FontWeight.w700,
+                        color: AppColors.onBackground,
+                      ),
+                    ),
+                  ),
+                  const Icon(
+                    Icons.chevron_right,
+                    size: 18,
+                    color: AppColors.textSecondary,
+                  ),
+                ],
+              ),
+              const SizedBox(height: AppDimensions.spacingS),
+              Wrap(
+                spacing: 6,
+                runSpacing: 6,
+                children: personality.tags.map<Widget>((tag) {
+                  return Container(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 8,
+                      vertical: 2,
+                    ),
+                    decoration: BoxDecoration(
+                      color: AppColors.primary.withValues(alpha: 0.1),
+                      borderRadius: BorderRadius.circular(999),
+                    ),
+                    child: Text(
+                      tag,
+                      style: const TextStyle(
+                        fontSize: 11,
+                        fontWeight: FontWeight.w500,
+                        color: AppColors.primaryDark,
+                      ),
+                    ),
+                  );
+                }).toList(),
+              ),
+              const SizedBox(height: AppDimensions.spacingS),
+              Text(
+                l10n.testLastTestedAt(timeText),
+                style: const TextStyle(
+                  fontSize: 12,
+                  color: AppColors.textSecondary,
+                ),
+              ),
+              const SizedBox(height: 6),
+              Text(
+                personality.description,
+                maxLines: 3,
+                overflow: TextOverflow.ellipsis,
+                style: const TextStyle(
+                  fontSize: 13,
+                  color: AppColors.onBackground,
+                  height: 1.5,
                 ),
               ),
             ],
           ),
-          const SizedBox(height: AppDimensions.spacingS),
-          Wrap(
-            spacing: 6,
-            runSpacing: 6,
-            children: personality.tags.map<Widget>((tag) {
-              return Container(
-                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
-                decoration: BoxDecoration(
-                  color: AppColors.primary.withValues(alpha: 0.1),
-                  borderRadius: BorderRadius.circular(999),
-                ),
-                child: Text(
-                  tag,
-                  style: const TextStyle(
-                    fontSize: 11,
-                    fontWeight: FontWeight.w500,
-                    color: AppColors.primaryDark,
-                  ),
-                ),
-              );
-            }).toList(),
-          ),
-          const SizedBox(height: AppDimensions.spacingS),
-          Text(
-            l10n.testLastTestedAt(timeText),
-            style: const TextStyle(
-              fontSize: 12,
-              color: AppColors.textSecondary,
-            ),
-          ),
-          const SizedBox(height: 6),
-          Text(
-            personality.description,
-            maxLines: 3,
-            overflow: TextOverflow.ellipsis,
-            style: const TextStyle(
-              fontSize: 13,
-              color: AppColors.onBackground,
-              height: 1.5,
-            ),
-          ),
-        ],
+        ),
       ),
     );
   }

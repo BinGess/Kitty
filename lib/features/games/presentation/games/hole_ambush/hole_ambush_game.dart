@@ -10,7 +10,7 @@ import '../../../../../core/l10n/app_localizations.dart';
 
 enum _AmbushPhase { waiting, rising, holding, falling }
 
-enum _AmbushTarget { mouse, fish, feather }
+enum _AmbushTarget { mouse, fish }
 
 class _HitPulse {
   final Offset center;
@@ -452,8 +452,6 @@ class _HoleAmbushPainter extends CustomPainter {
         _drawMouse(canvas, c, peek);
       case _AmbushTarget.fish:
         _drawFish(canvas, c, peek);
-      case _AmbushTarget.feather:
-        _drawFeather(canvas, c);
     }
   }
 
@@ -538,46 +536,6 @@ class _HoleAmbushPainter extends CustomPainter {
       src,
       dst,
       Paint()..filterQuality = FilterQuality.high,
-    );
-  }
-
-  void _drawFeather(Canvas canvas, Offset c) {
-    final stemPaint = Paint()
-      ..color = const Color(0xFFFFE082)
-      ..strokeWidth = 2
-      ..strokeCap = StrokeCap.round;
-    final featherPaint = Paint()
-      ..color = const Color(0xFFFFCC80)
-      ..style = PaintingStyle.stroke
-      ..strokeWidth = 2.2
-      ..strokeCap = StrokeCap.round;
-
-    canvas.drawLine(
-      Offset(c.dx, c.dy - 14),
-      Offset(c.dx, c.dy + 10),
-      stemPaint,
-    );
-    canvas.drawArc(
-      Rect.fromCenter(
-        center: Offset(c.dx - 4, c.dy - 2),
-        width: 18,
-        height: 18,
-      ),
-      pi * 1.2,
-      pi * 0.9,
-      false,
-      featherPaint,
-    );
-    canvas.drawArc(
-      Rect.fromCenter(
-        center: Offset(c.dx + 4, c.dy - 2),
-        width: 18,
-        height: 18,
-      ),
-      -pi * 0.1,
-      pi * 0.9,
-      false,
-      featherPaint,
     );
   }
 
