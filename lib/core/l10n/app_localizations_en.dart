@@ -48,7 +48,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get soundsSubtitleCalling => 'Calling & Environment Sounds';
 
   @override
-  String get soundsSubtitleEnvironment => 'Current Music + 6 Placeholder Types';
+  String get soundsSubtitleEnvironment => 'Current Music + 6 New Music Types';
 
   @override
   String get soundLooping => 'Looping';
@@ -509,6 +509,42 @@ class AppLocalizationsEn extends AppLocalizations {
   String get gameShadowPeekHint => 'Watch the grass and boxes carefully...';
 
   @override
+  String get gameHoleAmbush => 'Hole Ambush';
+
+  @override
+  String get gameFeatherWand => 'Feather Wand';
+
+  @override
+  String get gameHoleAmbushSubtitle => 'Surprise attacks from holes';
+
+  @override
+  String get gameFeatherWandSubtitle => 'Swing the wand to tease';
+
+  @override
+  String get gameHoleAmbushDescription =>
+      'Prey appears randomly from holes. Catch them before they hide!';
+
+  @override
+  String get gameFeatherWandDescription =>
+      'A feather wand moves across the screen. Tap to catch the feather!';
+
+  @override
+  String get gameHoleAmbushTips => 'Watch the holes closely and tap quickly!';
+
+  @override
+  String get gameHoleAmbushHint =>
+      'Watch the holes and tap when targets pop up';
+
+  @override
+  String get gameFeatherWandTips => 'Follow the feather movement and strike!';
+
+  @override
+  String get gameFeatherWandHint => 'Swipe or tap to play with the feather';
+
+  @override
+  String get gameFeatherWandHit => 'Caught!';
+
+  @override
   String gameRewardCapturedGoal(String rewardMl) {
     return 'Caught! +${rewardMl}ml hydration suggestion, today\'s interaction goal reached';
   }
@@ -791,6 +827,28 @@ class AppLocalizationsEn extends AppLocalizations {
   String catTrendMeals(int count) {
     return 'Fed $count times';
   }
+
+  @override
+  String get catPersonalitySection => 'Personality';
+
+  @override
+  String get catPersonalityUnknown => 'No personality test yet';
+
+  @override
+  String catPersonalityKnown(String code, String title) {
+    return '$code · $title';
+  }
+
+  @override
+  String catPersonalityTestedAt(String time) {
+    return 'Tested at $time';
+  }
+
+  @override
+  String get catPersonalityGoTest => 'Take Test';
+
+  @override
+  String get catPersonalityViewReport => 'View Report';
 
   @override
   String get catTrendWeightNoData => 'Weight: No data';

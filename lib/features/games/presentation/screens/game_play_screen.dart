@@ -23,7 +23,7 @@ class _GamePlayScreenState extends ConsumerState<GamePlayScreen>
     with SingleTickerProviderStateMixin {
   static const Duration _sessionDuration = Duration(seconds: 30);
   static const Duration _finalPhaseDuration = Duration(seconds: 5);
-  static const Duration _autoExitDelay = Duration(milliseconds: 900);
+  static const Duration _autoExitDelay = Duration(milliseconds: 1800);
 
   GameMode? _mode;
   late final Ticker _ticker;
@@ -78,6 +78,7 @@ class _GamePlayScreenState extends ConsumerState<GamePlayScreen>
       _finishAndExit(captured: _finalCaptured);
     }
     _lastTickElapsed = elapsed;
+    setState(() {});
   }
 
   void _onFinalCapture() {
@@ -226,6 +227,18 @@ class _GamePlayScreenState extends ConsumerState<GamePlayScreen>
                 ),
               ),
             ),
+            // 顶部进度条：显示剩余游戏时间
+            if (!_sessionEnding)
+              Positioned(
+                left: 0,
+                right: 0,
+                top: 0,
+                child: _TimeProgressBar(
+                  elapsed: _lastTickElapsed,
+                  total: _sessionDuration,
+                  color: mode.accentColor,
+                ),
+              ),
             if (_endingMessage != null)
               Positioned.fill(
                 child: IgnorePointer(
@@ -496,6 +509,35 @@ class _FinalCaptureOverlayState extends State<_FinalCaptureOverlay>
           ),
         );
       },
+    );
+  }
+}
+
+class _TimeProgressBar extends StatelessWidget {
+  final Duration elapsed;
+  final Duration total;
+  final Color color;
+
+  const _TimeProgressBar({
+    required this.elapsed,
+    required this.total,
+    required this.color,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final remaining =
+        (1.0 - elapsed.inMilliseconds / total.inMilliseconds).clamp(0.0, 1.0);
+    return SizedBox(
+      height: 3,
+      child: LinearProgressIndicator(
+        value: remaining,
+        backgroundColor: Colors.white.withValues(alpha: 0.08),
+        valueColor: AlwaysStoppedAnimation<Color>(
+          color.withValues(alpha: 0.55),
+        ),
+        minHeight: 3,
+      ),
     );
   }
 }

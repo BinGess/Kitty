@@ -9,8 +9,8 @@ import '../../data/models/sound_item.dart';
 import '../providers/sounds_provider.dart';
 
 class SoundCard extends ConsumerWidget {
-  static const double _iconBoxSize = 72;
-  static const double _rippleSize = 104;
+  static const double _iconBoxSize = 88;
+  static const double _rippleSize = 122;
 
   final SoundItem sound;
 
@@ -107,7 +107,7 @@ class SoundCard extends ConsumerWidget {
                         child: Text(
                           l10n.soundPlaceholderTag,
                           style: AppTypography.bodySmall.copyWith(
-                            fontSize: 10,
+                            fontSize: 11,
                             color: AppColors.primary,
                             fontWeight: FontWeight.w600,
                           ),
@@ -123,7 +123,7 @@ class SoundCard extends ConsumerWidget {
               textAlign: TextAlign.center,
               maxLines: 1,
               overflow: TextOverflow.ellipsis,
-              style: AppTypography.labelSmall.copyWith(
+              style: AppTypography.labelMedium.copyWith(
                 fontWeight: isPlaying ? FontWeight.w600 : FontWeight.w500,
                 color: isPlaceholder
                     ? AppColors.textSecondary
@@ -131,13 +131,13 @@ class SoundCard extends ConsumerWidget {
               ),
             ),
             SizedBox(
-              height: 16,
+              height: 18,
               child: isPlaceholder
                   ? Text(
                       l10n.soundPlaceholderTag,
                       textAlign: TextAlign.center,
-                      style: AppTypography.bodySmall.copyWith(
-                        fontSize: 11,
+                      style: AppTypography.labelSmall.copyWith(
+                        fontSize: 12,
                         color: AppColors.textSecondary,
                         fontWeight: FontWeight.w500,
                       ),
@@ -146,8 +146,8 @@ class SoundCard extends ConsumerWidget {
                   ? Text(
                       l10n.soundLooping,
                       textAlign: TextAlign.center,
-                      style: AppTypography.bodySmall.copyWith(
-                        fontSize: 11,
+                      style: AppTypography.labelSmall.copyWith(
+                        fontSize: 12,
                         color: AppColors.primary.withValues(alpha: 0.8),
                         fontWeight: FontWeight.w500,
                       ),

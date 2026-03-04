@@ -2,6 +2,7 @@ import 'package:drift/drift.dart' show Value;
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:intl/intl.dart';
 import '../../../../core/constants/app_colors.dart';
 import '../../../../core/constants/app_dimensions.dart';
 import '../../../../core/database/app_database.dart';
@@ -350,6 +351,8 @@ class _CatCard extends ConsumerWidget {
                 ),
               ),
               const SizedBox(height: AppDimensions.spacingS),
+              _PersonalityInfoPanel(cat: cat, profile: personalityProfile),
+              const SizedBox(height: AppDimensions.spacingS),
               trendAsync.when(
                 data: (trend) => _CatHealthTrendPanel(trend: trend),
                 loading: () => SizedBox(
@@ -422,6 +425,105 @@ class _CatCard extends ConsumerWidget {
       default:
         return l10n.catSexUnknown;
     }
+  }
+}
+
+class _PersonalityInfoPanel extends ConsumerWidget {
+  final Cat cat;
+  final CatPersonalityProfile? profile;
+
+  const _PersonalityInfoPanel({required this.cat, required this.profile});
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final l10n = AppLocalizations.of(context)!;
+    final hasPersonality = profile != null;
+    final personality = profile?.result.personality;
+    final testedAt = profile?.testedAt;
+    final testedAtText = testedAt == null
+        ? null
+        : DateFormat('yyyy-MM-dd HH:mm').format(testedAt);
+
+    return Container(
+      width: double.infinity,
+      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
+      decoration: BoxDecoration(
+        color: AppColors.surfaceVariant,
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(color: AppColors.divider),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              const Icon(
+                Icons.psychology_outlined,
+                size: 14,
+                color: AppColors.primary,
+              ),
+              const SizedBox(width: 6),
+              Text(
+                l10n.catPersonalitySection,
+                style: const TextStyle(
+                  fontSize: 12,
+                  fontWeight: FontWeight.w600,
+                  color: AppColors.onSurface,
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 4),
+          Text(
+            hasPersonality
+                ? l10n.catPersonalityKnown(personality!.code, personality.title)
+                : l10n.catPersonalityUnknown,
+            style: TextStyle(
+              fontSize: 12,
+              fontWeight: hasPersonality ? FontWeight.w600 : FontWeight.w400,
+              color: hasPersonality
+                  ? AppColors.onBackground
+                  : AppColors.textSecondary,
+            ),
+          ),
+          if (testedAtText != null) ...[
+            const SizedBox(height: 2),
+            Text(
+              l10n.catPersonalityTestedAt(testedAtText),
+              style: const TextStyle(
+                fontSize: 11,
+                color: AppColors.textSecondary,
+              ),
+            ),
+          ],
+          const SizedBox(height: 4),
+          Align(
+            alignment: Alignment.centerRight,
+            child: TextButton(
+              style: TextButton.styleFrom(
+                minimumSize: Size.zero,
+                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+              ),
+              onPressed: () async {
+                await ref.read(currentCatProvider.notifier).select(cat);
+                if (!context.mounted) return;
+                context.push(hasPersonality ? '/test/result' : '/test');
+              },
+              child: Text(
+                hasPersonality
+                    ? l10n.catPersonalityViewReport
+                    : l10n.catPersonalityGoTest,
+                style: const TextStyle(
+                  fontSize: 12,
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
   }
 }
 

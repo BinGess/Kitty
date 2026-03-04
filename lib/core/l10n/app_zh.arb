@@ -15,7 +15,7 @@
   "soundCategoryEnvironment": "音乐",
   "soundsSubtitleEmotion": "猫咪的情绪表达",
   "soundsSubtitleCalling": "召唤猫咪与环境音",
-  "soundsSubtitleEnvironment": "现有音乐 + 6种类型占位",
+  "soundsSubtitleEnvironment": "现有音乐 + 新增6类音乐",
   "soundLooping": "循环中",
   "soundPlaceholderTag": "待补充",
   "soundPlaceholderHint": "该音乐类型已占位，等待你补充音频与图片",
@@ -279,6 +279,17 @@
   "gameRainbowTouchUnit": "互动",
   "gameRainbowHint": "轻触屏幕，彩虹会靠近猫爪",
   "gameShadowPeekHint": "仔细观察草丛和纸箱...",
+  "gameHoleAmbush": "地鼠埋伏",
+  "gameFeatherWand": "逗猫棒",
+  "gameHoleAmbushSubtitle": "洞穴里的突然袭击",
+  "gameFeatherWandSubtitle": "挥舞逗猫棒吸引注意力",
+  "gameHoleAmbushDescription": "猎物随机从洞口探出头，趁它们缩回去之前抓住它们！",
+  "gameFeatherWandDescription": "逗猫棒在屏幕上移动，点击屏幕捕捉羽毛！",
+  "gameHoleAmbushTips": "盯紧洞口，手疾眼快！",
+  "gameHoleAmbushHint": "盯住洞口，目标出现就点击",
+  "gameFeatherWandTips": "跟随羽毛移动轨迹出击！",
+  "gameFeatherWandHint": "滑动或点击屏幕玩耍逗猫棒",
+  "gameFeatherWandHit": "抓到了！",
   "gameRewardCapturedGoal": "抓到啦！+{rewardMl}ml 补水建议，今日互动目标达成",
   "@gameRewardCapturedGoal": {
     "placeholders": {
@@ -456,6 +467,23 @@
       "count": { "type": "int" }
     }
   },
+  "catPersonalitySection": "性格档案",
+  "catPersonalityUnknown": "尚未完成性格测试",
+  "catPersonalityKnown": "{code} · {title}",
+  "@catPersonalityKnown": {
+    "placeholders": {
+      "code": { "type": "String" },
+      "title": { "type": "String" }
+    }
+  },
+  "catPersonalityTestedAt": "测试时间 {time}",
+  "@catPersonalityTestedAt": {
+    "placeholders": {
+      "time": { "type": "String" }
+    }
+  },
+  "catPersonalityGoTest": "去测试",
+  "catPersonalityViewReport": "查看报告",
   "catTrendWeightNoData": "体重 无数据",
   "catTrendWeightChange": "体重 {change}kg",
   "@catTrendWeightChange": {

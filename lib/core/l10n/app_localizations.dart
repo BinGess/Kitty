@@ -179,7 +179,7 @@ abstract class AppLocalizations {
   /// No description provided for @soundsSubtitleEnvironment.
   ///
   /// In zh, this message translates to:
-  /// **'现有音乐 + 6种类型占位'**
+  /// **'现有音乐 + 新增6类音乐'**
   String get soundsSubtitleEnvironment;
 
   /// No description provided for @soundLooping.
@@ -974,6 +974,72 @@ abstract class AppLocalizations {
   /// **'仔细观察草丛和纸箱...'**
   String get gameShadowPeekHint;
 
+  /// No description provided for @gameHoleAmbush.
+  ///
+  /// In zh, this message translates to:
+  /// **'地鼠埋伏'**
+  String get gameHoleAmbush;
+
+  /// No description provided for @gameFeatherWand.
+  ///
+  /// In zh, this message translates to:
+  /// **'逗猫棒'**
+  String get gameFeatherWand;
+
+  /// No description provided for @gameHoleAmbushSubtitle.
+  ///
+  /// In zh, this message translates to:
+  /// **'洞穴里的突然袭击'**
+  String get gameHoleAmbushSubtitle;
+
+  /// No description provided for @gameFeatherWandSubtitle.
+  ///
+  /// In zh, this message translates to:
+  /// **'挥舞逗猫棒吸引注意力'**
+  String get gameFeatherWandSubtitle;
+
+  /// No description provided for @gameHoleAmbushDescription.
+  ///
+  /// In zh, this message translates to:
+  /// **'猎物随机从洞口探出头，趁它们缩回去之前抓住它们！'**
+  String get gameHoleAmbushDescription;
+
+  /// No description provided for @gameFeatherWandDescription.
+  ///
+  /// In zh, this message translates to:
+  /// **'逗猫棒在屏幕上移动，点击屏幕捕捉羽毛！'**
+  String get gameFeatherWandDescription;
+
+  /// No description provided for @gameHoleAmbushTips.
+  ///
+  /// In zh, this message translates to:
+  /// **'盯紧洞口，手疾眼快！'**
+  String get gameHoleAmbushTips;
+
+  /// No description provided for @gameHoleAmbushHint.
+  ///
+  /// In zh, this message translates to:
+  /// **'盯住洞口，目标出现就点击'**
+  String get gameHoleAmbushHint;
+
+  /// No description provided for @gameFeatherWandTips.
+  ///
+  /// In zh, this message translates to:
+  /// **'跟随羽毛移动轨迹出击！'**
+  String get gameFeatherWandTips;
+
+  /// No description provided for @gameFeatherWandHint.
+  ///
+  /// In zh, this message translates to:
+  /// **'滑动或点击屏幕玩耍逗猫棒'**
+  String get gameFeatherWandHint;
+
+  /// No description provided for @gameFeatherWandHit.
+  ///
+  /// In zh, this message translates to:
+  /// **'抓到了！'**
+  String get gameFeatherWandHit;
+
   /// No description provided for @gameRewardCapturedGoal.
   ///
   /// In zh, this message translates to:
@@ -1463,6 +1529,42 @@ abstract class AppLocalizations {
   /// In zh, this message translates to:
   /// **'喂食 {count} 次'**
   String catTrendMeals(int count);
+
+  /// No description provided for @catPersonalitySection.
+  ///
+  /// In zh, this message translates to:
+  /// **'性格档案'**
+  String get catPersonalitySection;
+
+  /// No description provided for @catPersonalityUnknown.
+  ///
+  /// In zh, this message translates to:
+  /// **'尚未完成性格测试'**
+  String get catPersonalityUnknown;
+
+  /// No description provided for @catPersonalityKnown.
+  ///
+  /// In zh, this message translates to:
+  /// **'{code} · {title}'**
+  String catPersonalityKnown(String code, String title);
+
+  /// No description provided for @catPersonalityTestedAt.
+  ///
+  /// In zh, this message translates to:
+  /// **'测试时间 {time}'**
+  String catPersonalityTestedAt(String time);
+
+  /// No description provided for @catPersonalityGoTest.
+  ///
+  /// In zh, this message translates to:
+  /// **'去测试'**
+  String get catPersonalityGoTest;
+
+  /// No description provided for @catPersonalityViewReport.
+  ///
+  /// In zh, this message translates to:
+  /// **'查看报告'**
+  String get catPersonalityViewReport;
 
   /// No description provided for @catTrendWeightNoData.
   ///

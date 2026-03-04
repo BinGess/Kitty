@@ -135,3 +135,64 @@ final healthTimelineProvider =
       entries.sort((a, b) => b.recordedAt.compareTo(a.recordedAt));
       return entries;
     });
+
+final healthDailySummaryProvider =
+    FutureProvider.autoDispose<List<DailyHealthSummary>>((ref) async {
+      final cat = ref.watch(currentCatProvider);
+      if (cat == null) return [];
+      final dao = ref.read(healthDaoProvider);
+
+      final weights = await dao.getWeightRecords(cat.id);
+      final diets = await dao.getDietRecords(cat.id);
+      final waters = await dao.getWaterRecords(cat.id);
+
+      final daily = <DateTime, _DailyAggregate>{};
+
+      DateTime dayKey(DateTime dt) => DateTime(dt.year, dt.month, dt.day);
+
+      for (final w in weights) {
+        final key = dayKey(w.recordedAt);
+        final item = daily.putIfAbsent(key, () => _DailyAggregate(day: key));
+        // Records are already descending by time, first value of the day is latest.
+        item.weightKg ??= w.weightKg;
+      }
+
+      for (final d in diets) {
+        final key = dayKey(d.recordedAt);
+        final item = daily.putIfAbsent(key, () => _DailyAggregate(day: key));
+        item.dietCount += 1;
+        item.dietTotalGrams += d.amountGrams;
+      }
+
+      for (final w in waters) {
+        final key = dayKey(w.recordedAt);
+        final item = daily.putIfAbsent(key, () => _DailyAggregate(day: key));
+        item.waterTotalMl += w.amountMl;
+      }
+
+      final result =
+          daily.values
+              .map(
+                (e) => DailyHealthSummary(
+                  day: e.day,
+                  weightKg: e.weightKg,
+                  dietCount: e.dietCount,
+                  dietTotalGrams: e.dietTotalGrams,
+                  waterTotalMl: e.waterTotalMl,
+                ),
+              )
+              .toList()
+            ..sort((a, b) => b.day.compareTo(a.day));
+
+      return result;
+    });
+
+class _DailyAggregate {
+  final DateTime day;
+  double? weightKg;
+  int dietCount = 0;
+  double dietTotalGrams = 0;
+  double waterTotalMl = 0;
+
+  _DailyAggregate({required this.day});
+}

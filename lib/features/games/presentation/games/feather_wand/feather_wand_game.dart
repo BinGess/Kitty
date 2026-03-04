@@ -5,6 +5,7 @@ import 'package:flutter/scheduler.dart';
 import 'package:flutter/services.dart';
 
 import '../../../domain/game_config.dart';
+import '../../../../../core/l10n/app_localizations.dart';
 
 class _TapRing {
   final Offset center;
@@ -120,7 +121,10 @@ class _FeatherWandGameState extends State<FeatherWandGame> {
     }
 
     final speed = 0.35 + widget.config.speed * 0.75;
-    _time += dt * speed;
+    // 周期性"悬停"：用低频正弦调制速度，让羽毛偶尔近似静止，模拟逗猫棒被轻轻搭着不动
+    final hoverFactor =
+        (sin(_time * 0.52 + pi / 3) > 0.78) ? 0.07 : 1.0;
+    _time += dt * speed * hoverFactor;
 
     final w = _bounds.width;
     final h = _bounds.height;
@@ -193,6 +197,7 @@ class _FeatherWandGameState extends State<FeatherWandGame> {
         }
         if (!_initialized) return const SizedBox.expand();
 
+        final l10n = AppLocalizations.of(context)!;
         return Listener(
           behavior: HitTestBehavior.opaque,
           onPointerDown: (event) => _onTap(event.localPosition),
@@ -210,6 +215,9 @@ class _FeatherWandGameState extends State<FeatherWandGame> {
               overlayTop: overlayTop,
               overlaySize: overlaySize,
               overlayLeft: overlayLeft,
+              scoreUnit: l10n.gameScoreUnit,
+              hintText: l10n.gameFeatherWandHint,
+              hitText: l10n.gameFeatherWandHit,
             ),
           ),
         );
@@ -230,6 +238,9 @@ class _FeatherWandPainter extends CustomPainter {
   final double overlayTop;
   final double overlaySize;
   final double overlayLeft;
+  final String scoreUnit;
+  final String hintText;
+  final String hitText;
 
   _FeatherWandPainter({
     required this.bounds,
@@ -243,6 +254,9 @@ class _FeatherWandPainter extends CustomPainter {
     required this.overlayTop,
     required this.overlaySize,
     required this.overlayLeft,
+    required this.scoreUnit,
+    required this.hintText,
+    required this.hitText,
   });
 
   @override
@@ -397,7 +411,7 @@ class _FeatherWandPainter extends CustomPainter {
 
     final tp = TextPainter(
       text: TextSpan(
-        text: '抓到!',
+        text: hitText,
         style: TextStyle(
           color: const Color(0xFFFFF59D).withValues(alpha: hitFlash),
           fontSize: 22,
@@ -431,9 +445,9 @@ class _FeatherWandPainter extends CustomPainter {
               letterSpacing: 2,
             ),
           ),
-          const TextSpan(
-            text: ' 次',
-            style: TextStyle(
+          TextSpan(
+            text: ' $scoreUnit',
+            style: const TextStyle(
               color: Color(0x66FFFFFF),
               fontSize: 14,
               fontWeight: FontWeight.w300,
@@ -451,9 +465,9 @@ class _FeatherWandPainter extends CustomPainter {
 
   void _paintHint(Canvas canvas, Size size) {
     final tp = TextPainter(
-      text: const TextSpan(
-        text: '跟着羽毛走，扑中就得分',
-        style: TextStyle(
+      text: TextSpan(
+        text: hintText,
+        style: const TextStyle(
           color: Color(0xCCFFFFFF),
           fontSize: 15,
           fontWeight: FontWeight.w500,

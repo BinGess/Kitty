@@ -1,10 +1,12 @@
 import 'dart:math';
+import 'dart:ui' as ui;
 
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter/services.dart';
 
 import '../../../domain/game_config.dart';
+import '../../../../../core/l10n/app_localizations.dart';
 
 enum _AmbushPhase { waiting, rising, holding, falling }
 
@@ -16,6 +18,28 @@ class _HitPulse {
   final double maxAge;
 
   _HitPulse({required this.center, required this.age, required this.maxAge});
+}
+
+class _ConfettiParticle {
+  Offset position;
+  Offset velocity;
+  double age;
+  final double maxAge;
+  final Color color;
+  final double size;
+  double rotation;
+  final double spin;
+
+  _ConfettiParticle({
+    required this.position,
+    required this.velocity,
+    required this.age,
+    required this.maxAge,
+    required this.color,
+    required this.size,
+    required this.rotation,
+    required this.spin,
+  });
 }
 
 /// 洞洞伏击：猎物会随机从洞口探头，点击命中得分
@@ -33,6 +57,8 @@ class _HoleAmbushGameState extends State<HoleAmbushGame> {
   Rect _bounds = Rect.zero;
   List<Offset> _holes = const [];
   bool _initialized = false;
+  ui.Image? _mouseImage;
+  ui.Image? _fishImage;
 
   _AmbushPhase _phase = _AmbushPhase.waiting;
   _AmbushTarget _activeTarget = _AmbushTarget.mouse;
@@ -44,11 +70,38 @@ class _HoleAmbushGameState extends State<HoleAmbushGame> {
   double _lastTime = 0;
   int _score = 0;
   final List<_HitPulse> _hitPulses = [];
+  final List<_ConfettiParticle> _confetti = [];
 
   @override
   void initState() {
     super.initState();
+    _loadTargetImages();
     _scheduleFrame();
+  }
+
+  Future<void> _loadTargetImages() async {
+    final mouse = await _loadImageAsset(
+      'assets/images/games/hole_ambush/ambush_mouse.png',
+    );
+    final fish = await _loadImageAsset(
+      'assets/images/games/hole_ambush/ambush_fish.png',
+    );
+    if (!mounted) return;
+    setState(() {
+      _mouseImage = mouse;
+      _fishImage = fish;
+    });
+  }
+
+  Future<ui.Image?> _loadImageAsset(String assetPath) async {
+    try {
+      final data = await rootBundle.load(assetPath);
+      final codec = await ui.instantiateImageCodec(data.buffer.asUint8List());
+      final frame = await codec.getNextFrame();
+      return frame.image;
+    } catch (_) {
+      return null;
+    }
   }
 
   void _scheduleFrame() {
@@ -119,6 +172,20 @@ class _HoleAmbushGameState extends State<HoleAmbushGame> {
         _hitPulses.removeAt(i);
       }
     }
+
+    for (int i = _confetti.length - 1; i >= 0; i--) {
+      final p = _confetti[i];
+      p.age += dt;
+      p.velocity = Offset(p.velocity.dx * 0.985, p.velocity.dy + 420 * dt);
+      p.position = Offset(
+        p.position.dx + p.velocity.dx * dt,
+        p.position.dy + p.velocity.dy * dt,
+      );
+      p.rotation += p.spin * dt;
+      if (p.age >= p.maxAge) {
+        _confetti.removeAt(i);
+      }
+    }
   }
 
   void _startWaiting({bool quick = false}) {
@@ -173,12 +240,13 @@ class _HoleAmbushGameState extends State<HoleAmbushGame> {
     }
 
     final center = _targetCenter();
-    final hitRadius = 34.0;
+    final hitRadius = 52.0;
     final hit = (localPosition - center).distance <= hitRadius;
     if (!hit) return;
 
     _score++;
     _hitPulses.add(_HitPulse(center: center, age: 0, maxAge: 0.45));
+    _spawnConfetti(center);
     if (widget.config.vibrationEnabled) {
       HapticFeedback.mediumImpact();
     }
@@ -186,6 +254,34 @@ class _HoleAmbushGameState extends State<HoleAmbushGame> {
       SystemSound.play(SystemSoundType.click);
     }
     _startWaiting(quick: true);
+  }
+
+  void _spawnConfetti(Offset center) {
+    const palette = <Color>[
+      Color(0xFFFF7043),
+      Color(0xFFFFCA28),
+      Color(0xFFEC407A),
+      Color(0xFF66BB6A),
+      Color(0xFF29B6F6),
+      Color(0xFFFF8A65),
+    ];
+
+    for (int i = 0; i < 18; i++) {
+      final angle = _rng.nextDouble() * pi * 2;
+      final speed = 95 + _rng.nextDouble() * 170;
+      _confetti.add(
+        _ConfettiParticle(
+          position: center,
+          velocity: Offset(cos(angle) * speed, sin(angle) * speed - 130),
+          age: 0,
+          maxAge: 0.55 + _rng.nextDouble() * 0.28,
+          color: palette[_rng.nextInt(palette.length)],
+          size: 4 + _rng.nextDouble() * 5,
+          rotation: _rng.nextDouble() * pi * 2,
+          spin: (_rng.nextDouble() - 0.5) * 12,
+        ),
+      );
+    }
   }
 
   @override
@@ -201,6 +297,7 @@ class _HoleAmbushGameState extends State<HoleAmbushGame> {
         }
         if (!_initialized) return const SizedBox.expand();
 
+        final l10n = AppLocalizations.of(context)!;
         return Listener(
           behavior: HitTestBehavior.opaque,
           onPointerDown: (event) => _onTap(event.localPosition),
@@ -215,9 +312,14 @@ class _HoleAmbushGameState extends State<HoleAmbushGame> {
               peekProgress: _peekProgress,
               score: _score,
               hitPulses: _hitPulses,
+              confetti: _confetti,
               overlayTop: overlayTop,
               overlaySize: overlaySize,
               overlayLeft: overlayLeft,
+              scoreUnit: l10n.gameScoreUnit,
+              hintText: l10n.gameHoleAmbushHint,
+              mouseImage: _mouseImage,
+              fishImage: _fishImage,
             ),
           ),
         );
@@ -235,9 +337,14 @@ class _HoleAmbushPainter extends CustomPainter {
   final double peekProgress;
   final int score;
   final List<_HitPulse> hitPulses;
+  final List<_ConfettiParticle> confetti;
   final double overlayTop;
   final double overlaySize;
   final double overlayLeft;
+  final String scoreUnit;
+  final String hintText;
+  final ui.Image? mouseImage;
+  final ui.Image? fishImage;
 
   _HoleAmbushPainter({
     required this.bounds,
@@ -248,9 +355,14 @@ class _HoleAmbushPainter extends CustomPainter {
     required this.peekProgress,
     required this.score,
     required this.hitPulses,
+    required this.confetti,
     required this.overlayTop,
     required this.overlaySize,
     required this.overlayLeft,
+    required this.scoreUnit,
+    required this.hintText,
+    required this.mouseImage,
+    required this.fishImage,
   });
 
   @override
@@ -261,6 +373,7 @@ class _HoleAmbushPainter extends CustomPainter {
       _paintTarget(canvas, holes[activeHoleIndex], peekProgress, activeTarget);
     }
     _paintHitPulses(canvas);
+    _paintConfetti(canvas);
     _paintScore(canvas);
     if (score == 0) {
       _paintHint(canvas, size);
@@ -336,15 +449,27 @@ class _HoleAmbushPainter extends CustomPainter {
 
     switch (target) {
       case _AmbushTarget.mouse:
-        _drawMouse(canvas, c);
+        _drawMouse(canvas, c, peek);
       case _AmbushTarget.fish:
-        _drawFish(canvas, c);
+        _drawFish(canvas, c, peek);
       case _AmbushTarget.feather:
         _drawFeather(canvas, c);
     }
   }
 
-  void _drawMouse(Canvas canvas, Offset c) {
+  void _drawMouse(Canvas canvas, Offset c, double peek) {
+    if (mouseImage != null) {
+      final scale = 0.94 + peek * 0.24;
+      _drawSprite(
+        canvas,
+        c: Offset(c.dx, c.dy - 5),
+        image: mouseImage!,
+        width: 88 * scale,
+        height: 88 * scale,
+      );
+      return;
+    }
+
     final bodyPaint = Paint()..color = const Color(0xFFFFC48A);
     canvas.drawCircle(c, 13, bodyPaint);
     canvas.drawCircle(Offset(c.dx - 8, c.dy - 11), 5, bodyPaint);
@@ -366,7 +491,19 @@ class _HoleAmbushPainter extends CustomPainter {
     );
   }
 
-  void _drawFish(Canvas canvas, Offset c) {
+  void _drawFish(Canvas canvas, Offset c, double peek) {
+    if (fishImage != null) {
+      final scale = 0.95 + peek * 0.24;
+      _drawSprite(
+        canvas,
+        c: Offset(c.dx, c.dy - 4),
+        image: fishImage!,
+        width: 94 * scale,
+        height: 84 * scale,
+      );
+      return;
+    }
+
     final paint = Paint()..color = const Color(0xFF81D4FA);
     canvas.drawOval(Rect.fromCenter(center: c, width: 28, height: 16), paint);
     final tail = Path()
@@ -379,6 +516,28 @@ class _HoleAmbushPainter extends CustomPainter {
       Offset(c.dx - 8, c.dy - 1),
       1.3,
       Paint()..color = Colors.black87,
+    );
+  }
+
+  void _drawSprite(
+    Canvas canvas, {
+    required Offset c,
+    required ui.Image image,
+    required double width,
+    required double height,
+  }) {
+    final src = Rect.fromLTWH(
+      0,
+      0,
+      image.width.toDouble(),
+      image.height.toDouble(),
+    );
+    final dst = Rect.fromCenter(center: c, width: width, height: height);
+    canvas.drawImageRect(
+      image,
+      src,
+      dst,
+      Paint()..filterQuality = FilterQuality.high,
     );
   }
 
@@ -429,12 +588,45 @@ class _HoleAmbushPainter extends CustomPainter {
       final alpha = (1 - t) * 0.55;
       canvas.drawCircle(
         pulse.center,
+        18 + t * 16,
+        Paint()..color = const Color(0xFFFFF176).withValues(alpha: alpha * 0.5),
+      );
+      canvas.drawCircle(
+        pulse.center,
         r,
         Paint()
           ..color = const Color(0xFFFFB74D).withValues(alpha: alpha)
           ..style = PaintingStyle.stroke
           ..strokeWidth = 3 - t * 2,
       );
+    }
+  }
+
+  void _paintConfetti(Canvas canvas) {
+    for (int i = 0; i < confetti.length; i++) {
+      final p = confetti[i];
+      final t = (p.age / p.maxAge).clamp(0.0, 1.0);
+      final alpha = 1 - t;
+      canvas.save();
+      canvas.translate(p.position.dx, p.position.dy);
+      canvas.rotate(p.rotation);
+      final paint = Paint()..color = p.color.withValues(alpha: alpha);
+      if (i.isEven) {
+        canvas.drawRRect(
+          RRect.fromRectAndRadius(
+            Rect.fromCenter(
+              center: Offset.zero,
+              width: p.size,
+              height: p.size * 0.65,
+            ),
+            const Radius.circular(2),
+          ),
+          paint,
+        );
+      } else {
+        canvas.drawCircle(Offset.zero, p.size * 0.35, paint);
+      }
+      canvas.restore();
     }
   }
 
@@ -451,9 +643,9 @@ class _HoleAmbushPainter extends CustomPainter {
               letterSpacing: 2,
             ),
           ),
-          const TextSpan(
-            text: ' 次',
-            style: TextStyle(
+          TextSpan(
+            text: ' $scoreUnit',
+            style: const TextStyle(
               color: Color(0x66FFFFFF),
               fontSize: 14,
               fontWeight: FontWeight.w300,
@@ -472,9 +664,9 @@ class _HoleAmbushPainter extends CustomPainter {
 
   void _paintHint(Canvas canvas, Size size) {
     final tp = TextPainter(
-      text: const TextSpan(
-        text: '盯住洞口，看到猎物冒头就拍它',
-        style: TextStyle(
+      text: TextSpan(
+        text: hintText,
+        style: const TextStyle(
           color: Color(0xCCFFFFFF),
           fontSize: 15,
           fontWeight: FontWeight.w500,

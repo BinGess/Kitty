@@ -15,7 +15,7 @@
   "soundCategoryEnvironment": "Music",
   "soundsSubtitleEmotion": "Cat's Emotional Expressions",
   "soundsSubtitleCalling": "Calling & Environment Sounds",
-  "soundsSubtitleEnvironment": "Current Music + 6 Placeholder Types",
+  "soundsSubtitleEnvironment": "Current Music + 6 New Music Types",
   "soundLooping": "Looping",
   "soundPlaceholderTag": "Pending",
   "soundPlaceholderHint": "This music type is a placeholder. Add audio and image later.",
@@ -279,6 +279,17 @@
   "gameRainbowTouchUnit": "taps",
   "gameRainbowHint": "Tap the screen to attract the rainbow",
   "gameShadowPeekHint": "Watch the grass and boxes carefully...",
+  "gameHoleAmbush": "Hole Ambush",
+  "gameFeatherWand": "Feather Wand",
+  "gameHoleAmbushSubtitle": "Surprise attacks from holes",
+  "gameFeatherWandSubtitle": "Swing the wand to tease",
+  "gameHoleAmbushDescription": "Prey appears randomly from holes. Catch them before they hide!",
+  "gameFeatherWandDescription": "A feather wand moves across the screen. Tap to catch the feather!",
+  "gameHoleAmbushTips": "Watch the holes closely and tap quickly!",
+  "gameHoleAmbushHint": "Watch the holes and tap when targets pop up",
+  "gameFeatherWandTips": "Follow the feather movement and strike!",
+  "gameFeatherWandHint": "Swipe or tap to play with the feather",
+  "gameFeatherWandHit": "Caught!",
   "gameRewardCapturedGoal": "Caught! +{rewardMl}ml hydration suggestion, today's interaction goal reached",
   "@gameRewardCapturedGoal": {
     "placeholders": {
@@ -456,6 +467,23 @@
       "count": { "type": "int" }
     }
   },
+  "catPersonalitySection": "Personality",
+  "catPersonalityUnknown": "No personality test yet",
+  "catPersonalityKnown": "{code} · {title}",
+  "@catPersonalityKnown": {
+    "placeholders": {
+      "code": { "type": "String" },
+      "title": { "type": "String" }
+    }
+  },
+  "catPersonalityTestedAt": "Tested at {time}",
+  "@catPersonalityTestedAt": {
+    "placeholders": {
+      "time": { "type": "String" }
+    }
+  },
+  "catPersonalityGoTest": "Take Test",
+  "catPersonalityViewReport": "View Report",
   "catTrendWeightNoData": "Weight: No data",
   "catTrendWeightChange": "Weight {change}kg",
   "@catTrendWeightChange": {

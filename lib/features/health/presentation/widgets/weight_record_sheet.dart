@@ -20,6 +20,7 @@ class _WeightRecordSheetState extends ConsumerState<WeightRecordSheet> {
   String? _mood;
   double? _lastWeight;
   int? _lastDays;
+  DateTime _time = DateTime.now();
 
   final _intCtrl = FixedExtentScrollController(initialItem: 4);
   final _decCtrl = FixedExtentScrollController(initialItem: 50);
@@ -78,7 +79,7 @@ class _WeightRecordSheetState extends ConsumerState<WeightRecordSheet> {
           catId: Value(cat.id),
           weightKg: Value(_currentWeight),
           moodAnnotation: Value(_mood),
-          recordedAt: Value(DateTime.now()),
+          recordedAt: Value(_time),
         ),
       );
       if (mounted) Navigator.pop(context, true);
@@ -268,6 +269,8 @@ class _WeightRecordSheetState extends ConsumerState<WeightRecordSheet> {
               );
             }),
           ),
+          const SizedBox(height: 20),
+          _timeSelector(l10n),
           const SizedBox(height: 24),
           SizedBox(
             width: double.infinity,
@@ -322,6 +325,57 @@ class _WeightRecordSheetState extends ConsumerState<WeightRecordSheet> {
       decoration: BoxDecoration(
         color: AppColors.divider,
         borderRadius: BorderRadius.circular(2),
+      ),
+    ),
+  );
+
+  Widget _timeSelector(AppLocalizations l10n) => GestureDetector(
+    onTap: () async {
+      final picked = await showTimePicker(
+        context: context,
+        initialTime: TimeOfDay.fromDateTime(_time),
+      );
+      if (picked != null) {
+        setState(() {
+          _time = DateTime(
+            _time.year,
+            _time.month,
+            _time.day,
+            picked.hour,
+            picked.minute,
+          );
+        });
+      }
+    },
+    child: Container(
+      width: double.infinity,
+      padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
+      decoration: BoxDecoration(
+        color: AppColors.surface,
+        borderRadius: BorderRadius.circular(14),
+        border: Border.all(color: AppColors.divider),
+      ),
+      child: Row(
+        children: [
+          const Icon(
+            Icons.access_time,
+            size: 18,
+            color: AppColors.textSecondary,
+          ),
+          const SizedBox(width: 8),
+          Text(
+            '${_time.hour.toString().padLeft(2, '0')}:${_time.minute.toString().padLeft(2, '0')}',
+            style: const TextStyle(fontSize: 15, color: AppColors.onBackground),
+          ),
+          const Spacer(),
+          Text(
+            l10n.dietTapToChangeTime,
+            style: const TextStyle(
+              fontSize: 12,
+              color: AppColors.textSecondary,
+            ),
+          ),
+        ],
       ),
     ),
   );

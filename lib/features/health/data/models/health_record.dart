@@ -3,6 +3,8 @@ import '../../../../core/constants/app_colors.dart';
 
 enum HealthRecordType { diet, water, weight, excretion }
 
+enum HealthMetricType { weight, diet, water }
+
 /// 统一的健康记录时间轴条目（聚合 4 种记录类型）
 class HealthTimelineEntry {
   final int id;
@@ -87,6 +89,33 @@ class HealthSummary {
   double get playProgress {
     if (playCaptureGoal <= 0) return 1;
     return (todayPlayCaptures / playCaptureGoal).clamp(0, 1).toDouble();
+  }
+}
+
+class DailyHealthSummary {
+  final DateTime day;
+  final double? weightKg;
+  final int dietCount;
+  final double dietTotalGrams;
+  final double waterTotalMl;
+
+  const DailyHealthSummary({
+    required this.day,
+    required this.weightKg,
+    required this.dietCount,
+    required this.dietTotalGrams,
+    required this.waterTotalMl,
+  });
+
+  double metricValue(HealthMetricType metric) {
+    switch (metric) {
+      case HealthMetricType.weight:
+        return weightKg ?? 0;
+      case HealthMetricType.diet:
+        return dietTotalGrams;
+      case HealthMetricType.water:
+        return waterTotalMl;
+    }
   }
 }
 

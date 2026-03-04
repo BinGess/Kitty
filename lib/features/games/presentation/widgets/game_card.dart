@@ -22,6 +22,7 @@ class GameCard extends StatefulWidget {
 class _GameCardState extends State<GameCard>
     with SingleTickerProviderStateMixin {
   late final AnimationController _anim;
+  bool _pressed = false;
 
   @override
   void initState() {
@@ -44,7 +45,14 @@ class _GameCardState extends State<GameCard>
     final mode = widget.mode;
     return GestureDetector(
       onTap: widget.onTap,
-      child: Container(
+      onTapDown: (_) => setState(() => _pressed = true),
+      onTapUp: (_) => setState(() => _pressed = false),
+      onTapCancel: () => setState(() => _pressed = false),
+      child: AnimatedScale(
+        scale: _pressed ? 0.96 : 1.0,
+        duration: const Duration(milliseconds: 80),
+        curve: Curves.easeOut,
+        child: Container(
         height: 100,
         clipBehavior: Clip.antiAlias,
         decoration: BoxDecoration(
@@ -110,8 +118,38 @@ class _GameCardState extends State<GameCard>
                     ),
                   ),
                 ),
+              // 难度标签
+              Positioned(
+                bottom: 10,
+                left: 10,
+                child: Container(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 7,
+                    vertical: 2,
+                  ),
+                  decoration: BoxDecoration(
+                    color: _difficultyColor(mode.difficultyLevel)
+                        .withValues(alpha: 0.22),
+                    borderRadius: BorderRadius.circular(999),
+                    border: Border.all(
+                      color: _difficultyColor(mode.difficultyLevel)
+                          .withValues(alpha: 0.5),
+                      width: 1,
+                    ),
+                  ),
+                  child: Text(
+                    mode.difficulty(l10n),
+                    style: TextStyle(
+                      fontSize: 9,
+                      fontWeight: FontWeight.w700,
+                      color: _difficultyColor(mode.difficultyLevel),
+                    ),
+                  ),
+                ),
+              ),
             ],
           ),
+        ),
         ),
       ),
     );
@@ -131,6 +169,17 @@ class _GameCardState extends State<GameCard>
         return const Color(0xFFFFF3E0);
       case GameMode.featherWand:
         return const Color(0xFFE0F2F1);
+    }
+  }
+
+  Color _difficultyColor(int level) {
+    switch (level) {
+      case 1:
+        return const Color(0xFF81C784);
+      case 2:
+        return const Color(0xFFFFB74D);
+      default:
+        return const Color(0xFFE57373);
     }
   }
 }

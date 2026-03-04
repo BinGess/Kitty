@@ -21,6 +21,7 @@ class _ExcretionRecordSheetState extends ConsumerState<ExcretionRecordSheet>
   int? _bristolScale;
   int? _urineAmount;
   bool _hasAnomaly = false;
+  DateTime _time = DateTime.now();
 
   @override
   void initState() {
@@ -37,8 +38,7 @@ class _ExcretionRecordSheetState extends ConsumerState<ExcretionRecordSheet>
 
   bool get _isPoop => _tabCtrl.index == 0;
   bool get _canSave =>
-      (_isPoop && _bristolScale != null) ||
-      (!_isPoop && _urineAmount != null);
+      (_isPoop && _bristolScale != null) || (!_isPoop && _urineAmount != null);
 
   Future<void> _save() async {
     final l10n = AppLocalizations.of(context)!;
@@ -49,19 +49,23 @@ class _ExcretionRecordSheetState extends ConsumerState<ExcretionRecordSheet>
     }
     try {
       final dao = ref.read(healthDaoProvider);
-      await dao.insertExcretionRecord(ExcretionRecordsCompanion(
-        catId: Value(cat.id),
-        excretionType: Value(_isPoop ? 'poop' : 'urine'),
-        bristolScale: Value(_isPoop ? _bristolScale : null),
-        urineAmount: Value(_isPoop ? null : _urineAmount),
-        hasBlood: Value(_hasAnomaly),
-        hasAnomaly: Value(_hasAnomaly),
-        recordedAt: Value(DateTime.now()),
-      ));
+      await dao.insertExcretionRecord(
+        ExcretionRecordsCompanion(
+          catId: Value(cat.id),
+          excretionType: Value(_isPoop ? 'poop' : 'urine'),
+          bristolScale: Value(_isPoop ? _bristolScale : null),
+          urineAmount: Value(_isPoop ? null : _urineAmount),
+          hasBlood: Value(_hasAnomaly),
+          hasAnomaly: Value(_hasAnomaly),
+          recordedAt: Value(_time),
+        ),
+      );
       if (mounted) Navigator.pop(context, true);
     } catch (e) {
       if (mounted) {
-        _showError(AppLocalizations.of(context)!.commonSaveFailed(e.toString()));
+        _showError(
+          AppLocalizations.of(context)!.commonSaveFailed(e.toString()),
+        );
       }
     }
   }
@@ -80,65 +84,77 @@ class _ExcretionRecordSheetState extends ConsumerState<ExcretionRecordSheet>
         color: AppColors.background,
         borderRadius: BorderRadius.vertical(top: Radius.circular(28)),
       ),
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          _handle(),
-          const SizedBox(height: 12),
-          Text(l10n.excretionSheetTitle,
+      child: SingleChildScrollView(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            _handle(),
+            const SizedBox(height: 12),
+            Text(
+              l10n.excretionSheetTitle,
               style: const TextStyle(
-                  fontSize: 18,
-                  fontWeight: FontWeight.w700,
-                  color: AppColors.onBackground)),
-          const SizedBox(height: 16),
-          Container(
-            decoration: BoxDecoration(
-              color: AppColors.surface,
-              borderRadius: BorderRadius.circular(14),
+                fontSize: 18,
+                fontWeight: FontWeight.w700,
+                color: AppColors.onBackground,
+              ),
             ),
-            child: TabBar(
-              controller: _tabCtrl,
-              indicatorSize: TabBarIndicatorSize.tab,
-              indicator: BoxDecoration(
-                color: AppColors.primary.withValues(alpha: 0.15),
+            const SizedBox(height: 16),
+            Container(
+              decoration: BoxDecoration(
+                color: AppColors.surface,
                 borderRadius: BorderRadius.circular(14),
               ),
-              labelColor: AppColors.primaryDark,
-              unselectedLabelColor: AppColors.textSecondary,
-              dividerColor: Colors.transparent,
-              tabs: [
-                Tab(text: l10n.excretionTabPoop),
-                Tab(text: l10n.excretionTabUrine),
-              ],
-            ),
-          ),
-          const SizedBox(height: 24),
-          AnimatedSwitcher(
-            duration: const Duration(milliseconds: 200),
-            child: _isPoop ? _poopSelector(l10n) : _urineSelector(l10n),
-          ),
-          const SizedBox(height: 20),
-          _anomalyCheckbox(l10n),
-          const SizedBox(height: 24),
-          SizedBox(
-            width: double.infinity,
-            height: 50,
-            child: ElevatedButton(
-              onPressed: _canSave ? _save : null,
-              style: ElevatedButton.styleFrom(
-                backgroundColor: AppColors.success,
-                foregroundColor: Colors.white,
-                disabledBackgroundColor: AppColors.divider,
-                shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(16)),
-                elevation: 0,
+              child: TabBar(
+                controller: _tabCtrl,
+                indicatorSize: TabBarIndicatorSize.tab,
+                indicator: BoxDecoration(
+                  color: AppColors.primary.withValues(alpha: 0.15),
+                  borderRadius: BorderRadius.circular(14),
+                ),
+                labelColor: AppColors.primaryDark,
+                unselectedLabelColor: AppColors.textSecondary,
+                dividerColor: Colors.transparent,
+                tabs: [
+                  Tab(text: l10n.excretionTabPoop),
+                  Tab(text: l10n.excretionTabUrine),
+                ],
               ),
-              child: Text(l10n.commonSave,
-                  style:
-                      const TextStyle(fontSize: 16, fontWeight: FontWeight.w600)),
             ),
-          ),
-        ],
+            const SizedBox(height: 24),
+            AnimatedSwitcher(
+              duration: const Duration(milliseconds: 200),
+              child: _isPoop ? _poopSelector(l10n) : _urineSelector(l10n),
+            ),
+            const SizedBox(height: 20),
+            _anomalyCheckbox(l10n),
+            const SizedBox(height: 20),
+            _timeSelector(l10n),
+            const SizedBox(height: 24),
+            SizedBox(
+              width: double.infinity,
+              height: 50,
+              child: ElevatedButton(
+                onPressed: _canSave ? _save : null,
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: AppColors.success,
+                  foregroundColor: Colors.white,
+                  disabledBackgroundColor: AppColors.divider,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(16),
+                  ),
+                  elevation: 0,
+                ),
+                child: Text(
+                  l10n.commonSave,
+                  style: const TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -188,7 +204,9 @@ class _ExcretionRecordSheetState extends ConsumerState<ExcretionRecordSheet>
                 Text(
                   item.$4,
                   style: const TextStyle(
-                      fontSize: 10, color: AppColors.textSecondary),
+                    fontSize: 10,
+                    color: AppColors.textSecondary,
+                  ),
                 ),
               ],
             ),
@@ -283,9 +301,7 @@ class _ExcretionRecordSheetState extends ConsumerState<ExcretionRecordSheet>
         child: Row(
           children: [
             Icon(
-              _hasAnomaly
-                  ? Icons.check_box
-                  : Icons.check_box_outline_blank,
+              _hasAnomaly ? Icons.check_box : Icons.check_box_outline_blank,
               color: _hasAnomaly ? AppColors.error : AppColors.textSecondary,
               size: 22,
             ),
@@ -300,8 +316,7 @@ class _ExcretionRecordSheetState extends ConsumerState<ExcretionRecordSheet>
             ),
             if (_hasAnomaly) ...[
               const Spacer(),
-              const Icon(Icons.warning_amber,
-                  size: 18, color: AppColors.error),
+              const Icon(Icons.warning_amber, size: 18, color: AppColors.error),
             ],
           ],
         ),
@@ -329,13 +344,64 @@ class _ExcretionRecordSheetState extends ConsumerState<ExcretionRecordSheet>
   }
 
   Widget _handle() => Center(
-        child: Container(
-          width: 36,
-          height: 4,
-          decoration: BoxDecoration(
-            color: AppColors.divider,
-            borderRadius: BorderRadius.circular(2),
-          ),
-        ),
+    child: Container(
+      width: 36,
+      height: 4,
+      decoration: BoxDecoration(
+        color: AppColors.divider,
+        borderRadius: BorderRadius.circular(2),
+      ),
+    ),
+  );
+
+  Widget _timeSelector(AppLocalizations l10n) => GestureDetector(
+    onTap: () async {
+      final picked = await showTimePicker(
+        context: context,
+        initialTime: TimeOfDay.fromDateTime(_time),
       );
+      if (picked != null) {
+        setState(() {
+          _time = DateTime(
+            _time.year,
+            _time.month,
+            _time.day,
+            picked.hour,
+            picked.minute,
+          );
+        });
+      }
+    },
+    child: Container(
+      width: double.infinity,
+      padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
+      decoration: BoxDecoration(
+        color: AppColors.surface,
+        borderRadius: BorderRadius.circular(14),
+        border: Border.all(color: AppColors.divider),
+      ),
+      child: Row(
+        children: [
+          const Icon(
+            Icons.access_time,
+            size: 18,
+            color: AppColors.textSecondary,
+          ),
+          const SizedBox(width: 8),
+          Text(
+            '${_time.hour.toString().padLeft(2, '0')}:${_time.minute.toString().padLeft(2, '0')}',
+            style: const TextStyle(fontSize: 15, color: AppColors.onBackground),
+          ),
+          const Spacer(),
+          Text(
+            l10n.dietTapToChangeTime,
+            style: const TextStyle(
+              fontSize: 12,
+              color: AppColors.textSecondary,
+            ),
+          ),
+        ],
+      ),
+    ),
+  );
 }

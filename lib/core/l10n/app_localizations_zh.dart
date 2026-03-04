@@ -48,7 +48,7 @@ class AppLocalizationsZh extends AppLocalizations {
   String get soundsSubtitleCalling => '召唤猫咪与环境音';
 
   @override
-  String get soundsSubtitleEnvironment => '现有音乐 + 6种类型占位';
+  String get soundsSubtitleEnvironment => '现有音乐 + 新增6类音乐';
 
   @override
   String get soundLooping => '循环中';
@@ -497,6 +497,39 @@ class AppLocalizationsZh extends AppLocalizations {
   String get gameShadowPeekHint => '仔细观察草丛和纸箱...';
 
   @override
+  String get gameHoleAmbush => '地鼠埋伏';
+
+  @override
+  String get gameFeatherWand => '逗猫棒';
+
+  @override
+  String get gameHoleAmbushSubtitle => '洞穴里的突然袭击';
+
+  @override
+  String get gameFeatherWandSubtitle => '挥舞逗猫棒吸引注意力';
+
+  @override
+  String get gameHoleAmbushDescription => '猎物随机从洞口探出头，趁它们缩回去之前抓住它们！';
+
+  @override
+  String get gameFeatherWandDescription => '逗猫棒在屏幕上移动，点击屏幕捕捉羽毛！';
+
+  @override
+  String get gameHoleAmbushTips => '盯紧洞口，手疾眼快！';
+
+  @override
+  String get gameHoleAmbushHint => '盯住洞口，目标出现就点击';
+
+  @override
+  String get gameFeatherWandTips => '跟随羽毛移动轨迹出击！';
+
+  @override
+  String get gameFeatherWandHint => '滑动或点击屏幕玩耍逗猫棒';
+
+  @override
+  String get gameFeatherWandHit => '抓到了！';
+
+  @override
   String gameRewardCapturedGoal(String rewardMl) {
     return '抓到啦！+${rewardMl}ml 补水建议，今日互动目标达成';
   }
@@ -776,6 +809,28 @@ class AppLocalizationsZh extends AppLocalizations {
   String catTrendMeals(int count) {
     return '喂食 $count 次';
   }
+
+  @override
+  String get catPersonalitySection => '性格档案';
+
+  @override
+  String get catPersonalityUnknown => '尚未完成性格测试';
+
+  @override
+  String catPersonalityKnown(String code, String title) {
+    return '$code · $title';
+  }
+
+  @override
+  String catPersonalityTestedAt(String time) {
+    return '测试时间 $time';
+  }
+
+  @override
+  String get catPersonalityGoTest => '去测试';
+
+  @override
+  String get catPersonalityViewReport => '查看报告';
 
   @override
   String get catTrendWeightNoData => '体重 无数据';

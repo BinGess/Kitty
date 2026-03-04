@@ -8,6 +8,7 @@ import '../../../../core/widgets/centered_page_title.dart';
 import '../../../personality_test/presentation/providers/cat_personality_provider.dart';
 import '../../data/models/health_record.dart';
 import '../providers/health_provider.dart';
+import 'health_daily_history_screen.dart';
 import '../widgets/diet_record_sheet.dart';
 import '../widgets/excretion_record_sheet.dart';
 import '../widgets/health_fab.dart';
@@ -28,6 +29,7 @@ class _HealthDashboardScreenState extends ConsumerState<HealthDashboardScreen> {
   void _refresh() {
     ref.invalidate(healthSummaryProvider);
     ref.invalidate(healthTimelineProvider);
+    ref.invalidate(healthDailySummaryProvider);
   }
 
   Future<void> _showSheet(Widget sheet) async {
@@ -38,6 +40,33 @@ class _HealthDashboardScreenState extends ConsumerState<HealthDashboardScreen> {
       builder: (_) => sheet,
     );
     if (result == true) _refresh();
+  }
+
+  Future<void> _openDailyHistory(HealthMetricType metric) async {
+    await Navigator.of(context).push(
+      MaterialPageRoute(
+        builder: (_) => HealthDailyHistoryScreen(initialMetric: metric),
+      ),
+    );
+  }
+
+  Future<void> _showPersonalityTipDialog({
+    required String title,
+    required String advice,
+  }) async {
+    await showDialog<void>(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: Text(title),
+        content: Text(advice),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(),
+            child: Text(MaterialLocalizations.of(context).okButtonLabel),
+          ),
+        ],
+      ),
+    );
   }
 
   Future<void> _deleteEntry(HealthTimelineEntry entry) async {
@@ -94,6 +123,19 @@ class _HealthDashboardScreenState extends ConsumerState<HealthDashboardScreen> {
                     children: [
                       CenteredPageTitle(
                         title: l10n.healthDashboardTitle,
+                        leading: personalityProfile == null
+                            ? null
+                            : _HeaderHelpButton(
+                                onTap: () => _showPersonalityTipDialog(
+                                  title: l10n.healthPersonalityTipTitle(
+                                    personalityProfile.result.personality.code,
+                                  ),
+                                  advice: personalityProfile
+                                      .result
+                                      .personality
+                                      .advice,
+                                ),
+                              ),
                         trailing: _CatSwitcher(),
                       ),
                       Padding(
@@ -105,7 +147,18 @@ class _HealthDashboardScreenState extends ConsumerState<HealthDashboardScreen> {
                             summaryAsync.when(
                               data: (s) => Column(
                                 children: [
-                                  SummaryCards(summary: s),
+                                  SummaryCards(
+                                    summary: s,
+                                    onWeightTap: () => _openDailyHistory(
+                                      HealthMetricType.weight,
+                                    ),
+                                    onDietTap: () => _openDailyHistory(
+                                      HealthMetricType.diet,
+                                    ),
+                                    onWaterTap: () => _openDailyHistory(
+                                      HealthMetricType.water,
+                                    ),
+                                  ),
                                   if (s.isWeightOutOfGoal) ...[
                                     const SizedBox(height: 10),
                                     Container(
@@ -148,56 +201,6 @@ class _HealthDashboardScreenState extends ConsumerState<HealthDashboardScreen> {
                               error: (_, stackTrace) =>
                                   const SizedBox(height: 100),
                             ),
-                            const SizedBox(height: 10),
-                            if (personalityProfile != null)
-                              Container(
-                                width: double.infinity,
-                                padding: const EdgeInsets.symmetric(
-                                  horizontal: 12,
-                                  vertical: 10,
-                                ),
-                                decoration: BoxDecoration(
-                                  color: AppColors.primary.withValues(
-                                    alpha: 0.08,
-                                  ),
-                                  borderRadius: BorderRadius.circular(14),
-                                  border: Border.all(
-                                    color: AppColors.primary.withValues(
-                                      alpha: 0.3,
-                                    ),
-                                  ),
-                                ),
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Text(
-                                      l10n.healthPersonalityTipTitle(
-                                        personalityProfile
-                                            .result
-                                            .personality
-                                            .code,
-                                      ),
-                                      style: const TextStyle(
-                                        fontSize: 12,
-                                        fontWeight: FontWeight.w600,
-                                        color: AppColors.primaryDark,
-                                      ),
-                                    ),
-                                    const SizedBox(height: 4),
-                                    Text(
-                                      personalityProfile
-                                          .result
-                                          .personality
-                                          .advice,
-                                      style: const TextStyle(
-                                        fontSize: 12,
-                                        color: AppColors.onBackground,
-                                        height: 1.45,
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ),
                             const SizedBox(height: 24),
                             _sectionTitle(l10n),
                             const SizedBox(height: 12),
@@ -266,6 +269,34 @@ class _HealthDashboardScreenState extends ConsumerState<HealthDashboardScreen> {
           ),
         ),
       ],
+    );
+  }
+}
+
+class _HeaderHelpButton extends StatelessWidget {
+  final VoidCallback onTap;
+
+  const _HeaderHelpButton({required this.onTap});
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      behavior: HitTestBehavior.opaque,
+      onTap: onTap,
+      child: Container(
+        width: 40,
+        height: 40,
+        alignment: Alignment.center,
+        decoration: BoxDecoration(
+          color: AppColors.primary.withValues(alpha: 0.12),
+          borderRadius: BorderRadius.circular(10),
+        ),
+        child: const Icon(
+          Icons.help_outline_rounded,
+          size: 20,
+          color: AppColors.primary,
+        ),
+      ),
     );
   }
 }

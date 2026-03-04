@@ -61,73 +61,59 @@ class _SoundsScreenState extends ConsumerState<SoundsScreen> {
                     CenteredPageTitle(
                       title: l10n.soundsPageTitle,
                       padding: EdgeInsets.zero,
-                      trailing: isPlaying
-                          ? GestureDetector(
-                              behavior: HitTestBehavior.opaque,
+                      trailing: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          _HeaderActionButton(
+                            icon: Icons.help_outline_rounded,
+                            hasBackground: false,
+                            onTap: () {
+                              showDialog<void>(
+                                context: context,
+                                builder: (context) => AlertDialog(
+                                  title: Text(l10n.personalityRecommendedBadge),
+                                  content: Text(
+                                    personalityProfile != null
+                                        ? l10n.personalityRecommendationSubtitle(
+                                            personalityProfile
+                                                .result
+                                                .personality
+                                                .code,
+                                            personalityProfile
+                                                .result
+                                                .personality
+                                                .title,
+                                          )
+                                        : l10n.testNoResultYet,
+                                  ),
+                                  actions: [
+                                    TextButton(
+                                      onPressed: () =>
+                                          Navigator.of(context).pop(),
+                                      child: Text(
+                                        MaterialLocalizations.of(
+                                          context,
+                                        ).okButtonLabel,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              );
+                            },
+                          ),
+                          if (isPlaying) ...[
+                            const SizedBox(width: AppDimensions.spacingS),
+                            _HeaderActionButton(
+                              icon: Icons.stop_rounded,
                               onTap: () => ref
                                   .read(soundPlaybackProvider.notifier)
                                   .stopAll(),
-                              child: Container(
-                                width: AppDimensions.touchTargetMin,
-                                height: AppDimensions.touchTargetMin,
-                                alignment: Alignment.center,
-                                decoration: BoxDecoration(
-                                  color: AppColors.primary.withValues(
-                                    alpha: 0.12,
-                                  ),
-                                  borderRadius: BorderRadius.circular(10),
-                                ),
-                                child: const Icon(
-                                  Icons.stop_rounded,
-                                  size: AppDimensions.iconSmall,
-                                  color: AppColors.primary,
-                                ),
-                              ),
-                            )
-                          : null,
-                    ),
-                    const SizedBox(height: AppDimensions.spacingM + 4),
-                    if (personalityProfile != null) ...[
-                      Container(
-                        width: double.infinity,
-                        margin: const EdgeInsets.only(
-                          bottom: AppDimensions.spacingM,
-                        ),
-                        padding: const EdgeInsets.all(
-                          AppDimensions.spacingS + 2,
-                        ),
-                        decoration: BoxDecoration(
-                          color: AppColors.primary.withValues(alpha: 0.08),
-                          borderRadius: BorderRadius.circular(
-                            AppDimensions.radiusMedium,
-                          ),
-                          border: Border.all(
-                            color: AppColors.primary.withValues(alpha: 0.24),
-                          ),
-                        ),
-                        child: Row(
-                          children: [
-                            const Icon(
-                              Icons.auto_awesome,
-                              size: AppDimensions.iconSmall,
-                              color: AppColors.primary,
-                            ),
-                            const SizedBox(width: AppDimensions.spacingS),
-                            Expanded(
-                              child: Text(
-                                l10n.personalityRecommendationSubtitle(
-                                  personalityProfile.result.personality.code,
-                                  personalityProfile.result.personality.title,
-                                ),
-                                style: AppTypography.bodySmall.copyWith(
-                                  color: AppColors.onBackground,
-                                ),
-                              ),
                             ),
                           ],
-                        ),
+                        ],
                       ),
-                    ],
+                    ),
+                    const SizedBox(height: AppDimensions.spacingM + 4),
                     const _CategoryTabBar(),
                   ],
                 ),
@@ -171,7 +157,7 @@ class _CategoryTabBar extends StatelessWidget {
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
     return Container(
-      height: 44,
+      height: 50,
       padding: const EdgeInsets.all(4),
       decoration: BoxDecoration(
         color: AppColors.surface,
@@ -187,14 +173,51 @@ class _CategoryTabBar extends StatelessWidget {
         labelColor: AppColors.primary,
         unselectedLabelColor: AppColors.textSecondary,
         labelStyle: AppTypography.labelMedium.copyWith(
+          fontSize: 15,
           fontWeight: FontWeight.w700,
         ),
-        unselectedLabelStyle: AppTypography.labelMedium,
+        unselectedLabelStyle: AppTypography.labelMedium.copyWith(fontSize: 15),
         tabs: [
           Tab(text: l10n.soundCategoryEmotion),
           Tab(text: l10n.soundCategoryCalling),
           Tab(text: l10n.soundCategoryEnvironment),
         ],
+      ),
+    );
+  }
+}
+
+class _HeaderActionButton extends StatelessWidget {
+  final IconData icon;
+  final VoidCallback onTap;
+  final bool hasBackground;
+
+  const _HeaderActionButton({
+    required this.icon,
+    required this.onTap,
+    this.hasBackground = true,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      behavior: HitTestBehavior.opaque,
+      onTap: onTap,
+      child: Container(
+        width: AppDimensions.touchTargetMin,
+        height: AppDimensions.touchTargetMin,
+        alignment: Alignment.center,
+        decoration: BoxDecoration(
+          color: hasBackground
+              ? AppColors.primary.withValues(alpha: 0.12)
+              : Colors.transparent,
+          borderRadius: hasBackground ? BorderRadius.circular(10) : null,
+        ),
+        child: Icon(
+          icon,
+          size: AppDimensions.iconMedium,
+          color: hasBackground ? AppColors.primary : AppColors.textSecondary,
+        ),
       ),
     );
   }
@@ -256,7 +279,7 @@ class _SectionHeader extends StatelessWidget {
           ),
           child: Icon(
             icon,
-            size: AppDimensions.iconSmall - 2,
+            size: AppDimensions.iconMedium,
             color: AppColors.primary,
           ),
         ),
@@ -266,13 +289,14 @@ class _SectionHeader extends StatelessWidget {
           children: [
             Text(
               title,
-              style: AppTypography.labelLarge.copyWith(
+              style: AppTypography.headlineSmall.copyWith(
                 fontWeight: FontWeight.w700,
               ),
             ),
             Text(
               subtitle,
-              style: AppTypography.labelSmall.copyWith(
+              style: AppTypography.labelMedium.copyWith(
+                fontSize: 13,
                 color: AppColors.textSecondary,
               ),
             ),
@@ -296,7 +320,7 @@ class _SoundGrid extends StatelessWidget {
         crossAxisCount: 3,
         crossAxisSpacing: AppDimensions.spacingS,
         mainAxisSpacing: AppDimensions.spacingS,
-        childAspectRatio: 0.82,
+        childAspectRatio: 0.74,
       ),
       itemCount: sounds.length,
       itemBuilder: (context, index) {

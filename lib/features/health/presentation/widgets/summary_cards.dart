@@ -5,19 +5,63 @@ import '../../data/models/health_record.dart';
 
 class SummaryCards extends StatelessWidget {
   final HealthSummary summary;
+  final VoidCallback? onWeightTap;
+  final VoidCallback? onWaterTap;
+  final VoidCallback? onDietTap;
 
-  const SummaryCards({super.key, required this.summary});
+  const SummaryCards({
+    super.key,
+    required this.summary,
+    this.onWeightTap,
+    this.onWaterTap,
+    this.onDietTap,
+  });
 
   @override
   Widget build(BuildContext context) {
     return Row(
       children: [
-        Expanded(child: _WeightCard(summary: summary)),
+        Expanded(
+          child: _CardTap(
+            onTap: onWeightTap,
+            child: _WeightCard(summary: summary),
+          ),
+        ),
         const SizedBox(width: 8),
-        Expanded(child: _WaterCard(summary: summary)),
+        Expanded(
+          child: _CardTap(
+            onTap: onWaterTap,
+            child: _WaterCard(summary: summary),
+          ),
+        ),
         const SizedBox(width: 8),
-        Expanded(child: _DietCard(summary: summary)),
+        Expanded(
+          child: _CardTap(
+            onTap: onDietTap,
+            child: _DietCard(summary: summary),
+          ),
+        ),
       ],
+    );
+  }
+}
+
+class _CardTap extends StatelessWidget {
+  final Widget child;
+  final VoidCallback? onTap;
+
+  const _CardTap({required this.child, this.onTap});
+
+  @override
+  Widget build(BuildContext context) {
+    if (onTap == null) return child;
+    return Material(
+      color: Colors.transparent,
+      child: InkWell(
+        borderRadius: BorderRadius.circular(18),
+        onTap: onTap,
+        child: child,
+      ),
     );
   }
 }

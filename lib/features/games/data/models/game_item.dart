@@ -113,9 +113,9 @@ extension GameModeLocalizedText on GameMode {
       case GameMode.rainbow:
         return l10n.gameRainbow;
       case GameMode.holeAmbush:
-        return '洞洞伏击';
+        return l10n.gameHoleAmbush;
       case GameMode.featherWand:
-        return '羽毛逗杆';
+        return l10n.gameFeatherWand;
     }
   }
 
@@ -130,9 +130,9 @@ extension GameModeLocalizedText on GameMode {
       case GameMode.rainbow:
         return l10n.gameRainbowSubtitle;
       case GameMode.holeAmbush:
-        return '猎物会随机从洞口探头';
+        return l10n.gameHoleAmbushSubtitle;
       case GameMode.featherWand:
-        return '模拟逗猫棒的飘动轨迹';
+        return l10n.gameFeatherWandSubtitle;
     }
   }
 
@@ -147,9 +147,9 @@ extension GameModeLocalizedText on GameMode {
       case GameMode.rainbow:
         return l10n.gameRainbowDescription;
       case GameMode.holeAmbush:
-        return '猎物会在不同洞口快速探头，拍到即得分，适合高互动节奏。';
+        return l10n.gameHoleAmbushDescription;
       case GameMode.featherWand:
-        return '羽毛会像逗猫棒一样在屏幕上游走，适合猫咪追击、扑抓和拍打。';
+        return l10n.gameFeatherWandDescription;
     }
   }
 
@@ -175,9 +175,9 @@ extension GameModeLocalizedText on GameMode {
       case GameMode.rainbow:
         return l10n.gameRainbowTips;
       case GameMode.holeAmbush:
-        return '盯住洞口，看到猎物露头时快速拍击';
+        return l10n.gameHoleAmbushTips;
       case GameMode.featherWand:
-        return '观察羽毛移动方向，提前拦截更容易命中';
+        return l10n.gameFeatherWandTips;
     }
   }
 }
