@@ -1,17 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import '../constants/app_colors.dart';
+import '../l10n/app_localizations.dart';
 
 class ScaffoldWithNavBar extends StatelessWidget {
   final StatefulNavigationShell navigationShell;
 
-  const ScaffoldWithNavBar({
-    super.key,
-    required this.navigationShell,
-  });
+  const ScaffoldWithNavBar({super.key, required this.navigationShell});
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     return Scaffold(
       backgroundColor: AppColors.background,
       body: navigationShell,
@@ -23,31 +22,31 @@ class ScaffoldWithNavBar extends StatelessWidget {
             initialLocation: index == navigationShell.currentIndex,
           );
         },
-        destinations: const [
+        destinations: [
           NavigationDestination(
-            icon: Icon(Icons.music_note_outlined),
-            selectedIcon: Icon(Icons.music_note),
-            label: '声音',
+            icon: const Icon(Icons.music_note_outlined),
+            selectedIcon: const Icon(Icons.music_note),
+            label: l10n.tabSounds,
           ),
           NavigationDestination(
-            icon: Icon(Icons.psychology_outlined),
-            selectedIcon: Icon(Icons.psychology),
-            label: '性格',
+            icon: const Icon(Icons.psychology_outlined),
+            selectedIcon: const Icon(Icons.psychology),
+            label: l10n.tabTest,
           ),
           NavigationDestination(
-            icon: Icon(Icons.monitor_heart_outlined),
-            selectedIcon: Icon(Icons.monitor_heart),
-            label: '健康',
+            icon: const Icon(Icons.monitor_heart_outlined),
+            selectedIcon: const Icon(Icons.monitor_heart),
+            label: l10n.tabHealth,
           ),
           NavigationDestination(
-            icon: Icon(Icons.games_outlined),
-            selectedIcon: Icon(Icons.games),
-            label: '游戏',
+            icon: const Icon(Icons.games_outlined),
+            selectedIcon: const Icon(Icons.games),
+            label: l10n.tabGames,
           ),
           NavigationDestination(
-            icon: Icon(Icons.more_horiz_outlined),
-            selectedIcon: Icon(Icons.more_horiz),
-            label: '更多',
+            icon: const Icon(Icons.more_horiz_outlined),
+            selectedIcon: const Icon(Icons.more_horiz),
+            label: l10n.tabMore,
           ),
         ],
       ),

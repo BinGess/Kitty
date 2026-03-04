@@ -1,12 +1,10 @@
 import 'package:flutter/material.dart';
 import '../../../../core/constants/app_colors.dart';
+import '../../../../core/l10n/app_localizations.dart';
 
 enum GameMode {
   laser(
     id: 'laser',
-    title: '激光逗猫',
-    subtitle: '经典红点追逐游戏',
-    description: '模拟激光笔在屏幕上移动，吸引猫咪追逐。红色高亮光点在黑色背景上缓慢移动，偶尔加速或暂停。',
     icon: Icons.flashlight_on,
     previewIcon: Icons.adjust,
     color: AppColors.gameLaser,
@@ -14,16 +12,11 @@ enum GameMode {
     backgroundColor: AppColors.gameBackground,
     cardGradientStart: Color(0xFF2D0A0A),
     cardGradientEnd: Color(0xFF1A0000),
-    difficulty: '简单',
     difficultyLevel: 1,
-    tips: '将手机平放在地上，让猫咪自由追逐红点',
     emoji: '🔴',
   ),
   shadowPeek(
     id: 'shadow_peek',
-    title: '影子藏猫猫',
-    subtitle: '草丛纸箱里的惊喜',
-    description: '屏幕主体为草丛或纸箱，小鸟、小蛇偶尔露出一部分并伴随轻微响声。点击遮挡物，物体会迅速逃窜至下一个掩体。',
     icon: Icons.grass,
     previewIcon: Icons.pest_control_rodent,
     color: Color(0xFF4CAF50),
@@ -31,16 +24,11 @@ enum GameMode {
     backgroundColor: Color(0xFF2E7D32),
     cardGradientStart: Color(0xFF1B5E20),
     cardGradientEnd: Color(0xFF2E7D32),
-    difficulty: '简单',
     difficultyLevel: 1,
-    tips: '点击草丛或纸箱，看看谁在躲猫猫',
     emoji: '🌿',
   ),
   catchMouse(
     id: 'catch_mouse',
-    title: '捕鼠/捕鱼大战',
-    subtitle: '拟真老鼠或鱼游走，拍击即捕获',
-    description: '拟真的老鼠或鱼在屏幕游走，猫咪拍击即为捕获。击中时播放吱吱/水花声，物体消失并产生散开粒子特效，3秒后随机刷新。',
     icon: Icons.cruelty_free,
     previewIcon: Icons.pest_control,
     color: AppColors.gameMouse,
@@ -48,17 +36,11 @@ enum GameMode {
     backgroundColor: AppColors.gameBackground,
     cardGradientStart: Color(0xFF2D2200),
     cardGradientEnd: Color(0xFF1A1400),
-    difficulty: '中等',
     difficultyLevel: 2,
-    tips: '拍击老鼠或鱼即可捕获，享受吱吱声与粒子特效',
     emoji: '🐭',
   ),
   rainbow(
     id: 'rainbow',
-    title: '彩虹追逐',
-    subtitle: '光带会被猫爪吸引',
-    description:
-        '彩虹光带在屏幕上流动，触碰屏幕会吸引彩虹靠近并产生闪烁光点与波纹，适合猫咪追逐和拍打互动。',
     icon: Icons.auto_awesome,
     previewIcon: Icons.blur_on,
     color: AppColors.gameRainbow,
@@ -66,16 +48,35 @@ enum GameMode {
     backgroundColor: Color(0xFF1A0033),
     cardGradientStart: Color(0xFF1A0033),
     cardGradientEnd: Color(0xFF0D001A),
-    difficulty: '简单',
     difficultyLevel: 1,
-    tips: '轻触屏幕可引导彩虹靠近，适合互动和放松',
     emoji: '🌈',
+  ),
+  holeAmbush(
+    id: 'hole_ambush',
+    icon: Icons.grid_view_rounded,
+    previewIcon: Icons.ads_click,
+    color: Color(0xFFFF8A65),
+    accentColor: Color(0xFFFFB74D),
+    backgroundColor: Color(0xFF2B1C13),
+    cardGradientStart: Color(0xFF4E342E),
+    cardGradientEnd: Color(0xFF2B1C13),
+    difficultyLevel: 2,
+    emoji: '🕳️',
+  ),
+  featherWand(
+    id: 'feather_wand',
+    icon: Icons.air,
+    previewIcon: Icons.waving_hand_rounded,
+    color: Color(0xFF26A69A),
+    accentColor: Color(0xFF80CBC4),
+    backgroundColor: Color(0xFF0E3A3A),
+    cardGradientStart: Color(0xFF134E4A),
+    cardGradientEnd: Color(0xFF0E3A3A),
+    difficultyLevel: 2,
+    emoji: '🪶',
   );
 
   final String id;
-  final String title;
-  final String subtitle;
-  final String description;
   final IconData icon;
   final IconData previewIcon;
   final Color color;
@@ -83,16 +84,11 @@ enum GameMode {
   final Color backgroundColor;
   final Color cardGradientStart;
   final Color cardGradientEnd;
-  final String difficulty;
   final int difficultyLevel;
-  final String tips;
   final String emoji;
 
   const GameMode({
     required this.id,
-    required this.title,
-    required this.subtitle,
-    required this.description,
     required this.icon,
     required this.previewIcon,
     required this.color,
@@ -100,9 +96,88 @@ enum GameMode {
     required this.backgroundColor,
     required this.cardGradientStart,
     required this.cardGradientEnd,
-    required this.difficulty,
     required this.difficultyLevel,
-    required this.tips,
     required this.emoji,
   });
+}
+
+extension GameModeLocalizedText on GameMode {
+  String title(AppLocalizations l10n) {
+    switch (this) {
+      case GameMode.laser:
+        return l10n.gameLaser;
+      case GameMode.shadowPeek:
+        return l10n.gameShadowPeek;
+      case GameMode.catchMouse:
+        return l10n.gameMouseHunt;
+      case GameMode.rainbow:
+        return l10n.gameRainbow;
+      case GameMode.holeAmbush:
+        return '洞洞伏击';
+      case GameMode.featherWand:
+        return '羽毛逗杆';
+    }
+  }
+
+  String subtitle(AppLocalizations l10n) {
+    switch (this) {
+      case GameMode.laser:
+        return l10n.gameLaserSubtitle;
+      case GameMode.shadowPeek:
+        return l10n.gameShadowPeekSubtitle;
+      case GameMode.catchMouse:
+        return l10n.gameCatchMouseSubtitle;
+      case GameMode.rainbow:
+        return l10n.gameRainbowSubtitle;
+      case GameMode.holeAmbush:
+        return '猎物会随机从洞口探头';
+      case GameMode.featherWand:
+        return '模拟逗猫棒的飘动轨迹';
+    }
+  }
+
+  String description(AppLocalizations l10n) {
+    switch (this) {
+      case GameMode.laser:
+        return l10n.gameLaserDescription;
+      case GameMode.shadowPeek:
+        return l10n.gameShadowPeekDescription;
+      case GameMode.catchMouse:
+        return l10n.gameCatchMouseDescription;
+      case GameMode.rainbow:
+        return l10n.gameRainbowDescription;
+      case GameMode.holeAmbush:
+        return '猎物会在不同洞口快速探头，拍到即得分，适合高互动节奏。';
+      case GameMode.featherWand:
+        return '羽毛会像逗猫棒一样在屏幕上游走，适合猫咪追击、扑抓和拍打。';
+    }
+  }
+
+  String difficulty(AppLocalizations l10n) {
+    switch (difficultyLevel) {
+      case 1:
+        return l10n.gameDifficultyEasy;
+      case 2:
+        return l10n.gameDifficultyMedium;
+      default:
+        return l10n.gameDifficultyHard;
+    }
+  }
+
+  String tips(AppLocalizations l10n) {
+    switch (this) {
+      case GameMode.laser:
+        return l10n.gameLaserTips;
+      case GameMode.shadowPeek:
+        return l10n.gameShadowPeekTips;
+      case GameMode.catchMouse:
+        return l10n.gameCatchMouseTips;
+      case GameMode.rainbow:
+        return l10n.gameRainbowTips;
+      case GameMode.holeAmbush:
+        return '盯住洞口，看到猎物露头时快速拍击';
+      case GameMode.featherWand:
+        return '观察羽毛移动方向，提前拦截更容易命中';
+    }
+  }
 }

@@ -1,15 +1,58 @@
 enum Dimension {
-  EI('E', 'I', '外向', '内向'),
-  NS('N', 'S', '直觉', '实感'),
-  FT('F', 'T', '情感', '理性'),
-  PJ('P', 'J', '随性', '规律');
+  EI(
+    'E',
+    'I',
+    zhLeftName: '外向',
+    zhRightName: '内向',
+    enLeftName: 'Extraverted',
+    enRightName: 'Introverted',
+  ),
+  NS(
+    'N',
+    'S',
+    zhLeftName: '直觉',
+    zhRightName: '实感',
+    enLeftName: 'Intuitive',
+    enRightName: 'Sensing',
+  ),
+  FT(
+    'F',
+    'T',
+    zhLeftName: '情感',
+    zhRightName: '理性',
+    enLeftName: 'Feeling',
+    enRightName: 'Thinking',
+  ),
+  PJ(
+    'P',
+    'J',
+    zhLeftName: '随性',
+    zhRightName: '规律',
+    enLeftName: 'Perceiving',
+    enRightName: 'Judging',
+  );
 
   final String leftLabel;
   final String rightLabel;
-  final String leftName;
-  final String rightName;
+  final String zhLeftName;
+  final String zhRightName;
+  final String enLeftName;
+  final String enRightName;
 
-  const Dimension(this.leftLabel, this.rightLabel, this.leftName, this.rightName);
+  const Dimension(
+    this.leftLabel,
+    this.rightLabel, {
+    required this.zhLeftName,
+    required this.zhRightName,
+    required this.enLeftName,
+    required this.enRightName,
+  });
+
+  String leftName(String languageCode) =>
+      languageCode == 'en' ? enLeftName : zhLeftName;
+
+  String rightName(String languageCode) =>
+      languageCode == 'en' ? enRightName : zhRightName;
 }
 
 class QuestionOption {
@@ -36,12 +79,10 @@ class Question {
 }
 
 enum TestMode {
-  basic(12, '基础版', '12道题快速测试'),
-  advanced(24, '进阶版', '24道题深度分析');
+  basic(12),
+  advanced(24);
 
   final int questionCount;
-  final String label;
-  final String description;
 
-  const TestMode(this.questionCount, this.label, this.description);
+  const TestMode(this.questionCount);
 }

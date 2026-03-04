@@ -5,6 +5,7 @@ import '../../../../core/l10n/app_localizations.dart';
 import '../../../../core/providers/current_cat_provider.dart';
 import '../../../../core/providers/database_provider.dart';
 import '../../../../core/widgets/centered_page_title.dart';
+import '../../../personality_test/presentation/providers/cat_personality_provider.dart';
 import '../../data/models/health_record.dart';
 import '../providers/health_provider.dart';
 import '../widgets/diet_record_sheet.dart';
@@ -58,6 +59,7 @@ class _HealthDashboardScreenState extends ConsumerState<HealthDashboardScreen> {
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
     final cat = ref.watch(currentCatProvider);
+    final personalityProfile = ref.watch(currentCatPersonalityProfileProvider);
     final summaryAsync = ref.watch(healthSummaryProvider);
     final timelineAsync = ref.watch(healthTimelineProvider);
 
@@ -116,8 +118,7 @@ class _HealthDashboardScreenState extends ConsumerState<HealthDashboardScreen> {
                                         color: AppColors.warning.withValues(
                                           alpha: 0.12,
                                         ),
-                                        borderRadius:
-                                            BorderRadius.circular(14),
+                                        borderRadius: BorderRadius.circular(14),
                                         border: Border.all(
                                           color: AppColors.warning.withValues(
                                             alpha: 0.6,
@@ -147,6 +148,56 @@ class _HealthDashboardScreenState extends ConsumerState<HealthDashboardScreen> {
                               error: (_, stackTrace) =>
                                   const SizedBox(height: 100),
                             ),
+                            const SizedBox(height: 10),
+                            if (personalityProfile != null)
+                              Container(
+                                width: double.infinity,
+                                padding: const EdgeInsets.symmetric(
+                                  horizontal: 12,
+                                  vertical: 10,
+                                ),
+                                decoration: BoxDecoration(
+                                  color: AppColors.primary.withValues(
+                                    alpha: 0.08,
+                                  ),
+                                  borderRadius: BorderRadius.circular(14),
+                                  border: Border.all(
+                                    color: AppColors.primary.withValues(
+                                      alpha: 0.3,
+                                    ),
+                                  ),
+                                ),
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      l10n.healthPersonalityTipTitle(
+                                        personalityProfile
+                                            .result
+                                            .personality
+                                            .code,
+                                      ),
+                                      style: const TextStyle(
+                                        fontSize: 12,
+                                        fontWeight: FontWeight.w600,
+                                        color: AppColors.primaryDark,
+                                      ),
+                                    ),
+                                    const SizedBox(height: 4),
+                                    Text(
+                                      personalityProfile
+                                          .result
+                                          .personality
+                                          .advice,
+                                      style: const TextStyle(
+                                        fontSize: 12,
+                                        color: AppColors.onBackground,
+                                        height: 1.45,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
                             const SizedBox(height: 24),
                             _sectionTitle(l10n),
                             const SizedBox(height: 12),

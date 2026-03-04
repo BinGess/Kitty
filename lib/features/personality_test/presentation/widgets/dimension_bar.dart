@@ -6,12 +6,14 @@ class DimensionBar extends StatelessWidget {
   final Dimension dimension;
   final int score;
   final int maxScore;
+  final String languageCode;
 
   const DimensionBar({
     super.key,
     required this.dimension,
     required this.score,
     required this.maxScore,
+    required this.languageCode,
   });
 
   @override
@@ -25,22 +27,24 @@ class DimensionBar extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             Text(
-              '${dimension.leftLabel} ${dimension.leftName}',
+              '${dimension.leftLabel} ${dimension.leftName(languageCode)}',
               style: TextStyle(
                 fontSize: 13,
-                fontWeight:
-                    leftPercent > 0.5 ? FontWeight.w600 : FontWeight.normal,
+                fontWeight: leftPercent > 0.5
+                    ? FontWeight.w600
+                    : FontWeight.normal,
                 color: leftPercent > 0.5
                     ? AppColors.primary
                     : AppColors.textSecondary,
               ),
             ),
             Text(
-              '${dimension.rightName} ${dimension.rightLabel}',
+              '${dimension.rightName(languageCode)} ${dimension.rightLabel}',
               style: TextStyle(
                 fontSize: 13,
-                fontWeight:
-                    rightPercent > 0.5 ? FontWeight.w600 : FontWeight.normal,
+                fontWeight: rightPercent > 0.5
+                    ? FontWeight.w600
+                    : FontWeight.normal,
                 color: rightPercent > 0.5
                     ? AppColors.primary
                     : AppColors.textSecondary,

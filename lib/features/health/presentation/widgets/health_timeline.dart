@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import '../../../../core/constants/app_colors.dart';
 import '../../../../core/l10n/app_localizations.dart';
 import '../../data/models/health_record.dart';
@@ -9,6 +10,18 @@ class HealthTimeline extends StatelessWidget {
 
   const HealthTimeline({super.key, required this.entries, this.onDelete});
 
+  bool _isSameDay(DateTime a, DateTime b) {
+    return a.year == b.year && a.month == b.month && a.day == b.day;
+  }
+
+  String _formatDateLabel(BuildContext context, DateTime dt) {
+    final locale = Localizations.localeOf(context).toLanguageTag();
+    if (locale.startsWith('zh')) {
+      return DateFormat('M月d日 EEEE', locale).format(dt);
+    }
+    return DateFormat.yMMMd(locale).format(dt);
+  }
+
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
@@ -18,8 +31,11 @@ class HealthTimeline extends StatelessWidget {
           padding: const EdgeInsets.symmetric(vertical: 40),
           child: Column(
             children: [
-              Icon(Icons.timeline,
-                  size: 48, color: AppColors.textSecondary.withValues(alpha: 0.4)),
+              Icon(
+                Icons.timeline,
+                size: 48,
+                color: AppColors.textSecondary.withValues(alpha: 0.4),
+              ),
               const SizedBox(height: 12),
               Text(
                 l10n.healthTimelineEmpty,
@@ -42,47 +58,75 @@ class HealthTimeline extends StatelessWidget {
       itemCount: entries.length,
       itemBuilder: (context, index) {
         final entry = entries[index];
+        final previous = index > 0 ? entries[index - 1] : null;
+        final shouldShowDateHeader =
+            previous == null ||
+            !_isSameDay(previous.recordedAt, entry.recordedAt);
         final isLast = index == entries.length - 1;
-        return Dismissible(
-          key: ValueKey('${entry.type.name}_${entry.id}'),
-          direction: DismissDirection.endToStart,
-          background: Container(
-            alignment: Alignment.centerRight,
-            padding: const EdgeInsets.only(right: 20),
-            decoration: BoxDecoration(
-              color: AppColors.error.withValues(alpha: 0.15),
-              borderRadius: BorderRadius.circular(16),
-            ),
-            child: const Icon(Icons.delete_outline,
-                color: AppColors.error, size: 22),
-          ),
-          confirmDismiss: (_) async {
-            return await showDialog<bool>(
-              context: context,
-              builder: (ctx) {
-                final dl10n = AppLocalizations.of(ctx)!;
-                return AlertDialog(
-                  title: Text(dl10n.healthTimelineDeleteTitle),
-                  content: Text(dl10n.healthTimelineDeleteContent),
-                  shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(20)),
-                  actions: [
-                    TextButton(
-                      onPressed: () => Navigator.pop(ctx, false),
-                      child: Text(dl10n.commonCancel),
-                    ),
-                    TextButton(
-                      onPressed: () => Navigator.pop(ctx, true),
-                      child: Text(dl10n.commonDelete,
-                          style: const TextStyle(color: AppColors.error)),
-                    ),
-                  ],
+        return Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            if (shouldShowDateHeader) ...[
+              Padding(
+                padding: const EdgeInsets.only(top: 8, bottom: 8),
+                child: Text(
+                  _formatDateLabel(context, entry.recordedAt),
+                  style: const TextStyle(
+                    fontSize: 13,
+                    fontWeight: FontWeight.w600,
+                    color: AppColors.textSecondary,
+                  ),
+                ),
+              ),
+            ],
+            Dismissible(
+              key: ValueKey('${entry.type.name}_${entry.id}'),
+              direction: DismissDirection.endToStart,
+              background: Container(
+                alignment: Alignment.centerRight,
+                padding: const EdgeInsets.only(right: 20),
+                decoration: BoxDecoration(
+                  color: AppColors.error.withValues(alpha: 0.15),
+                  borderRadius: BorderRadius.circular(16),
+                ),
+                child: const Icon(
+                  Icons.delete_outline,
+                  color: AppColors.error,
+                  size: 22,
+                ),
+              ),
+              confirmDismiss: (_) async {
+                return await showDialog<bool>(
+                  context: context,
+                  builder: (ctx) {
+                    final dl10n = AppLocalizations.of(ctx)!;
+                    return AlertDialog(
+                      title: Text(dl10n.healthTimelineDeleteTitle),
+                      content: Text(dl10n.healthTimelineDeleteContent),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(20),
+                      ),
+                      actions: [
+                        TextButton(
+                          onPressed: () => Navigator.pop(ctx, false),
+                          child: Text(dl10n.commonCancel),
+                        ),
+                        TextButton(
+                          onPressed: () => Navigator.pop(ctx, true),
+                          child: Text(
+                            dl10n.commonDelete,
+                            style: const TextStyle(color: AppColors.error),
+                          ),
+                        ),
+                      ],
+                    );
+                  },
                 );
               },
-            );
-          },
-          onDismissed: (_) => onDelete?.call(entry),
-          child: _TimelineItem(entry: entry, isLast: isLast),
+              onDismissed: (_) => onDelete?.call(entry),
+              child: _TimelineItem(entry: entry, isLast: isLast),
+            ),
+          ],
         );
       },
     );
@@ -103,13 +147,21 @@ class _TimelineItem extends StatelessWidget {
     final v = entry.numericValue;
     switch (entry.type) {
       case HealthRecordType.weight:
-        return v != null ? l10n.healthTimelineWeight(v.toStringAsFixed(2)) : l10n.healthWeight;
+        return v != null
+            ? l10n.healthTimelineWeight(v.toStringAsFixed(2))
+            : l10n.healthWeight;
       case HealthRecordType.diet:
-        return v != null ? l10n.healthTimelineDiet(v.toStringAsFixed(0)) : l10n.healthDiet;
+        return v != null
+            ? l10n.healthTimelineDiet(v.toStringAsFixed(0))
+            : l10n.healthDiet;
       case HealthRecordType.water:
-        return v != null ? l10n.healthTimelineWater(v.toStringAsFixed(0)) : l10n.healthWater;
+        return v != null
+            ? l10n.healthTimelineWater(v.toStringAsFixed(0))
+            : l10n.healthWater;
       case HealthRecordType.excretion:
-        return entry.subtype == 'poop' ? l10n.healthTimelinePoop : l10n.healthTimelineUrine;
+        return entry.subtype == 'poop'
+            ? l10n.healthTimelinePoop
+            : l10n.healthTimelineUrine;
     }
   }
 
@@ -119,16 +171,23 @@ class _TimelineItem extends StatelessWidget {
       final scale = entry.numericValue?.toInt();
       if (entry.subtype == 'poop' && scale != null) {
         switch (scale) {
-          case 1: return l10n.excretionPoop1Name;
-          case 2: return l10n.excretionPoop2Name;
-          case 3: return l10n.excretionPoop3Name;
-          case 4: return l10n.excretionPoop4Name;
+          case 1:
+            return l10n.excretionPoop1Name;
+          case 2:
+            return l10n.excretionPoop2Name;
+          case 3:
+            return l10n.excretionPoop3Name;
+          case 4:
+            return l10n.excretionPoop4Name;
         }
       } else if (entry.subtype == 'urine' && scale != null) {
         switch (scale) {
-          case 1: return l10n.excretionUrineSmall;
-          case 2: return l10n.excretionUrineMedium;
-          case 3: return l10n.excretionUrineLarge;
+          case 1:
+            return l10n.excretionUrineSmall;
+          case 2:
+            return l10n.excretionUrineMedium;
+          case 3:
+            return l10n.excretionUrineLarge;
         }
       }
     }
@@ -175,10 +234,7 @@ class _TimelineItem extends StatelessWidget {
               ),
               if (!isLast)
                 Expanded(
-                  child: Container(
-                    width: 1.5,
-                    color: AppColors.divider,
-                  ),
+                  child: Container(width: 1.5, color: AppColors.divider),
                 ),
             ],
           ),
@@ -193,8 +249,7 @@ class _TimelineItem extends StatelessWidget {
                     : AppColors.surface,
                 borderRadius: BorderRadius.circular(16),
                 border: entry.isWarning
-                    ? Border.all(
-                        color: AppColors.error.withValues(alpha: 0.3))
+                    ? Border.all(color: AppColors.error.withValues(alpha: 0.3))
                     : null,
                 boxShadow: [
                   BoxShadow(
@@ -243,8 +298,11 @@ class _TimelineItem extends StatelessWidget {
                     ),
                   ),
                   if (entry.isWarning)
-                    const Icon(Icons.error_outline,
-                        size: 18, color: AppColors.error),
+                    const Icon(
+                      Icons.error_outline,
+                      size: 18,
+                      color: AppColors.error,
+                    ),
                 ],
               ),
             ),

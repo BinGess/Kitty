@@ -65,6 +65,79 @@ class $CatsTable extends Cats with TableInfo<$CatsTable, Cat> {
     type: DriftSqlType.string,
     requiredDuringInsert: false,
   );
+  static const VerificationMeta _personalityCodeMeta = const VerificationMeta(
+    'personalityCode',
+  );
+  @override
+  late final GeneratedColumn<String> personalityCode = GeneratedColumn<String>(
+    'personality_code',
+    aliasedName,
+    true,
+    additionalChecks: GeneratedColumn.checkTextLength(
+      minTextLength: 4,
+      maxTextLength: 4,
+    ),
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _personalityHasDualMeta =
+      const VerificationMeta('personalityHasDual');
+  @override
+  late final GeneratedColumn<bool> personalityHasDual = GeneratedColumn<bool>(
+    'personality_has_dual',
+    aliasedName,
+    false,
+    type: DriftSqlType.bool,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'CHECK ("personality_has_dual" IN (0, 1))',
+    ),
+    defaultValue: const Constant(false),
+  );
+  static const VerificationMeta _personalityTestModeMeta =
+      const VerificationMeta('personalityTestMode');
+  @override
+  late final GeneratedColumn<String> personalityTestMode =
+      GeneratedColumn<String>(
+        'personality_test_mode',
+        aliasedName,
+        true,
+        type: DriftSqlType.string,
+        requiredDuringInsert: false,
+      );
+  static const VerificationMeta _personalityDimensionScoresMeta =
+      const VerificationMeta('personalityDimensionScores');
+  @override
+  late final GeneratedColumn<String> personalityDimensionScores =
+      GeneratedColumn<String>(
+        'personality_dimension_scores',
+        aliasedName,
+        true,
+        type: DriftSqlType.string,
+        requiredDuringInsert: false,
+      );
+  static const VerificationMeta _personalityMaxScoresMeta =
+      const VerificationMeta('personalityMaxScores');
+  @override
+  late final GeneratedColumn<String> personalityMaxScores =
+      GeneratedColumn<String>(
+        'personality_max_scores',
+        aliasedName,
+        true,
+        type: DriftSqlType.string,
+        requiredDuringInsert: false,
+      );
+  static const VerificationMeta _personalityTestedAtMeta =
+      const VerificationMeta('personalityTestedAt');
+  @override
+  late final GeneratedColumn<DateTime> personalityTestedAt =
+      GeneratedColumn<DateTime>(
+        'personality_tested_at',
+        aliasedName,
+        true,
+        type: DriftSqlType.dateTime,
+        requiredDuringInsert: false,
+      );
   static const VerificationMeta _sexMeta = const VerificationMeta('sex');
   @override
   late final GeneratedColumn<String> sex = GeneratedColumn<String>(
@@ -167,6 +240,12 @@ class $CatsTable extends Cats with TableInfo<$CatsTable, Cat> {
     breed,
     birthDate,
     photoPath,
+    personalityCode,
+    personalityHasDual,
+    personalityTestMode,
+    personalityDimensionScores,
+    personalityMaxScores,
+    personalityTestedAt,
     sex,
     isNeutered,
     weightGoalMinKg,
@@ -215,6 +294,60 @@ class $CatsTable extends Cats with TableInfo<$CatsTable, Cat> {
       context.handle(
         _photoPathMeta,
         photoPath.isAcceptableOrUnknown(data['photo_path']!, _photoPathMeta),
+      );
+    }
+    if (data.containsKey('personality_code')) {
+      context.handle(
+        _personalityCodeMeta,
+        personalityCode.isAcceptableOrUnknown(
+          data['personality_code']!,
+          _personalityCodeMeta,
+        ),
+      );
+    }
+    if (data.containsKey('personality_has_dual')) {
+      context.handle(
+        _personalityHasDualMeta,
+        personalityHasDual.isAcceptableOrUnknown(
+          data['personality_has_dual']!,
+          _personalityHasDualMeta,
+        ),
+      );
+    }
+    if (data.containsKey('personality_test_mode')) {
+      context.handle(
+        _personalityTestModeMeta,
+        personalityTestMode.isAcceptableOrUnknown(
+          data['personality_test_mode']!,
+          _personalityTestModeMeta,
+        ),
+      );
+    }
+    if (data.containsKey('personality_dimension_scores')) {
+      context.handle(
+        _personalityDimensionScoresMeta,
+        personalityDimensionScores.isAcceptableOrUnknown(
+          data['personality_dimension_scores']!,
+          _personalityDimensionScoresMeta,
+        ),
+      );
+    }
+    if (data.containsKey('personality_max_scores')) {
+      context.handle(
+        _personalityMaxScoresMeta,
+        personalityMaxScores.isAcceptableOrUnknown(
+          data['personality_max_scores']!,
+          _personalityMaxScoresMeta,
+        ),
+      );
+    }
+    if (data.containsKey('personality_tested_at')) {
+      context.handle(
+        _personalityTestedAtMeta,
+        personalityTestedAt.isAcceptableOrUnknown(
+          data['personality_tested_at']!,
+          _personalityTestedAtMeta,
+        ),
       );
     }
     if (data.containsKey('sex')) {
@@ -306,6 +439,30 @@ class $CatsTable extends Cats with TableInfo<$CatsTable, Cat> {
         DriftSqlType.string,
         data['${effectivePrefix}photo_path'],
       ),
+      personalityCode: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}personality_code'],
+      ),
+      personalityHasDual: attachedDatabase.typeMapping.read(
+        DriftSqlType.bool,
+        data['${effectivePrefix}personality_has_dual'],
+      )!,
+      personalityTestMode: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}personality_test_mode'],
+      ),
+      personalityDimensionScores: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}personality_dimension_scores'],
+      ),
+      personalityMaxScores: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}personality_max_scores'],
+      ),
+      personalityTestedAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}personality_tested_at'],
+      ),
       sex: attachedDatabase.typeMapping.read(
         DriftSqlType.string,
         data['${effectivePrefix}sex'],
@@ -353,6 +510,12 @@ class Cat extends DataClass implements Insertable<Cat> {
   final String? breed;
   final DateTime? birthDate;
   final String? photoPath;
+  final String? personalityCode;
+  final bool personalityHasDual;
+  final String? personalityTestMode;
+  final String? personalityDimensionScores;
+  final String? personalityMaxScores;
+  final DateTime? personalityTestedAt;
   final String sex;
   final bool isNeutered;
   final double? weightGoalMinKg;
@@ -367,6 +530,12 @@ class Cat extends DataClass implements Insertable<Cat> {
     this.breed,
     this.birthDate,
     this.photoPath,
+    this.personalityCode,
+    required this.personalityHasDual,
+    this.personalityTestMode,
+    this.personalityDimensionScores,
+    this.personalityMaxScores,
+    this.personalityTestedAt,
     required this.sex,
     required this.isNeutered,
     this.weightGoalMinKg,
@@ -389,6 +558,24 @@ class Cat extends DataClass implements Insertable<Cat> {
     }
     if (!nullToAbsent || photoPath != null) {
       map['photo_path'] = Variable<String>(photoPath);
+    }
+    if (!nullToAbsent || personalityCode != null) {
+      map['personality_code'] = Variable<String>(personalityCode);
+    }
+    map['personality_has_dual'] = Variable<bool>(personalityHasDual);
+    if (!nullToAbsent || personalityTestMode != null) {
+      map['personality_test_mode'] = Variable<String>(personalityTestMode);
+    }
+    if (!nullToAbsent || personalityDimensionScores != null) {
+      map['personality_dimension_scores'] = Variable<String>(
+        personalityDimensionScores,
+      );
+    }
+    if (!nullToAbsent || personalityMaxScores != null) {
+      map['personality_max_scores'] = Variable<String>(personalityMaxScores);
+    }
+    if (!nullToAbsent || personalityTestedAt != null) {
+      map['personality_tested_at'] = Variable<DateTime>(personalityTestedAt);
     }
     map['sex'] = Variable<String>(sex);
     map['is_neutered'] = Variable<bool>(isNeutered);
@@ -418,6 +605,23 @@ class Cat extends DataClass implements Insertable<Cat> {
       photoPath: photoPath == null && nullToAbsent
           ? const Value.absent()
           : Value(photoPath),
+      personalityCode: personalityCode == null && nullToAbsent
+          ? const Value.absent()
+          : Value(personalityCode),
+      personalityHasDual: Value(personalityHasDual),
+      personalityTestMode: personalityTestMode == null && nullToAbsent
+          ? const Value.absent()
+          : Value(personalityTestMode),
+      personalityDimensionScores:
+          personalityDimensionScores == null && nullToAbsent
+          ? const Value.absent()
+          : Value(personalityDimensionScores),
+      personalityMaxScores: personalityMaxScores == null && nullToAbsent
+          ? const Value.absent()
+          : Value(personalityMaxScores),
+      personalityTestedAt: personalityTestedAt == null && nullToAbsent
+          ? const Value.absent()
+          : Value(personalityTestedAt),
       sex: Value(sex),
       isNeutered: Value(isNeutered),
       weightGoalMinKg: weightGoalMinKg == null && nullToAbsent
@@ -444,6 +648,20 @@ class Cat extends DataClass implements Insertable<Cat> {
       breed: serializer.fromJson<String?>(json['breed']),
       birthDate: serializer.fromJson<DateTime?>(json['birthDate']),
       photoPath: serializer.fromJson<String?>(json['photoPath']),
+      personalityCode: serializer.fromJson<String?>(json['personalityCode']),
+      personalityHasDual: serializer.fromJson<bool>(json['personalityHasDual']),
+      personalityTestMode: serializer.fromJson<String?>(
+        json['personalityTestMode'],
+      ),
+      personalityDimensionScores: serializer.fromJson<String?>(
+        json['personalityDimensionScores'],
+      ),
+      personalityMaxScores: serializer.fromJson<String?>(
+        json['personalityMaxScores'],
+      ),
+      personalityTestedAt: serializer.fromJson<DateTime?>(
+        json['personalityTestedAt'],
+      ),
       sex: serializer.fromJson<String>(json['sex']),
       isNeutered: serializer.fromJson<bool>(json['isNeutered']),
       weightGoalMinKg: serializer.fromJson<double?>(json['weightGoalMinKg']),
@@ -463,6 +681,14 @@ class Cat extends DataClass implements Insertable<Cat> {
       'breed': serializer.toJson<String?>(breed),
       'birthDate': serializer.toJson<DateTime?>(birthDate),
       'photoPath': serializer.toJson<String?>(photoPath),
+      'personalityCode': serializer.toJson<String?>(personalityCode),
+      'personalityHasDual': serializer.toJson<bool>(personalityHasDual),
+      'personalityTestMode': serializer.toJson<String?>(personalityTestMode),
+      'personalityDimensionScores': serializer.toJson<String?>(
+        personalityDimensionScores,
+      ),
+      'personalityMaxScores': serializer.toJson<String?>(personalityMaxScores),
+      'personalityTestedAt': serializer.toJson<DateTime?>(personalityTestedAt),
       'sex': serializer.toJson<String>(sex),
       'isNeutered': serializer.toJson<bool>(isNeutered),
       'weightGoalMinKg': serializer.toJson<double?>(weightGoalMinKg),
@@ -480,6 +706,12 @@ class Cat extends DataClass implements Insertable<Cat> {
     Value<String?> breed = const Value.absent(),
     Value<DateTime?> birthDate = const Value.absent(),
     Value<String?> photoPath = const Value.absent(),
+    Value<String?> personalityCode = const Value.absent(),
+    bool? personalityHasDual,
+    Value<String?> personalityTestMode = const Value.absent(),
+    Value<String?> personalityDimensionScores = const Value.absent(),
+    Value<String?> personalityMaxScores = const Value.absent(),
+    Value<DateTime?> personalityTestedAt = const Value.absent(),
     String? sex,
     bool? isNeutered,
     Value<double?> weightGoalMinKg = const Value.absent(),
@@ -494,6 +726,22 @@ class Cat extends DataClass implements Insertable<Cat> {
     breed: breed.present ? breed.value : this.breed,
     birthDate: birthDate.present ? birthDate.value : this.birthDate,
     photoPath: photoPath.present ? photoPath.value : this.photoPath,
+    personalityCode: personalityCode.present
+        ? personalityCode.value
+        : this.personalityCode,
+    personalityHasDual: personalityHasDual ?? this.personalityHasDual,
+    personalityTestMode: personalityTestMode.present
+        ? personalityTestMode.value
+        : this.personalityTestMode,
+    personalityDimensionScores: personalityDimensionScores.present
+        ? personalityDimensionScores.value
+        : this.personalityDimensionScores,
+    personalityMaxScores: personalityMaxScores.present
+        ? personalityMaxScores.value
+        : this.personalityMaxScores,
+    personalityTestedAt: personalityTestedAt.present
+        ? personalityTestedAt.value
+        : this.personalityTestedAt,
     sex: sex ?? this.sex,
     isNeutered: isNeutered ?? this.isNeutered,
     weightGoalMinKg: weightGoalMinKg.present
@@ -514,6 +762,24 @@ class Cat extends DataClass implements Insertable<Cat> {
       breed: data.breed.present ? data.breed.value : this.breed,
       birthDate: data.birthDate.present ? data.birthDate.value : this.birthDate,
       photoPath: data.photoPath.present ? data.photoPath.value : this.photoPath,
+      personalityCode: data.personalityCode.present
+          ? data.personalityCode.value
+          : this.personalityCode,
+      personalityHasDual: data.personalityHasDual.present
+          ? data.personalityHasDual.value
+          : this.personalityHasDual,
+      personalityTestMode: data.personalityTestMode.present
+          ? data.personalityTestMode.value
+          : this.personalityTestMode,
+      personalityDimensionScores: data.personalityDimensionScores.present
+          ? data.personalityDimensionScores.value
+          : this.personalityDimensionScores,
+      personalityMaxScores: data.personalityMaxScores.present
+          ? data.personalityMaxScores.value
+          : this.personalityMaxScores,
+      personalityTestedAt: data.personalityTestedAt.present
+          ? data.personalityTestedAt.value
+          : this.personalityTestedAt,
       sex: data.sex.present ? data.sex.value : this.sex,
       isNeutered: data.isNeutered.present
           ? data.isNeutered.value
@@ -543,6 +809,12 @@ class Cat extends DataClass implements Insertable<Cat> {
           ..write('breed: $breed, ')
           ..write('birthDate: $birthDate, ')
           ..write('photoPath: $photoPath, ')
+          ..write('personalityCode: $personalityCode, ')
+          ..write('personalityHasDual: $personalityHasDual, ')
+          ..write('personalityTestMode: $personalityTestMode, ')
+          ..write('personalityDimensionScores: $personalityDimensionScores, ')
+          ..write('personalityMaxScores: $personalityMaxScores, ')
+          ..write('personalityTestedAt: $personalityTestedAt, ')
           ..write('sex: $sex, ')
           ..write('isNeutered: $isNeutered, ')
           ..write('weightGoalMinKg: $weightGoalMinKg, ')
@@ -562,6 +834,12 @@ class Cat extends DataClass implements Insertable<Cat> {
     breed,
     birthDate,
     photoPath,
+    personalityCode,
+    personalityHasDual,
+    personalityTestMode,
+    personalityDimensionScores,
+    personalityMaxScores,
+    personalityTestedAt,
     sex,
     isNeutered,
     weightGoalMinKg,
@@ -580,6 +858,12 @@ class Cat extends DataClass implements Insertable<Cat> {
           other.breed == this.breed &&
           other.birthDate == this.birthDate &&
           other.photoPath == this.photoPath &&
+          other.personalityCode == this.personalityCode &&
+          other.personalityHasDual == this.personalityHasDual &&
+          other.personalityTestMode == this.personalityTestMode &&
+          other.personalityDimensionScores == this.personalityDimensionScores &&
+          other.personalityMaxScores == this.personalityMaxScores &&
+          other.personalityTestedAt == this.personalityTestedAt &&
           other.sex == this.sex &&
           other.isNeutered == this.isNeutered &&
           other.weightGoalMinKg == this.weightGoalMinKg &&
@@ -596,6 +880,12 @@ class CatsCompanion extends UpdateCompanion<Cat> {
   final Value<String?> breed;
   final Value<DateTime?> birthDate;
   final Value<String?> photoPath;
+  final Value<String?> personalityCode;
+  final Value<bool> personalityHasDual;
+  final Value<String?> personalityTestMode;
+  final Value<String?> personalityDimensionScores;
+  final Value<String?> personalityMaxScores;
+  final Value<DateTime?> personalityTestedAt;
   final Value<String> sex;
   final Value<bool> isNeutered;
   final Value<double?> weightGoalMinKg;
@@ -610,6 +900,12 @@ class CatsCompanion extends UpdateCompanion<Cat> {
     this.breed = const Value.absent(),
     this.birthDate = const Value.absent(),
     this.photoPath = const Value.absent(),
+    this.personalityCode = const Value.absent(),
+    this.personalityHasDual = const Value.absent(),
+    this.personalityTestMode = const Value.absent(),
+    this.personalityDimensionScores = const Value.absent(),
+    this.personalityMaxScores = const Value.absent(),
+    this.personalityTestedAt = const Value.absent(),
     this.sex = const Value.absent(),
     this.isNeutered = const Value.absent(),
     this.weightGoalMinKg = const Value.absent(),
@@ -625,6 +921,12 @@ class CatsCompanion extends UpdateCompanion<Cat> {
     this.breed = const Value.absent(),
     this.birthDate = const Value.absent(),
     this.photoPath = const Value.absent(),
+    this.personalityCode = const Value.absent(),
+    this.personalityHasDual = const Value.absent(),
+    this.personalityTestMode = const Value.absent(),
+    this.personalityDimensionScores = const Value.absent(),
+    this.personalityMaxScores = const Value.absent(),
+    this.personalityTestedAt = const Value.absent(),
     this.sex = const Value.absent(),
     this.isNeutered = const Value.absent(),
     this.weightGoalMinKg = const Value.absent(),
@@ -640,6 +942,12 @@ class CatsCompanion extends UpdateCompanion<Cat> {
     Expression<String>? breed,
     Expression<DateTime>? birthDate,
     Expression<String>? photoPath,
+    Expression<String>? personalityCode,
+    Expression<bool>? personalityHasDual,
+    Expression<String>? personalityTestMode,
+    Expression<String>? personalityDimensionScores,
+    Expression<String>? personalityMaxScores,
+    Expression<DateTime>? personalityTestedAt,
     Expression<String>? sex,
     Expression<bool>? isNeutered,
     Expression<double>? weightGoalMinKg,
@@ -655,6 +963,17 @@ class CatsCompanion extends UpdateCompanion<Cat> {
       if (breed != null) 'breed': breed,
       if (birthDate != null) 'birth_date': birthDate,
       if (photoPath != null) 'photo_path': photoPath,
+      if (personalityCode != null) 'personality_code': personalityCode,
+      if (personalityHasDual != null)
+        'personality_has_dual': personalityHasDual,
+      if (personalityTestMode != null)
+        'personality_test_mode': personalityTestMode,
+      if (personalityDimensionScores != null)
+        'personality_dimension_scores': personalityDimensionScores,
+      if (personalityMaxScores != null)
+        'personality_max_scores': personalityMaxScores,
+      if (personalityTestedAt != null)
+        'personality_tested_at': personalityTestedAt,
       if (sex != null) 'sex': sex,
       if (isNeutered != null) 'is_neutered': isNeutered,
       if (weightGoalMinKg != null) 'weight_goal_min_kg': weightGoalMinKg,
@@ -672,6 +991,12 @@ class CatsCompanion extends UpdateCompanion<Cat> {
     Value<String?>? breed,
     Value<DateTime?>? birthDate,
     Value<String?>? photoPath,
+    Value<String?>? personalityCode,
+    Value<bool>? personalityHasDual,
+    Value<String?>? personalityTestMode,
+    Value<String?>? personalityDimensionScores,
+    Value<String?>? personalityMaxScores,
+    Value<DateTime?>? personalityTestedAt,
     Value<String>? sex,
     Value<bool>? isNeutered,
     Value<double?>? weightGoalMinKg,
@@ -687,6 +1012,13 @@ class CatsCompanion extends UpdateCompanion<Cat> {
       breed: breed ?? this.breed,
       birthDate: birthDate ?? this.birthDate,
       photoPath: photoPath ?? this.photoPath,
+      personalityCode: personalityCode ?? this.personalityCode,
+      personalityHasDual: personalityHasDual ?? this.personalityHasDual,
+      personalityTestMode: personalityTestMode ?? this.personalityTestMode,
+      personalityDimensionScores:
+          personalityDimensionScores ?? this.personalityDimensionScores,
+      personalityMaxScores: personalityMaxScores ?? this.personalityMaxScores,
+      personalityTestedAt: personalityTestedAt ?? this.personalityTestedAt,
       sex: sex ?? this.sex,
       isNeutered: isNeutered ?? this.isNeutered,
       weightGoalMinKg: weightGoalMinKg ?? this.weightGoalMinKg,
@@ -715,6 +1047,32 @@ class CatsCompanion extends UpdateCompanion<Cat> {
     }
     if (photoPath.present) {
       map['photo_path'] = Variable<String>(photoPath.value);
+    }
+    if (personalityCode.present) {
+      map['personality_code'] = Variable<String>(personalityCode.value);
+    }
+    if (personalityHasDual.present) {
+      map['personality_has_dual'] = Variable<bool>(personalityHasDual.value);
+    }
+    if (personalityTestMode.present) {
+      map['personality_test_mode'] = Variable<String>(
+        personalityTestMode.value,
+      );
+    }
+    if (personalityDimensionScores.present) {
+      map['personality_dimension_scores'] = Variable<String>(
+        personalityDimensionScores.value,
+      );
+    }
+    if (personalityMaxScores.present) {
+      map['personality_max_scores'] = Variable<String>(
+        personalityMaxScores.value,
+      );
+    }
+    if (personalityTestedAt.present) {
+      map['personality_tested_at'] = Variable<DateTime>(
+        personalityTestedAt.value,
+      );
     }
     if (sex.present) {
       map['sex'] = Variable<String>(sex.value);
@@ -751,6 +1109,12 @@ class CatsCompanion extends UpdateCompanion<Cat> {
           ..write('breed: $breed, ')
           ..write('birthDate: $birthDate, ')
           ..write('photoPath: $photoPath, ')
+          ..write('personalityCode: $personalityCode, ')
+          ..write('personalityHasDual: $personalityHasDual, ')
+          ..write('personalityTestMode: $personalityTestMode, ')
+          ..write('personalityDimensionScores: $personalityDimensionScores, ')
+          ..write('personalityMaxScores: $personalityMaxScores, ')
+          ..write('personalityTestedAt: $personalityTestedAt, ')
           ..write('sex: $sex, ')
           ..write('isNeutered: $isNeutered, ')
           ..write('weightGoalMinKg: $weightGoalMinKg, ')
@@ -2638,6 +3002,12 @@ typedef $$CatsTableCreateCompanionBuilder =
       Value<String?> breed,
       Value<DateTime?> birthDate,
       Value<String?> photoPath,
+      Value<String?> personalityCode,
+      Value<bool> personalityHasDual,
+      Value<String?> personalityTestMode,
+      Value<String?> personalityDimensionScores,
+      Value<String?> personalityMaxScores,
+      Value<DateTime?> personalityTestedAt,
       Value<String> sex,
       Value<bool> isNeutered,
       Value<double?> weightGoalMinKg,
@@ -2654,6 +3024,12 @@ typedef $$CatsTableUpdateCompanionBuilder =
       Value<String?> breed,
       Value<DateTime?> birthDate,
       Value<String?> photoPath,
+      Value<String?> personalityCode,
+      Value<bool> personalityHasDual,
+      Value<String?> personalityTestMode,
+      Value<String?> personalityDimensionScores,
+      Value<String?> personalityMaxScores,
+      Value<DateTime?> personalityTestedAt,
       Value<String> sex,
       Value<bool> isNeutered,
       Value<double?> weightGoalMinKg,
@@ -2773,6 +3149,36 @@ class $$CatsTableFilterComposer extends Composer<_$AppDatabase, $CatsTable> {
 
   ColumnFilters<String> get photoPath => $composableBuilder(
     column: $table.photoPath,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get personalityCode => $composableBuilder(
+    column: $table.personalityCode,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<bool> get personalityHasDual => $composableBuilder(
+    column: $table.personalityHasDual,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get personalityTestMode => $composableBuilder(
+    column: $table.personalityTestMode,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get personalityDimensionScores => $composableBuilder(
+    column: $table.personalityDimensionScores,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get personalityMaxScores => $composableBuilder(
+    column: $table.personalityMaxScores,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get personalityTestedAt => $composableBuilder(
+    column: $table.personalityTestedAt,
     builder: (column) => ColumnFilters(column),
   );
 
@@ -2950,6 +3356,36 @@ class $$CatsTableOrderingComposer extends Composer<_$AppDatabase, $CatsTable> {
     builder: (column) => ColumnOrderings(column),
   );
 
+  ColumnOrderings<String> get personalityCode => $composableBuilder(
+    column: $table.personalityCode,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<bool> get personalityHasDual => $composableBuilder(
+    column: $table.personalityHasDual,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get personalityTestMode => $composableBuilder(
+    column: $table.personalityTestMode,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get personalityDimensionScores => $composableBuilder(
+    column: $table.personalityDimensionScores,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get personalityMaxScores => $composableBuilder(
+    column: $table.personalityMaxScores,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get personalityTestedAt => $composableBuilder(
+    column: $table.personalityTestedAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+
   ColumnOrderings<String> get sex => $composableBuilder(
     column: $table.sex,
     builder: (column) => ColumnOrderings(column),
@@ -3014,6 +3450,36 @@ class $$CatsTableAnnotationComposer
 
   GeneratedColumn<String> get photoPath =>
       $composableBuilder(column: $table.photoPath, builder: (column) => column);
+
+  GeneratedColumn<String> get personalityCode => $composableBuilder(
+    column: $table.personalityCode,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<bool> get personalityHasDual => $composableBuilder(
+    column: $table.personalityHasDual,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get personalityTestMode => $composableBuilder(
+    column: $table.personalityTestMode,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get personalityDimensionScores => $composableBuilder(
+    column: $table.personalityDimensionScores,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get personalityMaxScores => $composableBuilder(
+    column: $table.personalityMaxScores,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<DateTime> get personalityTestedAt => $composableBuilder(
+    column: $table.personalityTestedAt,
+    builder: (column) => column,
+  );
 
   GeneratedColumn<String> get sex =>
       $composableBuilder(column: $table.sex, builder: (column) => column);
@@ -3188,6 +3654,13 @@ class $$CatsTableTableManager
                 Value<String?> breed = const Value.absent(),
                 Value<DateTime?> birthDate = const Value.absent(),
                 Value<String?> photoPath = const Value.absent(),
+                Value<String?> personalityCode = const Value.absent(),
+                Value<bool> personalityHasDual = const Value.absent(),
+                Value<String?> personalityTestMode = const Value.absent(),
+                Value<String?> personalityDimensionScores =
+                    const Value.absent(),
+                Value<String?> personalityMaxScores = const Value.absent(),
+                Value<DateTime?> personalityTestedAt = const Value.absent(),
                 Value<String> sex = const Value.absent(),
                 Value<bool> isNeutered = const Value.absent(),
                 Value<double?> weightGoalMinKg = const Value.absent(),
@@ -3202,6 +3675,12 @@ class $$CatsTableTableManager
                 breed: breed,
                 birthDate: birthDate,
                 photoPath: photoPath,
+                personalityCode: personalityCode,
+                personalityHasDual: personalityHasDual,
+                personalityTestMode: personalityTestMode,
+                personalityDimensionScores: personalityDimensionScores,
+                personalityMaxScores: personalityMaxScores,
+                personalityTestedAt: personalityTestedAt,
                 sex: sex,
                 isNeutered: isNeutered,
                 weightGoalMinKg: weightGoalMinKg,
@@ -3218,6 +3697,13 @@ class $$CatsTableTableManager
                 Value<String?> breed = const Value.absent(),
                 Value<DateTime?> birthDate = const Value.absent(),
                 Value<String?> photoPath = const Value.absent(),
+                Value<String?> personalityCode = const Value.absent(),
+                Value<bool> personalityHasDual = const Value.absent(),
+                Value<String?> personalityTestMode = const Value.absent(),
+                Value<String?> personalityDimensionScores =
+                    const Value.absent(),
+                Value<String?> personalityMaxScores = const Value.absent(),
+                Value<DateTime?> personalityTestedAt = const Value.absent(),
                 Value<String> sex = const Value.absent(),
                 Value<bool> isNeutered = const Value.absent(),
                 Value<double?> weightGoalMinKg = const Value.absent(),
@@ -3232,6 +3718,12 @@ class $$CatsTableTableManager
                 breed: breed,
                 birthDate: birthDate,
                 photoPath: photoPath,
+                personalityCode: personalityCode,
+                personalityHasDual: personalityHasDual,
+                personalityTestMode: personalityTestMode,
+                personalityDimensionScores: personalityDimensionScores,
+                personalityMaxScores: personalityMaxScores,
+                personalityTestedAt: personalityTestedAt,
                 sex: sex,
                 isNeutered: isNeutered,
                 weightGoalMinKg: weightGoalMinKg,

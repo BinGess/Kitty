@@ -35,9 +35,9 @@ class SettingsScreen extends ConsumerWidget {
             (mode) => Card(
               margin: const EdgeInsets.only(bottom: AppDimensions.spacingS),
               child: ListTile(
-                title: Text(mode.title),
+                title: Text(mode.title(l10n)),
                 subtitle: Text(
-                  mode.subtitle,
+                  mode.subtitle(l10n),
                   style: const TextStyle(fontSize: 12),
                 ),
                 trailing: const Icon(
@@ -97,18 +97,16 @@ class SettingsScreen extends ConsumerWidget {
             label: l10n.settingsLanguageChinese,
             flag: '🇨🇳',
             isSelected: currentLocale?.languageCode == 'zh',
-            onTap: () => ref
-                .read(localeProvider.notifier)
-                .setLocale(const Locale('zh')),
+            onTap: () =>
+                ref.read(localeProvider.notifier).setLocale(const Locale('zh')),
           ),
           const SizedBox(height: AppDimensions.spacingXS),
           _LanguageOption(
             label: l10n.settingsLanguageEnglish,
             flag: '🇺🇸',
             isSelected: currentLocale?.languageCode == 'en',
-            onTap: () => ref
-                .read(localeProvider.notifier)
-                .setLocale(const Locale('en')),
+            onTap: () =>
+                ref.read(localeProvider.notifier).setLocale(const Locale('en')),
           ),
         ],
       ),
@@ -153,21 +151,18 @@ class _LanguageOption extends StatelessWidget {
             if (flag != null)
               Text(flag!, style: const TextStyle(fontSize: 20))
             else if (icon != null)
-              Icon(icon,
-                  size: 20,
-                  color: isSelected
-                      ? AppColors.primary
-                      : AppColors.textSecondary),
+              Icon(
+                icon,
+                size: 20,
+                color: isSelected ? AppColors.primary : AppColors.textSecondary,
+              ),
             const SizedBox(width: 12),
             Text(
               label,
               style: TextStyle(
                 fontSize: 15,
-                fontWeight:
-                    isSelected ? FontWeight.w600 : FontWeight.w400,
-                color: isSelected
-                    ? AppColors.primaryDark
-                    : AppColors.onSurface,
+                fontWeight: isSelected ? FontWeight.w600 : FontWeight.w400,
+                color: isSelected ? AppColors.primaryDark : AppColors.onSurface,
               ),
             ),
             const Spacer(),

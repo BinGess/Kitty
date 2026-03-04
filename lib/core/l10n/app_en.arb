@@ -12,10 +12,13 @@
   "soundsTitle": "Cat Sound Simulator",
   "soundCategoryCalling": "Calling",
   "soundCategoryEmotion": "Emotion",
-  "soundCategoryEnvironment": "Environment",
+  "soundCategoryEnvironment": "Music",
   "soundsSubtitleEmotion": "Cat's Emotional Expressions",
   "soundsSubtitleCalling": "Calling & Environment Sounds",
+  "soundsSubtitleEnvironment": "Current Music + 6 Placeholder Types",
   "soundLooping": "Looping",
+  "soundPlaceholderTag": "Pending",
+  "soundPlaceholderHint": "This music type is a placeholder. Add audio and image later.",
 
   "testTitle": "16 Cat Personalities",
   "testSubtitle": "Discover your cat's hidden personality",
@@ -53,12 +56,37 @@
   "testResultAdvice": "Care Advice",
   "testResultRetake": "Retake Test",
   "testResultPoster": "Share Poster",
+  "testResultSaveFailed": "The result is shown correctly, but it was not saved to this cat profile. Please try again.",
+  "testCurrentResultTitle": "Current Profile Result",
+  "testViewFullReport": "View Full Report",
+  "testNoResultYet": "This cat has no personality result yet. Please finish a test first.",
+  "testStartNow": "Start Test",
+  "testLastTestedAt": "Last tested: {time}",
+  "@testLastTestedAt": {
+    "placeholders": {
+      "time": { "type": "String" }
+    }
+  },
+  "personalityRecommendationSubtitle": "Content sorted for {code} · {title}",
+  "@personalityRecommendationSubtitle": {
+    "placeholders": {
+      "code": { "type": "String" },
+      "title": { "type": "String" }
+    }
+  },
+  "personalityRecommendedBadge": "Recommended",
 
   "healthDashboardTitle": "Cat Health",
   "healthTitle": "Health Tracking",
   "healthPreparing": "Preparing...",
-  "healthTodayRecords": "Today's Records",
+  "healthTodayRecords": "Records Timeline",
   "healthSwitchCat": "Switch Cat",
+  "healthPersonalityTipTitle": "Personality Care Tip ({code})",
+  "@healthPersonalityTipTitle": {
+    "placeholders": {
+      "code": { "type": "String" }
+    }
+  },
   "healthWeightOutOfGoalWarning": "Weight is outside the target range. Consider more frequent weighing and diet monitoring.",
   "healthWeight": "Weight",
   "healthWater": "Water",
@@ -99,7 +127,7 @@
   },
   "healthTimelinePoop": "Poop",
   "healthTimelineUrine": "Urine",
-  "healthTimelineEmpty": "No records today\nTap + to start recording",
+  "healthTimelineEmpty": "No health records yet\nTap + to start recording",
   "healthTimelineDeleteTitle": "Confirm Delete",
   "healthTimelineDeleteContent": "Delete this record?",
   "healthWeightGoalRange": "Goal {min}-{max}kg",
@@ -229,8 +257,57 @@
   "gamesTitle": "Interactive Games",
   "gamesPageTitle": "Let's Play",
   "gameLaser": "Laser Dot",
+  "gameShadowPeek": "Shadow Peek",
   "gameMouseHunt": "Mouse Hunt",
   "gameRainbow": "Rainbow Chase",
+  "gameLaserSubtitle": "Classic red-dot chase",
+  "gameShadowPeekSubtitle": "Surprises in grass and boxes",
+  "gameCatchMouseSubtitle": "Catch roaming mice or fish",
+  "gameRainbowSubtitle": "Light trail follows cat paws",
+  "gameLaserDescription": "Simulate a laser pointer moving around the screen to attract your cat. A bright dot glides on a dark background with occasional bursts and pauses.",
+  "gameShadowPeekDescription": "Small creatures peek out from grass and cardboard boxes from time to time. Tap the shelter quickly before they escape to another hiding spot.",
+  "gameCatchMouseDescription": "Realistic mice or fish move around the screen. A paw tap catches them with sound and particle effects, then a new target appears after a short delay.",
+  "gameRainbowDescription": "A flowing rainbow ribbon reacts to touches and moves toward your cat's paw area, with sparkles and ripples for playful interaction.",
+  "gameDifficultyEasy": "Easy",
+  "gameDifficultyMedium": "Medium",
+  "gameDifficultyHard": "Hard",
+  "gameLaserTips": "Place your phone flat on the floor and let your cat chase the dot.",
+  "gameShadowPeekTips": "Tap the grass and boxes to find hidden creatures.",
+  "gameCatchMouseTips": "Tap mice or fish to score points with effects.",
+  "gameRainbowTips": "Tap the screen to guide the rainbow closer.",
+  "gameScoreUnit": "hits",
+  "gameRainbowTouchUnit": "taps",
+  "gameRainbowHint": "Tap the screen to attract the rainbow",
+  "gameShadowPeekHint": "Watch the grass and boxes carefully...",
+  "gameRewardCapturedGoal": "Caught! +{rewardMl}ml hydration suggestion, today's interaction goal reached",
+  "@gameRewardCapturedGoal": {
+    "placeholders": {
+      "rewardMl": { "type": "String" }
+    }
+  },
+  "gameRewardCapturedProgress": "Caught! +{rewardMl}ml hydration suggestion ({capturesToday}/{captureGoal})",
+  "@gameRewardCapturedProgress": {
+    "placeholders": {
+      "rewardMl": { "type": "String" },
+      "capturesToday": { "type": "int" },
+      "captureGoal": { "type": "int" }
+    }
+  },
+  "gameRewardSessionEnd": "Round finished. Today's interactions: {capturesToday}/{captureGoal}",
+  "@gameRewardSessionEnd": {
+    "placeholders": {
+      "capturesToday": { "type": "int" },
+      "captureGoal": { "type": "int" }
+    }
+  },
+  "gameRewardCapturedNoCat": "Caught! Let your cat rest a bit before the next round",
+  "gameRewardSessionEndNoCat": "Round finished. Give your cat a short break",
+  "gameFinalTargetBanner": "Final reward: catch the last target ({seconds}s)",
+  "@gameFinalTargetBanner": {
+    "placeholders": {
+      "seconds": { "type": "int" }
+    }
+  },
   "gameExitHint": "Long press corner for 3s to exit",
 
   "moreTitle": "More",

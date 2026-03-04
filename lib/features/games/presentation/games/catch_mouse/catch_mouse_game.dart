@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/scheduler.dart';
 import '../../../domain/game_config.dart';
+import '../../../../../core/l10n/app_localizations.dart';
 import 'catch_mouse_logic.dart';
 
 /// 捕鼠/捕鱼大战（增强版）
@@ -76,6 +77,7 @@ class _CatchMouseGameState extends State<CatchMouseGame> {
   Widget build(BuildContext context) {
     return LayoutBuilder(
       builder: (context, constraints) {
+        final l10n = AppLocalizations.of(context)!;
         final size = constraints.biggest;
         final overlayTop = MediaQuery.of(context).padding.top + 12;
         const overlaySize = 48.0;
@@ -95,6 +97,7 @@ class _CatchMouseGameState extends State<CatchMouseGame> {
             size: Size(constraints.maxWidth, constraints.maxHeight),
             painter: _CatchMousePainter(
               logic: _logic!,
+              scoreUnit: l10n.gameScoreUnit,
               overlayTop: overlayTop,
               overlaySize: overlaySize,
               overlayLeft: overlayLeft,
@@ -108,12 +111,14 @@ class _CatchMouseGameState extends State<CatchMouseGame> {
 
 class _CatchMousePainter extends CustomPainter {
   final CatchMouseLogic logic;
+  final String scoreUnit;
   final double overlayTop;
   final double overlaySize;
   final double overlayLeft;
 
   _CatchMousePainter({
     required this.logic,
+    required this.scoreUnit,
     required this.overlayTop,
     required this.overlaySize,
     required this.overlayLeft,
@@ -605,9 +610,9 @@ class _CatchMousePainter extends CustomPainter {
               letterSpacing: 2,
             ),
           ),
-          const TextSpan(
-            text: ' 次',
-            style: TextStyle(
+          TextSpan(
+            text: ' $scoreUnit',
+            style: const TextStyle(
               color: Color(0x66FFFFFF),
               fontSize: 14,
               fontWeight: FontWeight.w300,

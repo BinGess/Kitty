@@ -61,10 +61,10 @@ final healthTimelineProvider =
       if (cat == null) return [];
       final dao = ref.read(healthDaoProvider);
 
-      final weights = await dao.getWeightTrendData(cat.id, 7);
-      final todayDiet = await dao.getTodayDietRecords(cat.id);
-      final waterRecords = await dao.getTodayWaterRecords(cat.id);
-      final excRecords = await dao.getTodayExcretionRecords(cat.id);
+      final weights = await dao.getWeightRecords(cat.id);
+      final dietRecords = await dao.getDietRecords(cat.id);
+      final waterRecords = await dao.getWaterRecords(cat.id);
+      final excRecords = await dao.getExcretionRecords(cat.id);
 
       final entries = <HealthTimelineEntry>[];
 
@@ -82,7 +82,7 @@ final healthTimelineProvider =
           ),
         );
       }
-      for (final d in todayDiet) {
+      for (final d in dietRecords) {
         entries.add(
           HealthTimelineEntry(
             id: d.id,
@@ -124,7 +124,9 @@ final healthTimelineProvider =
                 ? AppColors.error
                 : AppColors.success,
             isWarning: e.hasBlood || e.hasAnomaly,
-            numericValue: isP ? (e.bristolScale ?? 1).toDouble() : (e.urineAmount ?? 1).toDouble(),
+            numericValue: isP
+                ? (e.bristolScale ?? 1).toDouble()
+                : (e.urineAmount ?? 1).toDouble(),
             subtype: isP ? 'poop' : 'urine',
           ),
         );

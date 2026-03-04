@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter/services.dart';
 import '../../../domain/game_config.dart';
+import '../../../../../core/l10n/app_localizations.dart';
 import 'laser_trajectory.dart' show LaserTrajectory, LaserPhase;
 
 /// 经典激光点游戏：增强版
@@ -95,6 +96,7 @@ class _LaserDotGameState extends State<LaserDotGame> {
   Widget build(BuildContext context) {
     return LayoutBuilder(
       builder: (context, constraints) {
+        final l10n = AppLocalizations.of(context)!;
         final size = constraints.biggest;
         final overlayTop = MediaQuery.of(context).padding.top + 12;
         const overlaySize = 48.0;
@@ -115,6 +117,7 @@ class _LaserDotGameState extends State<LaserDotGame> {
             painter: _LaserDotPainter(
               trajectory: _trajectory!,
               score: _score,
+              scoreUnit: l10n.gameScoreUnit,
               tapFeedbackPos: _tapFeedbackPos,
               tapFeedbackProgress: _showTapFeedback ? _tapFeedbackProgress : -1,
               overlayTop: overlayTop,
@@ -131,6 +134,7 @@ class _LaserDotGameState extends State<LaserDotGame> {
 class _LaserDotPainter extends CustomPainter {
   final LaserTrajectory trajectory;
   final int score;
+  final String scoreUnit;
   final Offset? tapFeedbackPos;
   final double tapFeedbackProgress;
   final double overlayTop;
@@ -140,6 +144,7 @@ class _LaserDotPainter extends CustomPainter {
   _LaserDotPainter({
     required this.trajectory,
     required this.score,
+    required this.scoreUnit,
     this.tapFeedbackPos,
     this.tapFeedbackProgress = -1,
     required this.overlayTop,
@@ -298,9 +303,9 @@ class _LaserDotPainter extends CustomPainter {
               letterSpacing: 2,
             ),
           ),
-          const TextSpan(
-            text: ' 次',
-            style: TextStyle(
+          TextSpan(
+            text: ' $scoreUnit',
+            style: const TextStyle(
               color: Color(0x66FFFFFF),
               fontSize: 14,
               fontWeight: FontWeight.w300,

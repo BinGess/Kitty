@@ -20,8 +20,6 @@ class _DietRecordSheetState extends ConsumerState<DietRecordSheet> {
   String _foodType = '主粮';
   DateTime _time = DateTime.now();
   bool _loadedLast = false;
-  int _todayMeals = 0;
-  int _mealTarget = 3;
 
   // Brand/food type values stored in DB — not localized to preserve data consistency
   static const _brands = ['渴望', '巅峰', '皇家', '自制', '零食', '其他'];
@@ -39,12 +37,7 @@ class _DietRecordSheetState extends ConsumerState<DietRecordSheet> {
       if (cat == null) return;
       final dao = ref.read(healthDaoProvider);
       final last = await dao.getLatestDietRecord(cat.id);
-      final today = await dao.getTodayDietRecords(cat.id);
       if (!mounted) return;
-      setState(() {
-        _todayMeals = today.length;
-        _mealTarget = cat.targetMealsPerDay;
-      });
       if (last != null) {
         setState(() {
           _amount = last.amountGrams;
@@ -70,7 +63,8 @@ class _DietRecordSheetState extends ConsumerState<DietRecordSheet> {
         builder: (ctx) => AlertDialog(
           title: Text(l10n.commonConfirm),
           content: Text(
-              l10n.dietConfirmLargeAmount(_amount.toStringAsFixed(0))),
+            l10n.dietConfirmLargeAmount(_amount.toStringAsFixed(0)),
+          ),
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(20),
           ),
@@ -104,7 +98,8 @@ class _DietRecordSheetState extends ConsumerState<DietRecordSheet> {
     } catch (e) {
       if (mounted) {
         _showError(
-            AppLocalizations.of(context)!.commonSaveFailed(e.toString()));
+          AppLocalizations.of(context)!.commonSaveFailed(e.toString()),
+        );
       }
     }
   }
@@ -154,26 +149,6 @@ class _DietRecordSheetState extends ConsumerState<DietRecordSheet> {
                 fontSize: 18,
                 fontWeight: FontWeight.w700,
                 color: AppColors.onBackground,
-              ),
-            ),
-            const SizedBox(height: 8),
-            ClipRRect(
-              borderRadius: BorderRadius.circular(6),
-              child: LinearProgressIndicator(
-                value: _mealTarget > 0
-                    ? ((_todayMeals + 1) / _mealTarget).clamp(0.0, 1.0)
-                    : 0.0,
-                minHeight: 8,
-                backgroundColor: AppColors.divider,
-                valueColor: const AlwaysStoppedAnimation(AppColors.primary),
-              ),
-            ),
-            const SizedBox(height: 4),
-            Text(
-              l10n.dietTodayMeals(_todayMeals + 1, _mealTarget),
-              style: const TextStyle(
-                fontSize: 12,
-                color: AppColors.textSecondary,
               ),
             ),
             const SizedBox(height: 20),
@@ -283,7 +258,9 @@ class _DietRecordSheetState extends ConsumerState<DietRecordSheet> {
                 child: Text(
                   l10n.commonSave,
                   style: const TextStyle(
-                      fontSize: 16, fontWeight: FontWeight.w600),
+                    fontSize: 16,
+                    fontWeight: FontWeight.w600,
+                  ),
                 ),
               ),
             ),
@@ -370,14 +347,15 @@ class _DietRecordSheetState extends ConsumerState<DietRecordSheet> {
           const SizedBox(width: 8),
           Text(
             '${_time.hour.toString().padLeft(2, '0')}:${_time.minute.toString().padLeft(2, '0')}',
-            style: const TextStyle(
-                fontSize: 15, color: AppColors.onBackground),
+            style: const TextStyle(fontSize: 15, color: AppColors.onBackground),
           ),
           const Spacer(),
           Text(
             l10n.dietTapToChangeTime,
             style: const TextStyle(
-                fontSize: 12, color: AppColors.textSecondary),
+              fontSize: 12,
+              color: AppColors.textSecondary,
+            ),
           ),
         ],
       ),

@@ -39,7 +39,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get soundCategoryEmotion => 'Emotion';
 
   @override
-  String get soundCategoryEnvironment => 'Environment';
+  String get soundCategoryEnvironment => 'Music';
 
   @override
   String get soundsSubtitleEmotion => 'Cat\'s Emotional Expressions';
@@ -48,7 +48,17 @@ class AppLocalizationsEn extends AppLocalizations {
   String get soundsSubtitleCalling => 'Calling & Environment Sounds';
 
   @override
+  String get soundsSubtitleEnvironment => 'Current Music + 6 Placeholder Types';
+
+  @override
   String get soundLooping => 'Looping';
+
+  @override
+  String get soundPlaceholderTag => 'Pending';
+
+  @override
+  String get soundPlaceholderHint =>
+      'This music type is a placeholder. Add audio and image later.';
 
   @override
   String get testTitle => '16 Cat Personalities';
@@ -128,6 +138,36 @@ class AppLocalizationsEn extends AppLocalizations {
   String get testResultPoster => 'Share Poster';
 
   @override
+  String get testResultSaveFailed =>
+      'The result is shown correctly, but it was not saved to this cat profile. Please try again.';
+
+  @override
+  String get testCurrentResultTitle => 'Current Profile Result';
+
+  @override
+  String get testViewFullReport => 'View Full Report';
+
+  @override
+  String get testNoResultYet =>
+      'This cat has no personality result yet. Please finish a test first.';
+
+  @override
+  String get testStartNow => 'Start Test';
+
+  @override
+  String testLastTestedAt(String time) {
+    return 'Last tested: $time';
+  }
+
+  @override
+  String personalityRecommendationSubtitle(String code, String title) {
+    return 'Content sorted for $code · $title';
+  }
+
+  @override
+  String get personalityRecommendedBadge => 'Recommended';
+
+  @override
   String get healthDashboardTitle => 'Cat Health';
 
   @override
@@ -137,10 +177,15 @@ class AppLocalizationsEn extends AppLocalizations {
   String get healthPreparing => 'Preparing...';
 
   @override
-  String get healthTodayRecords => 'Today\'s Records';
+  String get healthTodayRecords => 'Records Timeline';
 
   @override
   String get healthSwitchCat => 'Switch Cat';
+
+  @override
+  String healthPersonalityTipTitle(String code) {
+    return 'Personality Care Tip ($code)';
+  }
 
   @override
   String get healthWeightOutOfGoalWarning =>
@@ -200,7 +245,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get healthTimelineEmpty =>
-      'No records today\nTap + to start recording';
+      'No health records yet\nTap + to start recording';
 
   @override
   String get healthTimelineDeleteTitle => 'Confirm Delete';
@@ -391,10 +436,109 @@ class AppLocalizationsEn extends AppLocalizations {
   String get gameLaser => 'Laser Dot';
 
   @override
+  String get gameShadowPeek => 'Shadow Peek';
+
+  @override
   String get gameMouseHunt => 'Mouse Hunt';
 
   @override
   String get gameRainbow => 'Rainbow Chase';
+
+  @override
+  String get gameLaserSubtitle => 'Classic red-dot chase';
+
+  @override
+  String get gameShadowPeekSubtitle => 'Surprises in grass and boxes';
+
+  @override
+  String get gameCatchMouseSubtitle => 'Catch roaming mice or fish';
+
+  @override
+  String get gameRainbowSubtitle => 'Light trail follows cat paws';
+
+  @override
+  String get gameLaserDescription =>
+      'Simulate a laser pointer moving around the screen to attract your cat. A bright dot glides on a dark background with occasional bursts and pauses.';
+
+  @override
+  String get gameShadowPeekDescription =>
+      'Small creatures peek out from grass and cardboard boxes from time to time. Tap the shelter quickly before they escape to another hiding spot.';
+
+  @override
+  String get gameCatchMouseDescription =>
+      'Realistic mice or fish move around the screen. A paw tap catches them with sound and particle effects, then a new target appears after a short delay.';
+
+  @override
+  String get gameRainbowDescription =>
+      'A flowing rainbow ribbon reacts to touches and moves toward your cat\'s paw area, with sparkles and ripples for playful interaction.';
+
+  @override
+  String get gameDifficultyEasy => 'Easy';
+
+  @override
+  String get gameDifficultyMedium => 'Medium';
+
+  @override
+  String get gameDifficultyHard => 'Hard';
+
+  @override
+  String get gameLaserTips =>
+      'Place your phone flat on the floor and let your cat chase the dot.';
+
+  @override
+  String get gameShadowPeekTips =>
+      'Tap the grass and boxes to find hidden creatures.';
+
+  @override
+  String get gameCatchMouseTips =>
+      'Tap mice or fish to score points with effects.';
+
+  @override
+  String get gameRainbowTips => 'Tap the screen to guide the rainbow closer.';
+
+  @override
+  String get gameScoreUnit => 'hits';
+
+  @override
+  String get gameRainbowTouchUnit => 'taps';
+
+  @override
+  String get gameRainbowHint => 'Tap the screen to attract the rainbow';
+
+  @override
+  String get gameShadowPeekHint => 'Watch the grass and boxes carefully...';
+
+  @override
+  String gameRewardCapturedGoal(String rewardMl) {
+    return 'Caught! +${rewardMl}ml hydration suggestion, today\'s interaction goal reached';
+  }
+
+  @override
+  String gameRewardCapturedProgress(
+    String rewardMl,
+    int capturesToday,
+    int captureGoal,
+  ) {
+    return 'Caught! +${rewardMl}ml hydration suggestion ($capturesToday/$captureGoal)';
+  }
+
+  @override
+  String gameRewardSessionEnd(int capturesToday, int captureGoal) {
+    return 'Round finished. Today\'s interactions: $capturesToday/$captureGoal';
+  }
+
+  @override
+  String get gameRewardCapturedNoCat =>
+      'Caught! Let your cat rest a bit before the next round';
+
+  @override
+  String get gameRewardSessionEndNoCat =>
+      'Round finished. Give your cat a short break';
+
+  @override
+  String gameFinalTargetBanner(int seconds) {
+    return 'Final reward: catch the last target (${seconds}s)';
+  }
 
   @override
   String get gameExitHint => 'Long press corner for 3s to exit';

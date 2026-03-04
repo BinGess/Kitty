@@ -22,4 +22,5 @@ abstract class AppDimensions {
   // Layout
   static const double cardElevation = 0.0;
   static const double bottomNavHeight = 80.0;
+  static const double touchTargetMin = 44.0;
 }

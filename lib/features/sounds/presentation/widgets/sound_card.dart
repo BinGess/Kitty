@@ -2,27 +2,46 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../../core/constants/app_colors.dart';
+import '../../../../core/constants/app_dimensions.dart';
+import '../../../../core/constants/app_typography.dart';
 import '../../../../core/l10n/app_localizations.dart';
 import '../../data/models/sound_item.dart';
 import '../providers/sounds_provider.dart';
 
 class SoundCard extends ConsumerWidget {
+  static const double _iconBoxSize = 72;
+  static const double _rippleSize = 104;
+
   final SoundItem sound;
 
   const SoundCard({super.key, required this.sound});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final l10n = AppLocalizations.of(context)!;
     final playbackState = ref.watch(soundPlaybackProvider);
     final isPlaying = playbackState.playingId == sound.id;
     final isLooping = isPlaying && playbackState.isLooping;
+    final isPlaceholder = sound.isPlaceholder;
 
     return GestureDetector(
+      behavior: HitTestBehavior.opaque,
       onTap: () {
+        if (isPlaceholder) {
+          HapticFeedback.selectionClick();
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text(l10n.soundPlaceholderHint),
+              behavior: SnackBarBehavior.floating,
+              duration: const Duration(seconds: 2),
+            ),
+          );
+          return;
+        }
         HapticFeedback.lightImpact();
         ref.read(soundPlaybackProvider.notifier).playOnce(sound);
       },
-      onLongPress: sound.isLoopable
+      onLongPress: sound.isLoopable && !isPlaceholder
           ? () {
               HapticFeedback.mediumImpact();
               ref.read(soundPlaybackProvider.notifier).toggleLoop(sound);
@@ -38,48 +57,97 @@ class SoundCard extends ConsumerWidget {
                 alignment: Alignment.center,
                 children: [
                   AnimatedScale(
-                    scale: isPlaying ? 1.08 : 1.0,
+                    scale: isPlaying ? 1.05 : 1.0,
                     duration: const Duration(milliseconds: 200),
                     curve: Curves.easeOut,
-                    child: Image.asset(
-                      sound.imagePath,
-                      fit: BoxFit.contain,
-                      gaplessPlayback: true,
-                      errorBuilder: (context, error, stackTrace) {
-                        return Icon(
-                          sound.icon,
-                          size: 48,
-                          color: isPlaying
-                              ? AppColors.primary
-                              : AppColors.onSurface,
-                        );
-                      },
+                    child: Opacity(
+                      opacity: isPlaceholder ? 0.56 : 1.0,
+                      child: Transform.scale(
+                        scale: sound.visualScale,
+                        child: SizedBox.square(
+                          dimension: _iconBoxSize,
+                          child: Image.asset(
+                            sound.imagePath,
+                            fit: BoxFit.contain,
+                            gaplessPlayback: true,
+                            errorBuilder: (context, error, stackTrace) {
+                              return Icon(
+                                sound.icon,
+                                size: AppDimensions.iconXLarge,
+                                color: isPlaying
+                                    ? AppColors.primary
+                                    : AppColors.onSurface,
+                              );
+                            },
+                          ),
+                        ),
+                      ),
                     ),
                   ),
-                  if (isPlaying) _PlayingRipple(color: AppColors.primary),
+                  if (isPlaying && !isPlaceholder)
+                    const _PlayingRipple(
+                      color: AppColors.primary,
+                      size: _rippleSize,
+                    ),
+                  if (isPlaceholder)
+                    Positioned(
+                      top: AppDimensions.spacingXS,
+                      right: AppDimensions.spacingXS,
+                      child: Container(
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: AppDimensions.spacingXS,
+                          vertical: 2,
+                        ),
+                        decoration: BoxDecoration(
+                          color: AppColors.primary.withValues(alpha: 0.12),
+                          borderRadius: BorderRadius.circular(
+                            AppDimensions.radiusSmall,
+                          ),
+                        ),
+                        child: Text(
+                          l10n.soundPlaceholderTag,
+                          style: AppTypography.bodySmall.copyWith(
+                            fontSize: 10,
+                            color: AppColors.primary,
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
+                      ),
+                    ),
                 ],
               ),
             ),
-            const SizedBox(height: 2),
+            const SizedBox(height: AppDimensions.spacingXS),
             Text(
               sound.label,
               textAlign: TextAlign.center,
               maxLines: 1,
               overflow: TextOverflow.ellipsis,
-              style: TextStyle(
-                fontSize: 12,
-                fontWeight: isPlaying ? FontWeight.w600 : FontWeight.w400,
-                color: isPlaying ? AppColors.primary : AppColors.onSurface,
+              style: AppTypography.labelSmall.copyWith(
+                fontWeight: isPlaying ? FontWeight.w600 : FontWeight.w500,
+                color: isPlaceholder
+                    ? AppColors.textSecondary
+                    : (isPlaying ? AppColors.primary : AppColors.onSurface),
               ),
             ),
             SizedBox(
-              height: 14,
-              child: isLooping
+              height: 16,
+              child: isPlaceholder
                   ? Text(
-                      AppLocalizations.of(context)!.soundLooping,
+                      l10n.soundPlaceholderTag,
                       textAlign: TextAlign.center,
-                      style: TextStyle(
-                        fontSize: 9,
+                      style: AppTypography.bodySmall.copyWith(
+                        fontSize: 11,
+                        color: AppColors.textSecondary,
+                        fontWeight: FontWeight.w500,
+                      ),
+                    )
+                  : isLooping
+                  ? Text(
+                      l10n.soundLooping,
+                      textAlign: TextAlign.center,
+                      style: AppTypography.bodySmall.copyWith(
+                        fontSize: 11,
                         color: AppColors.primary.withValues(alpha: 0.8),
                         fontWeight: FontWeight.w500,
                       ),
@@ -95,7 +163,9 @@ class SoundCard extends ConsumerWidget {
 
 class _PlayingRipple extends StatefulWidget {
   final Color color;
-  const _PlayingRipple({required this.color});
+  final double size;
+
+  const _PlayingRipple({required this.color, required this.size});
 
   @override
   State<_PlayingRipple> createState() => _PlayingRippleState();
@@ -126,7 +196,7 @@ class _PlayingRippleState extends State<_PlayingRipple>
       animation: _ctrl,
       builder: (context, child) {
         return CustomPaint(
-          size: const Size(110, 110),
+          size: Size.square(widget.size),
           painter: _RipplePainter(progress: _ctrl.value, color: widget.color),
         );
       },

@@ -9,6 +9,7 @@ class ScoringEngine {
   static TestResult calculate({
     required Map<int, int> answers,
     required TestMode mode,
+    required String languageCode,
   }) {
     // Sum scores per dimension
     final dimensionScores = <String, int>{};
@@ -55,13 +56,17 @@ class ScoringEngine {
       }
     }
 
-    final personality = ResultRepository.getType(code.toString());
+    final personality = ResultRepository.getType(
+      code.toString(),
+      languageCode: languageCode,
+    );
 
     return TestResult(
       personality: personality,
       dimensionScores: dimensionScores,
       maxScores: dimensionMaxes,
       hasDualPersonality: hasDual,
+      languageCode: languageCode == 'en' ? 'en' : 'zh',
     );
   }
 

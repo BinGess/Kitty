@@ -52,10 +52,7 @@ class ResultPoster extends StatelessWidget {
                   const SizedBox(height: AppDimensions.spacingM),
 
                   // Poster content (screenshot-able area)
-                  _PosterContent(
-                    personality: personality,
-                    result: result,
-                  ),
+                  _PosterContent(personality: personality, result: result),
 
                   const SizedBox(height: AppDimensions.spacingL),
 
@@ -68,7 +65,9 @@ class ResultPoster extends StatelessWidget {
                             // TODO: Save to gallery
                             Navigator.pop(context);
                             ScaffoldMessenger.of(context).showSnackBar(
-                              SnackBar(content: Text(l10n.posterSaveComingSoon)),
+                              SnackBar(
+                                content: Text(l10n.posterSaveComingSoon),
+                              ),
                             );
                           },
                           icon: const Icon(Icons.save_alt),
@@ -79,7 +78,8 @@ class ResultPoster extends StatelessWidget {
                             foregroundColor: AppColors.primary,
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(
-                                  AppDimensions.radiusMedium),
+                                AppDimensions.radiusMedium,
+                              ),
                             ),
                           ),
                         ),
@@ -91,7 +91,9 @@ class ResultPoster extends StatelessWidget {
                             // TODO: Share
                             Navigator.pop(context);
                             ScaffoldMessenger.of(context).showSnackBar(
-                              SnackBar(content: Text(l10n.posterShareComingSoon)),
+                              SnackBar(
+                                content: Text(l10n.posterShareComingSoon),
+                              ),
                             );
                           },
                           icon: const Icon(Icons.share),
@@ -101,7 +103,8 @@ class ResultPoster extends StatelessWidget {
                             backgroundColor: AppColors.primary,
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(
-                                  AppDimensions.radiusMedium),
+                                AppDimensions.radiusMedium,
+                              ),
                             ),
                           ),
                         ),
@@ -123,10 +126,7 @@ class _PosterContent extends StatelessWidget {
   final PersonalityType personality;
   final TestResult result;
 
-  const _PosterContent({
-    required this.personality,
-    required this.result,
-  });
+  const _PosterContent({required this.personality, required this.result});
 
   @override
   Widget build(BuildContext context) {
@@ -155,11 +155,7 @@ class _PosterContent extends StatelessWidget {
               color: AppColors.primary.withValues(alpha: 0.15),
               shape: BoxShape.circle,
             ),
-            child: const Icon(
-              Icons.pets,
-              size: 36,
-              color: AppColors.primary,
-            ),
+            child: const Icon(Icons.pets, size: 36, color: AppColors.primary),
           ),
           const SizedBox(height: 16),
 
@@ -189,8 +185,7 @@ class _PosterContent extends StatelessWidget {
             spacing: 6,
             children: personality.tags.map((tag) {
               return Container(
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
                 decoration: BoxDecoration(
                   color: AppColors.primary.withValues(alpha: 0.1),
                   borderRadius: BorderRadius.circular(10),
@@ -215,6 +210,7 @@ class _PosterContent extends StatelessWidget {
                 dimension: dim,
                 score: result.dimensionScores[dim.name] ?? 0,
                 maxScore: result.maxScores[dim.name] ?? 3,
+                languageCode: result.languageCode,
               ),
             );
           }),
@@ -244,10 +240,7 @@ class _PosterContent extends StatelessWidget {
               const SizedBox(width: 4),
               Text(
                 l10n.posterFooter,
-                style: TextStyle(
-                  fontSize: 11,
-                  color: AppColors.textSecondary,
-                ),
+                style: TextStyle(fontSize: 11, color: AppColors.textSecondary),
               ),
             ],
           ),

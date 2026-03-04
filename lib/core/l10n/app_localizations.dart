@@ -161,7 +161,7 @@ abstract class AppLocalizations {
   /// No description provided for @soundCategoryEnvironment.
   ///
   /// In zh, this message translates to:
-  /// **'环境'**
+  /// **'音乐'**
   String get soundCategoryEnvironment;
 
   /// No description provided for @soundsSubtitleEmotion.
@@ -176,11 +176,29 @@ abstract class AppLocalizations {
   /// **'召唤猫咪与环境音'**
   String get soundsSubtitleCalling;
 
+  /// No description provided for @soundsSubtitleEnvironment.
+  ///
+  /// In zh, this message translates to:
+  /// **'现有音乐 + 6种类型占位'**
+  String get soundsSubtitleEnvironment;
+
   /// No description provided for @soundLooping.
   ///
   /// In zh, this message translates to:
   /// **'循环中'**
   String get soundLooping;
+
+  /// No description provided for @soundPlaceholderTag.
+  ///
+  /// In zh, this message translates to:
+  /// **'待补充'**
+  String get soundPlaceholderTag;
+
+  /// No description provided for @soundPlaceholderHint.
+  ///
+  /// In zh, this message translates to:
+  /// **'该音乐类型已占位，等待你补充音频与图片'**
+  String get soundPlaceholderHint;
 
   /// No description provided for @testTitle.
   ///
@@ -320,6 +338,54 @@ abstract class AppLocalizations {
   /// **'生成海报'**
   String get testResultPoster;
 
+  /// No description provided for @testResultSaveFailed.
+  ///
+  /// In zh, this message translates to:
+  /// **'本次结果展示正常，但暂未成功保存到猫咪档案，请稍后重试。'**
+  String get testResultSaveFailed;
+
+  /// No description provided for @testCurrentResultTitle.
+  ///
+  /// In zh, this message translates to:
+  /// **'当前档案结果'**
+  String get testCurrentResultTitle;
+
+  /// No description provided for @testViewFullReport.
+  ///
+  /// In zh, this message translates to:
+  /// **'查看完整报告'**
+  String get testViewFullReport;
+
+  /// No description provided for @testNoResultYet.
+  ///
+  /// In zh, this message translates to:
+  /// **'当前猫咪还没有性格测试结果，先完成一次测试吧。'**
+  String get testNoResultYet;
+
+  /// No description provided for @testStartNow.
+  ///
+  /// In zh, this message translates to:
+  /// **'立即开始测试'**
+  String get testStartNow;
+
+  /// No description provided for @testLastTestedAt.
+  ///
+  /// In zh, this message translates to:
+  /// **'最近测试：{time}'**
+  String testLastTestedAt(String time);
+
+  /// No description provided for @personalityRecommendationSubtitle.
+  ///
+  /// In zh, this message translates to:
+  /// **'已根据 {code} · {title} 调整内容顺序'**
+  String personalityRecommendationSubtitle(String code, String title);
+
+  /// No description provided for @personalityRecommendedBadge.
+  ///
+  /// In zh, this message translates to:
+  /// **'推荐'**
+  String get personalityRecommendedBadge;
+
   /// No description provided for @healthDashboardTitle.
   ///
   /// In zh, this message translates to:
@@ -341,7 +407,7 @@ abstract class AppLocalizations {
   /// No description provided for @healthTodayRecords.
   ///
   /// In zh, this message translates to:
-  /// **'今日记录'**
+  /// **'记录时间线'**
   String get healthTodayRecords;
 
   /// No description provided for @healthSwitchCat.
@@ -349,6 +415,12 @@ abstract class AppLocalizations {
   /// In zh, this message translates to:
   /// **'切换猫咪'**
   String get healthSwitchCat;
+
+  /// No description provided for @healthPersonalityTipTitle.
+  ///
+  /// In zh, this message translates to:
+  /// **'性格照护提示（{code}）'**
+  String healthPersonalityTipTitle(String code);
 
   /// No description provided for @healthWeightOutOfGoalWarning.
   ///
@@ -443,7 +515,7 @@ abstract class AppLocalizations {
   /// No description provided for @healthTimelineEmpty.
   ///
   /// In zh, this message translates to:
-  /// **'今天还没有记录\n点击右下角 + 开始记录吧'**
+  /// **'还没有健康记录\n点击右下角 + 开始记录吧'**
   String get healthTimelineEmpty;
 
   /// No description provided for @healthTimelineDeleteTitle.
@@ -770,6 +842,12 @@ abstract class AppLocalizations {
   /// **'激光点'**
   String get gameLaser;
 
+  /// No description provided for @gameShadowPeek.
+  ///
+  /// In zh, this message translates to:
+  /// **'影子藏猫猫'**
+  String get gameShadowPeek;
+
   /// No description provided for @gameMouseHunt.
   ///
   /// In zh, this message translates to:
@@ -781,6 +859,160 @@ abstract class AppLocalizations {
   /// In zh, this message translates to:
   /// **'追彩虹'**
   String get gameRainbow;
+
+  /// No description provided for @gameLaserSubtitle.
+  ///
+  /// In zh, this message translates to:
+  /// **'经典红点追逐游戏'**
+  String get gameLaserSubtitle;
+
+  /// No description provided for @gameShadowPeekSubtitle.
+  ///
+  /// In zh, this message translates to:
+  /// **'草丛纸箱里的惊喜'**
+  String get gameShadowPeekSubtitle;
+
+  /// No description provided for @gameCatchMouseSubtitle.
+  ///
+  /// In zh, this message translates to:
+  /// **'拟真老鼠或鱼游走，拍击即捕获'**
+  String get gameCatchMouseSubtitle;
+
+  /// No description provided for @gameRainbowSubtitle.
+  ///
+  /// In zh, this message translates to:
+  /// **'光带会被猫爪吸引'**
+  String get gameRainbowSubtitle;
+
+  /// No description provided for @gameLaserDescription.
+  ///
+  /// In zh, this message translates to:
+  /// **'模拟激光笔在屏幕上移动，吸引猫咪追逐。红色高亮光点在黑色背景上缓慢移动，偶尔加速或暂停。'**
+  String get gameLaserDescription;
+
+  /// No description provided for @gameShadowPeekDescription.
+  ///
+  /// In zh, this message translates to:
+  /// **'屏幕主体为草丛或纸箱，小鸟、小蛇偶尔露出一部分并伴随轻微响声。点击遮挡物，物体会迅速逃窜至下一个掩体。'**
+  String get gameShadowPeekDescription;
+
+  /// No description provided for @gameCatchMouseDescription.
+  ///
+  /// In zh, this message translates to:
+  /// **'拟真的老鼠或鱼在屏幕游走，猫咪拍击即为捕获。击中时播放吱吱/水花声，物体消失并产生散开粒子特效，3秒后随机刷新。'**
+  String get gameCatchMouseDescription;
+
+  /// No description provided for @gameRainbowDescription.
+  ///
+  /// In zh, this message translates to:
+  /// **'彩虹光带在屏幕上流动，触碰屏幕会吸引彩虹靠近并产生闪烁光点与波纹，适合猫咪追逐和拍打互动。'**
+  String get gameRainbowDescription;
+
+  /// No description provided for @gameDifficultyEasy.
+  ///
+  /// In zh, this message translates to:
+  /// **'简单'**
+  String get gameDifficultyEasy;
+
+  /// No description provided for @gameDifficultyMedium.
+  ///
+  /// In zh, this message translates to:
+  /// **'中等'**
+  String get gameDifficultyMedium;
+
+  /// No description provided for @gameDifficultyHard.
+  ///
+  /// In zh, this message translates to:
+  /// **'困难'**
+  String get gameDifficultyHard;
+
+  /// No description provided for @gameLaserTips.
+  ///
+  /// In zh, this message translates to:
+  /// **'将手机平放在地上，让猫咪自由追逐红点'**
+  String get gameLaserTips;
+
+  /// No description provided for @gameShadowPeekTips.
+  ///
+  /// In zh, this message translates to:
+  /// **'点击草丛或纸箱，看看谁在躲猫猫'**
+  String get gameShadowPeekTips;
+
+  /// No description provided for @gameCatchMouseTips.
+  ///
+  /// In zh, this message translates to:
+  /// **'拍击老鼠或鱼即可捕获，享受吱吱声与粒子特效'**
+  String get gameCatchMouseTips;
+
+  /// No description provided for @gameRainbowTips.
+  ///
+  /// In zh, this message translates to:
+  /// **'轻触屏幕可引导彩虹靠近，适合互动和放松'**
+  String get gameRainbowTips;
+
+  /// No description provided for @gameScoreUnit.
+  ///
+  /// In zh, this message translates to:
+  /// **'次'**
+  String get gameScoreUnit;
+
+  /// No description provided for @gameRainbowTouchUnit.
+  ///
+  /// In zh, this message translates to:
+  /// **'互动'**
+  String get gameRainbowTouchUnit;
+
+  /// No description provided for @gameRainbowHint.
+  ///
+  /// In zh, this message translates to:
+  /// **'轻触屏幕，彩虹会靠近猫爪'**
+  String get gameRainbowHint;
+
+  /// No description provided for @gameShadowPeekHint.
+  ///
+  /// In zh, this message translates to:
+  /// **'仔细观察草丛和纸箱...'**
+  String get gameShadowPeekHint;
+
+  /// No description provided for @gameRewardCapturedGoal.
+  ///
+  /// In zh, this message translates to:
+  /// **'抓到啦！+{rewardMl}ml 补水建议，今日互动目标达成'**
+  String gameRewardCapturedGoal(String rewardMl);
+
+  /// No description provided for @gameRewardCapturedProgress.
+  ///
+  /// In zh, this message translates to:
+  /// **'抓到啦！+{rewardMl}ml 补水建议（{capturesToday}/{captureGoal}）'**
+  String gameRewardCapturedProgress(
+    String rewardMl,
+    int capturesToday,
+    int captureGoal,
+  );
+
+  /// No description provided for @gameRewardSessionEnd.
+  ///
+  /// In zh, this message translates to:
+  /// **'本轮结束，今日互动 {capturesToday}/{captureGoal}'**
+  String gameRewardSessionEnd(int capturesToday, int captureGoal);
+
+  /// No description provided for @gameRewardCapturedNoCat.
+  ///
+  /// In zh, this message translates to:
+  /// **'抓到啦！休息一下再继续玩'**
+  String get gameRewardCapturedNoCat;
+
+  /// No description provided for @gameRewardSessionEndNoCat.
+  ///
+  /// In zh, this message translates to:
+  /// **'本轮结束，建议让猫咪短暂休息'**
+  String get gameRewardSessionEndNoCat;
+
+  /// No description provided for @gameFinalTargetBanner.
+  ///
+  /// In zh, this message translates to:
+  /// **'收尾奖励：抓住最终目标（{seconds}s）'**
+  String gameFinalTargetBanner(int seconds);
 
   /// No description provided for @gameExitHint.
   ///

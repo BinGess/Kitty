@@ -1,6 +1,6 @@
 class PersonalityType {
-  final String code;       // e.g. "ENFP"
-  final String title;      // e.g. "快乐小天使"
+  final String code; // e.g. "ENFP"
+  final String title; // e.g. "快乐小天使"
   final List<String> tags; // e.g. ["#社牛", "#话痨"]
   final String description;
   final String advice;
@@ -19,14 +19,16 @@ class PersonalityType {
 class TestResult {
   final PersonalityType personality;
   final Map<String, int> dimensionScores; // e.g. {"EI": 3, "NS": 1}
-  final Map<String, int> maxScores;       // e.g. {"EI": 3, "NS": 3} for basic
-  final bool hasDualPersonality;          // advanced mode: score=3 on a dimension
+  final Map<String, int> maxScores; // e.g. {"EI": 3, "NS": 3} for basic
+  final bool hasDualPersonality; // advanced mode: score=3 on a dimension
+  final String languageCode;
 
   const TestResult({
     required this.personality,
     required this.dimensionScores,
     required this.maxScores,
     this.hasDualPersonality = false,
+    this.languageCode = 'zh',
   });
 
   /// Get percentage for each dimension (for radar chart)

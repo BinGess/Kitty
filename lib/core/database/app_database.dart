@@ -18,7 +18,7 @@ class AppDatabase extends _$AppDatabase {
   AppDatabase([QueryExecutor? executor]) : super(executor ?? _openConnection());
 
   @override
-  int get schemaVersion => 2;
+  int get schemaVersion => 3;
 
   @override
   MigrationStrategy get migration => MigrationStrategy(
@@ -28,6 +28,14 @@ class AppDatabase extends _$AppDatabase {
         await m.addColumn(cats, cats.isNeutered);
         await m.addColumn(cats, cats.weightGoalMinKg);
         await m.addColumn(cats, cats.weightGoalMaxKg);
+      }
+      if (from < 3) {
+        await m.addColumn(cats, cats.personalityCode);
+        await m.addColumn(cats, cats.personalityHasDual);
+        await m.addColumn(cats, cats.personalityTestMode);
+        await m.addColumn(cats, cats.personalityDimensionScores);
+        await m.addColumn(cats, cats.personalityMaxScores);
+        await m.addColumn(cats, cats.personalityTestedAt);
       }
     },
   );

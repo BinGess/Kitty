@@ -47,7 +47,7 @@ class GameSettingsSheet extends ConsumerWidget {
                     Icon(mode.icon, size: 22, color: mode.color),
                     const SizedBox(width: 8),
                     Text(
-                      l10n.gameSettingsTitle(mode.title),
+                      l10n.gameSettingsTitle(mode.title(l10n)),
                       style: const TextStyle(
                         fontSize: 18,
                         fontWeight: FontWeight.w600,
@@ -60,7 +60,10 @@ class GameSettingsSheet extends ConsumerWidget {
 
                 // Speed / 频率 slider
                 _SettingLabel(
-                    title: mode == GameMode.shadowPeek ? l10n.gameSettingsSpeedFrequency : l10n.gameSettingsSpeedMovement),
+                  title: mode == GameMode.shadowPeek
+                      ? l10n.gameSettingsSpeedFrequency
+                      : l10n.gameSettingsSpeedMovement,
+                ),
                 const SizedBox(height: 8),
                 Row(
                   children: [
@@ -69,14 +72,12 @@ class GameSettingsSheet extends ConsumerWidget {
                       child: SliderTheme(
                         data: SliderTheme.of(context).copyWith(
                           activeTrackColor: mode.color,
-                          inactiveTrackColor:
-                              mode.color.withValues(alpha: 0.2),
+                          inactiveTrackColor: mode.color.withValues(alpha: 0.2),
                         ),
                         child: Slider(
                           value: config.speed,
-                          onChanged: (v) => ref
-                              .read(gameConfigProvider.notifier)
-                              .setSpeed(v),
+                          onChanged: (v) =>
+                              ref.read(gameConfigProvider.notifier).setSpeed(v),
                         ),
                       ),
                     ),
@@ -117,16 +118,20 @@ class GameSettingsSheet extends ConsumerWidget {
                   padding: const EdgeInsets.all(AppDimensions.spacingM),
                   decoration: BoxDecoration(
                     color: AppColors.surfaceVariant,
-                    borderRadius:
-                        BorderRadius.circular(AppDimensions.radiusMedium),
+                    borderRadius: BorderRadius.circular(
+                      AppDimensions.radiusMedium,
+                    ),
                   ),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Row(
                         children: [
-                          Icon(Icons.info_outline,
-                              size: 16, color: AppColors.textSecondary),
+                          Icon(
+                            Icons.info_outline,
+                            size: 16,
+                            color: AppColors.textSecondary,
+                          ),
                           const SizedBox(width: 6),
                           Text(
                             l10n.gameSettingsDescription,
@@ -140,7 +145,7 @@ class GameSettingsSheet extends ConsumerWidget {
                       ),
                       const SizedBox(height: 6),
                       Text(
-                        mode.description,
+                        mode.description(l10n),
                         style: TextStyle(
                           fontSize: 13,
                           color: AppColors.textSecondary,
@@ -161,15 +166,17 @@ class GameSettingsSheet extends ConsumerWidget {
                       backgroundColor: mode.color,
                       padding: const EdgeInsets.symmetric(vertical: 14),
                       shape: RoundedRectangleBorder(
-                        borderRadius:
-                            BorderRadius.circular(AppDimensions.radiusMedium),
+                        borderRadius: BorderRadius.circular(
+                          AppDimensions.radiusMedium,
+                        ),
                       ),
                     ),
                     child: Text(l10n.gameSettingsStart),
                   ),
                 ),
                 SizedBox(
-                  height: MediaQuery.of(context).padding.bottom +
+                  height:
+                      MediaQuery.of(context).padding.bottom +
                       kBottomNavigationBarHeight +
                       8,
                 ),

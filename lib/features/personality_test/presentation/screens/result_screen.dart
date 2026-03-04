@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:intl/intl.dart';
 import '../../../../core/constants/app_colors.dart';
 import '../../../../core/constants/app_dimensions.dart';
 import '../../../../core/l10n/app_localizations.dart';
+import '../providers/cat_personality_provider.dart';
 import '../../data/models/question.dart';
 import '../providers/test_provider.dart';
 import '../widgets/result_poster.dart';
@@ -15,13 +17,47 @@ class ResultScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final testState = ref.watch(testProvider);
-    final result = testState.result;
+    final persistedProfile = ref.watch(currentCatPersonalityProfileProvider);
+    final transientResult = testState.result;
+    final result = transientResult ?? persistedProfile?.result;
 
     if (result == null) {
-      return const Scaffold(body: Center(child: CircularProgressIndicator()));
+      return Scaffold(
+        appBar: AppBar(
+          title: Text(AppLocalizations.of(context)!.testResultTitle),
+        ),
+        body: Center(
+          child: Padding(
+            padding: const EdgeInsets.all(AppDimensions.spacingL),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                const Icon(Icons.psychology_outlined, size: 48),
+                const SizedBox(height: AppDimensions.spacingM),
+                Text(
+                  AppLocalizations.of(context)!.testNoResultYet,
+                  textAlign: TextAlign.center,
+                ),
+                const SizedBox(height: AppDimensions.spacingM),
+                FilledButton(
+                  onPressed: () {
+                    ref.read(testProvider.notifier).reset();
+                    context.pop();
+                  },
+                  child: Text(AppLocalizations.of(context)!.testStartNow),
+                ),
+              ],
+            ),
+          ),
+        ),
+      );
     }
 
     final personality = result.personality;
+    final testedAt = persistedProfile?.testedAt;
+    final testedAtText = testedAt == null
+        ? null
+        : DateFormat('yyyy-MM-dd HH:mm').format(testedAt);
 
     return PopScope(
       canPop: false,
@@ -59,8 +95,9 @@ class ResultScreen extends ConsumerWidget {
                       AppColors.primaryLight.withValues(alpha: 0.15),
                     ],
                   ),
-                  borderRadius:
-                      BorderRadius.circular(AppDimensions.radiusLarge),
+                  borderRadius: BorderRadius.circular(
+                    AppDimensions.radiusLarge,
+                  ),
                 ),
                 child: Column(
                   children: [
@@ -109,7 +146,9 @@ class ResultScreen extends ConsumerWidget {
                       children: personality.tags.map((tag) {
                         return Container(
                           padding: const EdgeInsets.symmetric(
-                              horizontal: 10, vertical: 4),
+                            horizontal: 10,
+                            vertical: 4,
+                          ),
                           decoration: BoxDecoration(
                             color: AppColors.primary.withValues(alpha: 0.12),
                             borderRadius: BorderRadius.circular(12),
@@ -126,17 +165,34 @@ class ResultScreen extends ConsumerWidget {
                       }).toList(),
                     ),
 
+                    if (testedAtText != null) ...[
+                      const SizedBox(height: 6),
+                      Text(
+                        AppLocalizations.of(
+                          context,
+                        )!.testLastTestedAt(testedAtText),
+                        style: const TextStyle(
+                          fontSize: 12,
+                          color: AppColors.textSecondary,
+                        ),
+                      ),
+                    ],
+
                     if (result.hasDualPersonality) ...[
                       const SizedBox(height: AppDimensions.spacingS),
                       Container(
                         padding: const EdgeInsets.symmetric(
-                            horizontal: 10, vertical: 4),
+                          horizontal: 10,
+                          vertical: 4,
+                        ),
                         decoration: BoxDecoration(
                           color: AppColors.warning.withValues(alpha: 0.2),
                           borderRadius: BorderRadius.circular(12),
                         ),
                         child: Text(
-                          AppLocalizations.of(context)!.testResultDualPersonality,
+                          AppLocalizations.of(
+                            context,
+                          )!.testResultDualPersonality,
                           style: const TextStyle(
                             fontSize: 12,
                             color: AppColors.onBackground,
@@ -150,14 +206,41 @@ class ResultScreen extends ConsumerWidget {
               ),
               const SizedBox(height: AppDimensions.spacingM),
 
+              if (testState.hasTriedPersistingResult &&
+                  !testState.isResultPersisted &&
+                  transientResult != null) ...[
+                Container(
+                  width: double.infinity,
+                  padding: const EdgeInsets.all(AppDimensions.spacingM),
+                  decoration: BoxDecoration(
+                    color: AppColors.warning.withValues(alpha: 0.14),
+                    borderRadius: BorderRadius.circular(
+                      AppDimensions.radiusMedium,
+                    ),
+                    border: Border.all(
+                      color: AppColors.warning.withValues(alpha: 0.5),
+                    ),
+                  ),
+                  child: Text(
+                    AppLocalizations.of(context)!.testResultSaveFailed,
+                    style: const TextStyle(
+                      fontSize: 12,
+                      color: AppColors.onBackground,
+                    ),
+                  ),
+                ),
+                const SizedBox(height: AppDimensions.spacingM),
+              ],
+
               // Dimension analysis
               Container(
                 width: double.infinity,
                 padding: const EdgeInsets.all(AppDimensions.spacingM),
                 decoration: BoxDecoration(
                   color: AppColors.surface,
-                  borderRadius:
-                      BorderRadius.circular(AppDimensions.radiusLarge),
+                  borderRadius: BorderRadius.circular(
+                    AppDimensions.radiusLarge,
+                  ),
                   border: Border.all(color: AppColors.divider),
                 ),
                 child: Column(
@@ -179,6 +262,7 @@ class ResultScreen extends ConsumerWidget {
                           dimension: dim,
                           score: result.dimensionScores[dim.name] ?? 0,
                           maxScore: result.maxScores[dim.name] ?? 3,
+                          languageCode: testState.languageCode,
                         ),
                       );
                     }),
@@ -209,13 +293,17 @@ class ResultScreen extends ConsumerWidget {
                 padding: const EdgeInsets.all(AppDimensions.spacingL),
                 decoration: BoxDecoration(
                   color: AppColors.surfaceVariant,
-                  borderRadius:
-                      BorderRadius.circular(AppDimensions.radiusLarge),
+                  borderRadius: BorderRadius.circular(
+                    AppDimensions.radiusLarge,
+                  ),
                 ),
                 child: Column(
                   children: [
-                    const Icon(Icons.format_quote,
-                        color: AppColors.primary, size: 28),
+                    const Icon(
+                      Icons.format_quote,
+                      color: AppColors.primary,
+                      size: 28,
+                    ),
                     const SizedBox(height: 8),
                     Text(
                       personality.quote,
@@ -242,14 +330,17 @@ class ResultScreen extends ConsumerWidget {
                         context.pop();
                       },
                       icon: const Icon(Icons.refresh),
-                      label: Text(AppLocalizations.of(context)!.testResultRetake),
+                      label: Text(
+                        AppLocalizations.of(context)!.testResultRetake,
+                      ),
                       style: OutlinedButton.styleFrom(
                         padding: const EdgeInsets.symmetric(vertical: 14),
                         side: const BorderSide(color: AppColors.primary),
                         foregroundColor: AppColors.primary,
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(
-                              AppDimensions.radiusMedium),
+                            AppDimensions.radiusMedium,
+                          ),
                         ),
                       ),
                     ),
@@ -259,13 +350,16 @@ class ResultScreen extends ConsumerWidget {
                     child: FilledButton.icon(
                       onPressed: () => _showPoster(context, ref),
                       icon: const Icon(Icons.share),
-                      label: Text(AppLocalizations.of(context)!.testResultPoster),
+                      label: Text(
+                        AppLocalizations.of(context)!.testResultPoster,
+                      ),
                       style: FilledButton.styleFrom(
                         padding: const EdgeInsets.symmetric(vertical: 14),
                         backgroundColor: AppColors.primary,
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(
-                              AppDimensions.radiusMedium),
+                            AppDimensions.radiusMedium,
+                          ),
                         ),
                       ),
                     ),
@@ -281,7 +375,9 @@ class ResultScreen extends ConsumerWidget {
   }
 
   void _showPoster(BuildContext context, WidgetRef ref) {
-    final result = ref.read(testProvider).result;
+    final stateResult = ref.read(testProvider).result;
+    final persisted = ref.read(currentCatPersonalityProfileProvider);
+    final result = stateResult ?? persisted?.result;
     if (result == null) return;
 
     showModalBottomSheet(

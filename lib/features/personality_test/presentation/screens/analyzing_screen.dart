@@ -57,7 +57,8 @@ class _AnalyzingScreenState extends ConsumerState<AnalyzingScreen>
     await Future.delayed(const Duration(milliseconds: 500));
 
     if (mounted) {
-      ref.read(testProvider.notifier).finishAnalyzing();
+      await ref.read(testProvider.notifier).finishAnalyzing();
+      if (!mounted) return;
       context.pushReplacement('/test/result');
     }
   }
@@ -169,8 +170,8 @@ class _AnalyzingScreenState extends ConsumerState<AnalyzingScreen>
                             isCurrent
                                 ? Icons.radio_button_checked
                                 : isActive
-                                    ? Icons.check_circle
-                                    : Icons.radio_button_unchecked,
+                                ? Icons.check_circle
+                                : Icons.radio_button_unchecked,
                             size: 18,
                             color: isActive
                                 ? AppColors.primary
@@ -184,8 +185,9 @@ class _AnalyzingScreenState extends ConsumerState<AnalyzingScreen>
                               color: isActive
                                   ? AppColors.onBackground
                                   : AppColors.textSecondary,
-                              fontWeight:
-                                  isCurrent ? FontWeight.w600 : FontWeight.normal,
+                              fontWeight: isCurrent
+                                  ? FontWeight.w600
+                                  : FontWeight.normal,
                             ),
                           ),
                         ],

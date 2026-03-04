@@ -1,15 +1,18 @@
 import 'dart:math';
 import 'package:flutter/material.dart';
 import '../../data/models/game_item.dart';
+import '../../../../core/l10n/app_localizations.dart';
 
 class GameCard extends StatefulWidget {
   final GameMode mode;
   final VoidCallback onTap;
+  final String? badgeText;
 
   const GameCard({
     super.key,
     required this.mode,
     required this.onTap,
+    this.badgeText,
   });
 
   @override
@@ -37,6 +40,7 @@ class _GameCardState extends State<GameCard>
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     final mode = widget.mode;
     return GestureDetector(
       onTap: widget.onTap,
@@ -61,25 +65,52 @@ class _GameCardState extends State<GameCard>
               child: child,
             );
           },
-          child: Align(
-            alignment: Alignment.centerRight,
-            child: Padding(
-              padding: const EdgeInsets.only(right: 20),
-              child: Text(
-                mode.title,
-                style: TextStyle(
-                  fontSize: 18,
-                  fontWeight: FontWeight.w700,
-                  color: _titleColor(mode),
-                  shadows: [
-                    Shadow(
-                      color: Colors.black.withValues(alpha: 0.15),
-                      blurRadius: 4,
+          child: Stack(
+            children: [
+              Align(
+                alignment: Alignment.centerRight,
+                child: Padding(
+                  padding: const EdgeInsets.only(right: 20),
+                  child: Text(
+                    mode.title(l10n),
+                    style: TextStyle(
+                      fontSize: 18,
+                      fontWeight: FontWeight.w700,
+                      color: _titleColor(mode),
+                      shadows: [
+                        Shadow(
+                          color: Colors.black.withValues(alpha: 0.15),
+                          blurRadius: 4,
+                        ),
+                      ],
                     ),
-                  ],
+                  ),
                 ),
               ),
-            ),
+              if (widget.badgeText != null)
+                Positioned(
+                  top: 10,
+                  left: 10,
+                  child: Container(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 8,
+                      vertical: 3,
+                    ),
+                    decoration: BoxDecoration(
+                      color: Colors.white.withValues(alpha: 0.9),
+                      borderRadius: BorderRadius.circular(999),
+                    ),
+                    child: Text(
+                      widget.badgeText!,
+                      style: const TextStyle(
+                        fontSize: 10,
+                        fontWeight: FontWeight.w700,
+                        color: Color(0xFF333333),
+                      ),
+                    ),
+                  ),
+                ),
+            ],
           ),
         ),
       ),
@@ -96,6 +127,10 @@ class _GameCardState extends State<GameCard>
         return const Color(0xFF1A237E);
       case GameMode.rainbow:
         return Colors.white;
+      case GameMode.holeAmbush:
+        return const Color(0xFFFFF3E0);
+      case GameMode.featherWand:
+        return const Color(0xFFE0F2F1);
     }
   }
 }
@@ -116,13 +151,16 @@ class _CardBgPainter extends CustomPainter {
         _paintCatchFish(canvas, size);
       case GameMode.rainbow:
         _paintRainbow(canvas, size);
+      case GameMode.holeAmbush:
+        _paintHoleAmbush(canvas, size);
+      case GameMode.featherWand:
+        _paintFeatherWand(canvas, size);
     }
   }
 
   void _paintLaser(Canvas canvas, Size size) {
     final rect = Offset.zero & size;
-    canvas.drawRect(
-        rect, Paint()..color = const Color(0xFF1A1A2E));
+    canvas.drawRect(rect, Paint()..color = const Color(0xFF1A1A2E));
 
     final rng = Random(7);
     final starPaint = Paint()..color = Colors.white.withValues(alpha: 0.15);
@@ -130,8 +168,7 @@ class _CardBgPainter extends CustomPainter {
       final dx = rng.nextDouble() * size.width;
       final dy = rng.nextDouble() * size.height;
       final twinkle = (sin(t * 2 * pi + i * 1.3) + 1) / 2;
-      canvas.drawCircle(
-          Offset(dx, dy), 0.8 + twinkle * 0.6, starPaint);
+      canvas.drawCircle(Offset(dx, dy), 0.8 + twinkle * 0.6, starPaint);
     }
 
     final cx = size.width * 0.25 + sin(t * 2 * pi) * size.width * 0.12;
@@ -147,7 +184,10 @@ class _CardBgPainter extends CustomPainter {
       final py = size.height * 0.5 + cos(pt * 2 * pi * 1.3) * size.height * 0.2;
       final a = (1.0 - i / 6) * 0.7;
       canvas.drawCircle(
-          Offset(px, py), 5 - i * 0.5, Paint()..color = Colors.red.withValues(alpha: a));
+        Offset(px, py),
+        5 - i * 0.5,
+        Paint()..color = Colors.red.withValues(alpha: a),
+      );
     }
 
     canvas.drawCircle(
@@ -166,8 +206,10 @@ class _CardBgPainter extends CustomPainter {
     final rect = Offset.zero & size;
     canvas.drawRect(rect, Paint()..color = const Color(0xFFDCE7C5));
 
-    final grassDark = Paint()..color = const Color(0xFF6B8E23).withValues(alpha: 0.3);
-    final grassLight = Paint()..color = const Color(0xFF8FBC3A).withValues(alpha: 0.25);
+    final grassDark = Paint()
+      ..color = const Color(0xFF6B8E23).withValues(alpha: 0.3);
+    final grassLight = Paint()
+      ..color = const Color(0xFF8FBC3A).withValues(alpha: 0.25);
     final rng = Random(3);
     for (int i = 0; i < 20; i++) {
       final bx = rng.nextDouble() * size.width * 0.7;
@@ -185,32 +227,45 @@ class _CardBgPainter extends CustomPainter {
     final boxDark = Paint()..color = const Color(0xFFB08B55);
     canvas.drawRRect(
       RRect.fromRectAndRadius(
-          Rect.fromLTWH(size.width * 0.08, size.height * 0.45, 50, 40),
-          const Radius.circular(4)),
+        Rect.fromLTWH(size.width * 0.08, size.height * 0.45, 50, 40),
+        const Radius.circular(4),
+      ),
       boxPaint,
     );
-    canvas.drawLine(Offset(size.width * 0.08, size.height * 0.45 + 20),
-        Offset(size.width * 0.08 + 50, size.height * 0.45 + 20), boxDark);
+    canvas.drawLine(
+      Offset(size.width * 0.08, size.height * 0.45 + 20),
+      Offset(size.width * 0.08 + 50, size.height * 0.45 + 20),
+      boxDark,
+    );
 
     final peek = (sin(t * 2 * pi * 0.8) + 1) / 2;
     if (peek > 0.4) {
       final eyeY = size.height * 0.42;
       final eyeX = size.width * 0.08 + 36;
-      final eyePaint = Paint()..color = Colors.black.withValues(alpha: (peek - 0.4) * 1.2);
-      canvas.drawOval(Rect.fromCenter(center: Offset(eyeX, eyeY), width: 5, height: 6), eyePaint);
-      canvas.drawOval(Rect.fromCenter(center: Offset(eyeX + 10, eyeY), width: 5, height: 6), eyePaint);
+      final eyePaint = Paint()
+        ..color = Colors.black.withValues(alpha: (peek - 0.4) * 1.2);
+      canvas.drawOval(
+        Rect.fromCenter(center: Offset(eyeX, eyeY), width: 5, height: 6),
+        eyePaint,
+      );
+      canvas.drawOval(
+        Rect.fromCenter(center: Offset(eyeX + 10, eyeY), width: 5, height: 6),
+        eyePaint,
+      );
     }
   }
 
   void _paintCatchFish(Canvas canvas, Size size) {
     final rect = Offset.zero & size;
-    canvas.drawRect(rect,
-        Paint()
-          ..shader = const LinearGradient(
-            begin: Alignment.topCenter,
-            end: Alignment.bottomCenter,
-            colors: [Color(0xFF87CEEB), Color(0xFF4FC3F7), Color(0xFF0288D1)],
-          ).createShader(rect));
+    canvas.drawRect(
+      rect,
+      Paint()
+        ..shader = const LinearGradient(
+          begin: Alignment.topCenter,
+          end: Alignment.bottomCenter,
+          colors: [Color(0xFF87CEEB), Color(0xFF4FC3F7), Color(0xFF0288D1)],
+        ).createShader(rect),
+    );
 
     final wavePaint = Paint()
       ..color = Colors.white.withValues(alpha: 0.08)
@@ -220,8 +275,7 @@ class _CardBgPainter extends CustomPainter {
       final yBase = size.height * (0.3 + w * 0.25);
       path.moveTo(0, yBase);
       for (double x = 0; x <= size.width; x += 2) {
-        path.lineTo(
-            x, yBase + sin(t * 2 * pi + x / 40 + w * 1.2) * 5);
+        path.lineTo(x, yBase + sin(t * 2 * pi + x / 40 + w * 1.2) * 5);
       }
       path.lineTo(size.width, size.height);
       path.lineTo(0, size.height);
@@ -252,8 +306,7 @@ class _CardBgPainter extends CustomPainter {
 
   void _drawFish(Canvas canvas, Offset c, double s, Color color) {
     final body = Paint()..color = color;
-    canvas.drawOval(
-        Rect.fromCenter(center: c, width: s * 2, height: s), body);
+    canvas.drawOval(Rect.fromCenter(center: c, width: s * 2, height: s), body);
 
     final tail = Path()
       ..moveTo(c.dx + s * 0.8, c.dy)
@@ -315,9 +368,120 @@ class _CardBgPainter extends CustomPainter {
       canvas.drawCircle(
         Offset(dx, dy),
         1.5,
-        Paint()..color = colors[i % colors.length].withValues(alpha: twinkle * 0.5),
+        Paint()
+          ..color = colors[i % colors.length].withValues(alpha: twinkle * 0.5),
       );
     }
+  }
+
+  void _paintHoleAmbush(Canvas canvas, Size size) {
+    final rect = Offset.zero & size;
+    canvas.drawRect(
+      rect,
+      Paint()
+        ..shader = const LinearGradient(
+          begin: Alignment.topCenter,
+          end: Alignment.bottomCenter,
+          colors: [Color(0xFF5D4037), Color(0xFF3E2723), Color(0xFF2B1C13)],
+        ).createShader(rect),
+    );
+
+    final holePaint = Paint()..color = const Color(0xFF1B120D);
+    final holeGlow = Paint()
+      ..color = const Color(0xFFFFB74D).withValues(alpha: 0.16)
+      ..maskFilter = const MaskFilter.blur(BlurStyle.normal, 7);
+    final holes = [
+      Offset(size.width * 0.16, size.height * 0.34),
+      Offset(size.width * 0.34, size.height * 0.66),
+      Offset(size.width * 0.5, size.height * 0.36),
+      Offset(size.width * 0.66, size.height * 0.64),
+      Offset(size.width * 0.84, size.height * 0.38),
+    ];
+    for (int i = 0; i < holes.length; i++) {
+      final h = holes[i];
+      final blink = (sin(t * 2 * pi * 1.2 + i * 0.6) + 1) / 2;
+      canvas.drawOval(
+        Rect.fromCenter(center: h, width: 30, height: 14),
+        holePaint,
+      );
+      if (blink > 0.55) {
+        canvas.drawOval(
+          Rect.fromCenter(center: h, width: 34, height: 16),
+          holeGlow,
+        );
+      }
+    }
+
+    final activeIndex = ((t * holes.length).floor()) % holes.length;
+    final popProgress = (sin(t * 2 * pi * 2.2) + 1) / 2;
+    final anchor = holes[activeIndex];
+    final y = anchor.dy - (8 + popProgress * 18);
+    final head = Offset(anchor.dx, y);
+
+    final bodyPaint = Paint()..color = const Color(0xFFFFCC80);
+    canvas.drawCircle(head, 8, bodyPaint);
+    canvas.drawCircle(Offset(head.dx - 5, head.dy - 6), 3, bodyPaint);
+    canvas.drawCircle(Offset(head.dx + 5, head.dy - 6), 3, bodyPaint);
+    canvas.drawCircle(
+      Offset(head.dx - 2, head.dy - 1),
+      1.2,
+      Paint()..color = Colors.black87,
+    );
+    canvas.drawCircle(
+      Offset(head.dx + 2, head.dy - 1),
+      1.2,
+      Paint()..color = Colors.black87,
+    );
+  }
+
+  void _paintFeatherWand(Canvas canvas, Size size) {
+    final rect = Offset.zero & size;
+    canvas.drawRect(
+      rect,
+      Paint()
+        ..shader = const LinearGradient(
+          begin: Alignment.topCenter,
+          end: Alignment.bottomCenter,
+          colors: [Color(0xFF1B6A66), Color(0xFF134E4A), Color(0xFF0E3A3A)],
+        ).createShader(rect),
+    );
+
+    final fx = size.width * 0.5 + sin(t * 2 * pi * 1.6) * size.width * 0.2;
+    final fy = size.height * 0.5 + cos(t * 2 * pi * 2.1) * size.height * 0.24;
+    final feather = Offset(fx, fy);
+    final start = Offset(size.width * 0.5, 0);
+    final control = Offset((start.dx + feather.dx) / 2, feather.dy * 0.45);
+
+    final path = Path()
+      ..moveTo(start.dx, start.dy)
+      ..quadraticBezierTo(control.dx, control.dy, feather.dx, feather.dy);
+    canvas.drawPath(
+      path,
+      Paint()
+        ..color = Colors.white.withValues(alpha: 0.3)
+        ..strokeWidth = 1.2
+        ..style = PaintingStyle.stroke,
+    );
+
+    canvas.drawCircle(
+      feather,
+      18,
+      Paint()
+        ..color = const Color(0xFF80CBC4).withValues(alpha: 0.2)
+        ..maskFilter = const MaskFilter.blur(BlurStyle.normal, 10),
+    );
+    canvas.drawOval(
+      Rect.fromCenter(center: feather, width: 24, height: 16),
+      Paint()..color = const Color(0xFF80CBC4),
+    );
+    canvas.drawOval(
+      Rect.fromCenter(
+        center: Offset(feather.dx + 5, feather.dy + 1),
+        width: 20,
+        height: 12,
+      ),
+      Paint()..color = const Color(0xFF26A69A),
+    );
   }
 
   @override

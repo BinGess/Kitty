@@ -6,6 +6,14 @@ class Cats extends Table {
   TextColumn get breed => text().nullable()();
   DateTimeColumn get birthDate => dateTime().nullable()();
   TextColumn get photoPath => text().nullable()();
+  TextColumn get personalityCode =>
+      text().withLength(min: 4, max: 4).nullable()();
+  BoolColumn get personalityHasDual =>
+      boolean().withDefault(const Constant(false))();
+  TextColumn get personalityTestMode => text().nullable()();
+  TextColumn get personalityDimensionScores => text().nullable()();
+  TextColumn get personalityMaxScores => text().nullable()();
+  DateTimeColumn get personalityTestedAt => dateTime().nullable()();
   TextColumn get sex => text().withDefault(const Constant('unknown'))();
   BoolColumn get isNeutered => boolean().withDefault(const Constant(false))();
   RealColumn get weightGoalMinKg => real().nullable()();

@@ -62,6 +62,14 @@ class HealthDao extends DatabaseAccessor<AppDatabase> with _$HealthDaoMixin {
         .watch();
   }
 
+  Future<List<WeightRecord>> getWeightRecords(int catId, {int? limit}) {
+    final query = select(weightRecords)
+      ..where((r) => r.catId.equals(catId))
+      ..orderBy([(r) => OrderingTerm.desc(r.recordedAt)]);
+    if (limit != null) query.limit(limit);
+    return query.get();
+  }
+
   Future<WeightRecord?> getLatestWeight(int catId) {
     return (select(weightRecords)
           ..where((r) => r.catId.equals(catId))
@@ -83,6 +91,14 @@ class HealthDao extends DatabaseAccessor<AppDatabase> with _$HealthDaoMixin {
           ..orderBy([(r) => OrderingTerm.desc(r.recordedAt)])
           ..limit(limit))
         .watch();
+  }
+
+  Future<List<DietRecord>> getDietRecords(int catId, {int? limit}) {
+    final query = select(dietRecords)
+      ..where((r) => r.catId.equals(catId))
+      ..orderBy([(r) => OrderingTerm.desc(r.recordedAt)]);
+    if (limit != null) query.limit(limit);
+    return query.get();
   }
 
   Future<List<DietRecord>> getTodayDietRecords(int catId) {
@@ -126,6 +142,14 @@ class HealthDao extends DatabaseAccessor<AppDatabase> with _$HealthDaoMixin {
         .watch();
   }
 
+  Future<List<WaterRecord>> getWaterRecords(int catId, {int? limit}) {
+    final query = select(waterRecords)
+      ..where((r) => r.catId.equals(catId))
+      ..orderBy([(r) => OrderingTerm.desc(r.recordedAt)]);
+    if (limit != null) query.limit(limit);
+    return query.get();
+  }
+
   Future<double> getTodayWaterTotal(int catId) async {
     final today = DateTime.now();
     final startOfDay = DateTime(today.year, today.month, today.day);
@@ -166,6 +190,14 @@ class HealthDao extends DatabaseAccessor<AppDatabase> with _$HealthDaoMixin {
           ..orderBy([(r) => OrderingTerm.desc(r.recordedAt)])
           ..limit(limit))
         .watch();
+  }
+
+  Future<List<ExcretionRecord>> getExcretionRecords(int catId, {int? limit}) {
+    final query = select(excretionRecords)
+      ..where((r) => r.catId.equals(catId))
+      ..orderBy([(r) => OrderingTerm.desc(r.recordedAt)]);
+    if (limit != null) query.limit(limit);
+    return query.get();
   }
 
   Future<int> insertExcretionRecord(ExcretionRecordsCompanion record) =>

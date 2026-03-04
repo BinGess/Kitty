@@ -5,6 +5,7 @@ import '../../data/models/health_record.dart';
 
 class SummaryCards extends StatelessWidget {
   final HealthSummary summary;
+
   const SummaryCards({super.key, required this.summary});
 
   @override
@@ -12,9 +13,9 @@ class SummaryCards extends StatelessWidget {
     return Row(
       children: [
         Expanded(child: _WeightCard(summary: summary)),
-        const SizedBox(width: 10),
+        const SizedBox(width: 8),
         Expanded(child: _WaterCard(summary: summary)),
-        const SizedBox(width: 10),
+        const SizedBox(width: 8),
         Expanded(child: _DietCard(summary: summary)),
       ],
     );
@@ -23,6 +24,7 @@ class SummaryCards extends StatelessWidget {
 
 class _WeightCard extends StatelessWidget {
   final HealthSummary summary;
+
   const _WeightCard({required this.summary});
 
   @override
@@ -55,7 +57,7 @@ class _WeightCard extends StatelessWidget {
                     Text(
                       '${change.abs().toStringAsFixed(1)}kg',
                       style: TextStyle(
-                        fontSize: 11,
+                        fontSize: 10,
                         fontWeight: FontWeight.w500,
                         color: change >= 0
                             ? AppColors.error
@@ -76,7 +78,7 @@ class _WeightCard extends StatelessWidget {
             Text(
               _buildGoalText(summary, l10n),
               style: TextStyle(
-                fontSize: 10,
+                fontSize: 9.5,
                 color: summary.isWeightOutOfGoal
                     ? AppColors.warning
                     : AppColors.textSecondary,
@@ -94,7 +96,9 @@ class _WeightCard extends StatelessWidget {
     String base = '';
     if (min != null && max != null) {
       base = l10n.healthWeightGoalRange(
-          min.toStringAsFixed(1), max.toStringAsFixed(1));
+        min.toStringAsFixed(1),
+        max.toStringAsFixed(1),
+      );
     } else if (min != null) {
       base = l10n.healthWeightGoalMin(min.toStringAsFixed(1));
     } else if (max != null) {
@@ -107,6 +111,7 @@ class _WeightCard extends StatelessWidget {
 
 class _WaterCard extends StatelessWidget {
   final HealthSummary summary;
+
   const _WaterCard({required this.summary});
 
   @override
@@ -128,17 +133,16 @@ class _WaterCard extends StatelessWidget {
             borderRadius: BorderRadius.circular(3),
             child: LinearProgressIndicator(
               value: ratio,
-              minHeight: 5,
+              minHeight: 4,
               backgroundColor: AppColors.divider,
               valueColor: const AlwaysStoppedAnimation(AppColors.info),
             ),
           ),
           const SizedBox(height: 3),
           Text(
-            l10n.healthWaterTarget(
-                summary.targetWaterMl.toStringAsFixed(0)),
+            l10n.healthWaterTarget(summary.targetWaterMl.toStringAsFixed(0)),
             style: const TextStyle(
-              fontSize: 10,
+              fontSize: 9.5,
               color: AppColors.textSecondary,
             ),
           ),
@@ -150,6 +154,7 @@ class _WaterCard extends StatelessWidget {
 
 class _DietCard extends StatelessWidget {
   final HealthSummary summary;
+
   const _DietCard({required this.summary});
 
   @override
@@ -166,7 +171,7 @@ class _DietCard extends StatelessWidget {
             ? l10n.healthDietDone
             : l10n.healthDietInProgress,
         style: TextStyle(
-          fontSize: 11,
+          fontSize: 10,
           color: summary.todayMeals >= summary.targetMeals
               ? AppColors.success
               : AppColors.textSecondary,
@@ -176,10 +181,6 @@ class _DietCard extends StatelessWidget {
   }
 }
 
-/// 统一的卡片基础布局：
-///   图标 + 标签 (顶部行)
-///   数值 + 单位 (中间主体, 统一的 fontSize/baseline)
-///   footer 小组件 (底部)
 class _SummaryCardBase extends StatelessWidget {
   final IconData icon;
   final Color iconColor;
@@ -202,10 +203,10 @@ class _SummaryCardBase extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.all(12),
+      padding: const EdgeInsets.all(10),
       decoration: BoxDecoration(
         color: AppColors.surface,
-        borderRadius: BorderRadius.circular(20),
+        borderRadius: BorderRadius.circular(18),
         border: hasWarning
             ? Border.all(color: AppColors.warning, width: 1.5)
             : null,
@@ -221,15 +222,15 @@ class _SummaryCardBase extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisSize: MainAxisSize.min,
         children: [
-          // 顶部：图标 + 标签
           Row(
             children: [
-              Icon(icon, size: 14, color: iconColor),
+              Icon(icon, size: 13, color: iconColor),
               const SizedBox(width: 4),
               Text(
                 label,
                 style: const TextStyle(
-                  fontSize: 12,
+                  fontSize: 11,
+                  fontWeight: FontWeight.w500,
                   color: AppColors.textSecondary,
                 ),
               ),
@@ -243,9 +244,7 @@ class _SummaryCardBase extends StatelessWidget {
               ],
             ],
           ),
-          const SizedBox(height: 10),
-
-          // 中间：数值 + 单位 (统一 baseline 对齐)
+          const SizedBox(height: 8),
           Row(
             crossAxisAlignment: CrossAxisAlignment.baseline,
             textBaseline: TextBaseline.alphabetic,
@@ -253,26 +252,24 @@ class _SummaryCardBase extends StatelessWidget {
               Text(
                 value,
                 style: const TextStyle(
-                  fontSize: 22,
+                  fontSize: 30,
                   fontWeight: FontWeight.w700,
                   color: AppColors.onBackground,
                   height: 1.0,
                 ),
               ),
-              const SizedBox(width: 2),
+              const SizedBox(width: 3),
               Text(
                 unit,
                 style: const TextStyle(
-                  fontSize: 12,
+                  fontSize: 14,
                   color: AppColors.textSecondary,
                   height: 1.0,
                 ),
               ),
             ],
           ),
-          const SizedBox(height: 8),
-
-          // 底部：footer
+          const SizedBox(height: 6),
           footer,
         ],
       ),

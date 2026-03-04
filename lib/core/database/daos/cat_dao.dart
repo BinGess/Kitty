@@ -19,6 +19,30 @@ class CatDao extends DatabaseAccessor<AppDatabase> with _$CatDaoMixin {
 
   Future<bool> updateCat(Insertable<Cat> cat) => update(cats).replace(cat);
 
+  Future<bool> updatePersonalityResult({
+    required int catId,
+    required String code,
+    required bool hasDualPersonality,
+    required String mode,
+    required String dimensionScoresJson,
+    required String maxScoresJson,
+    DateTime? testedAt,
+  }) async {
+    final affected = await (update(cats)..where((c) => c.id.equals(catId)))
+        .write(
+          CatsCompanion(
+            personalityCode: Value(code),
+            personalityHasDual: Value(hasDualPersonality),
+            personalityTestMode: Value(mode),
+            personalityDimensionScores: Value(dimensionScoresJson),
+            personalityMaxScores: Value(maxScoresJson),
+            personalityTestedAt: Value(testedAt ?? DateTime.now()),
+            updatedAt: Value(DateTime.now()),
+          ),
+        );
+    return affected > 0;
+  }
+
   Future<int> deleteCat(int id) =>
       (delete(cats)..where((c) => c.id.equals(id))).go();
 }

@@ -8,6 +8,7 @@ import '../../../../core/database/app_database.dart';
 import '../../../../core/l10n/app_localizations.dart';
 import '../../../../core/providers/current_cat_provider.dart';
 import '../../../../core/providers/database_provider.dart';
+import '../../../personality_test/domain/cat_personality_profile.dart';
 
 final catListProvider = StreamProvider.autoDispose<List<Cat>>((ref) {
   return ref.watch(catDaoProvider).watchAllCats();
@@ -57,10 +58,6 @@ class _CatListScreenState extends ConsumerState<CatListScreen> {
           birthDate: Value(result.birthDate),
           sex: Value(result.sex),
           isNeutered: Value(result.isNeutered),
-          weightGoalMinKg: Value(result.weightGoalMinKg),
-          weightGoalMaxKg: Value(result.weightGoalMaxKg),
-          targetWaterMl: Value(result.targetWaterMl),
-          targetMealsPerDay: Value(result.targetMealsPerDay),
         ),
       );
       final created = await catDao.getCatById(id);
@@ -69,9 +66,9 @@ class _CatListScreenState extends ConsumerState<CatListScreen> {
       }
       if (!mounted) return;
       if (!mounted) return;
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(SnackBar(content: Text(AppLocalizations.of(context)!.catAdded)));
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(AppLocalizations.of(context)!.catAdded)),
+      );
       return;
     }
 
@@ -82,26 +79,22 @@ class _CatListScreenState extends ConsumerState<CatListScreen> {
         birthDate: Value(result.birthDate),
         sex: result.sex,
         isNeutered: result.isNeutered,
-        weightGoalMinKg: Value(result.weightGoalMinKg),
-        weightGoalMaxKg: Value(result.weightGoalMaxKg),
-        targetWaterMl: result.targetWaterMl,
-        targetMealsPerDay: result.targetMealsPerDay,
         updatedAt: DateTime.now(),
       ),
     );
 
     await currentNotifier.refresh();
     if (!mounted) return;
-    ScaffoldMessenger.of(
-      context,
-    ).showSnackBar(SnackBar(content: Text(AppLocalizations.of(context)!.catUpdated)));
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text(AppLocalizations.of(context)!.catUpdated)),
+    );
   }
 
   Future<void> _deleteCat(Cat cat, int totalCount) async {
     if (totalCount <= 1) {
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(SnackBar(content: Text(AppLocalizations.of(context)!.catMinimumOne)));
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(AppLocalizations.of(context)!.catMinimumOne)),
+      );
       return;
     }
 
@@ -151,17 +144,19 @@ class _CatListScreenState extends ConsumerState<CatListScreen> {
     await ref.read(catDaoProvider).deleteCat(cat.id);
     await ref.read(currentCatProvider.notifier).ensureValidSelection();
     if (!mounted) return;
-    ScaffoldMessenger.of(
-      context,
-    ).showSnackBar(SnackBar(content: Text(AppLocalizations.of(context)!.catDeleted)));
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text(AppLocalizations.of(context)!.catDeleted)),
+    );
   }
 
   Future<void> _selectCat(Cat cat) async {
     await ref.read(currentCatProvider.notifier).select(cat);
     if (!mounted) return;
-    ScaffoldMessenger.of(
-      context,
-    ).showSnackBar(SnackBar(content: Text(AppLocalizations.of(context)!.catSwitched(cat.name))));
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(AppLocalizations.of(context)!.catSwitched(cat.name)),
+      ),
+    );
   }
 
   @override
@@ -255,11 +250,15 @@ class _CatCard extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final l10n = AppLocalizations.of(context)!;
     final ageText = _formatAge(cat.birthDate, l10n);
-    final breedText = (cat.breed ?? '').trim().isEmpty ? l10n.catNoBreed : cat.breed!;
+    final breedText = (cat.breed ?? '').trim().isEmpty
+        ? l10n.catNoBreed
+        : cat.breed!;
     final sexText = _sexLabel(cat.sex, l10n);
-    final neuteredText = cat.isNeutered ? l10n.catNeutered : l10n.catNotNeutered;
-    final weightGoalText = _formatWeightGoal(cat, l10n);
+    final neuteredText = cat.isNeutered
+        ? l10n.catNeutered
+        : l10n.catNotNeutered;
     final trendAsync = ref.watch(catHealthTrendProvider(cat.id));
+    final personalityProfile = CatPersonalityProfile.fromCat(cat);
 
     return Card(
       margin: EdgeInsets.zero,
@@ -310,6 +309,28 @@ class _CatCard extends ConsumerWidget {
                         ),
                       ),
                     ),
+                  if (personalityProfile != null) ...[
+                    const SizedBox(width: 6),
+                    Container(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 8,
+                        vertical: 4,
+                      ),
+                      decoration: BoxDecoration(
+                        color: AppColors.primary.withValues(alpha: 0.1),
+                        borderRadius: BorderRadius.circular(999),
+                      ),
+                      child: Text(
+                        personalityProfile.result.personality.code,
+                        style: const TextStyle(
+                          fontSize: 11,
+                          fontWeight: FontWeight.w700,
+                          color: AppColors.primaryDark,
+                          letterSpacing: 0.6,
+                        ),
+                      ),
+                    ),
+                  ],
                 ],
               ),
               const SizedBox(height: AppDimensions.spacingXS),
@@ -326,27 +347,6 @@ class _CatCard extends ConsumerWidget {
                 style: const TextStyle(
                   fontSize: 12,
                   color: AppColors.textSecondary,
-                ),
-              ),
-              if (weightGoalText != null) ...[
-                const SizedBox(height: 2),
-                Text(
-                  weightGoalText,
-                  style: const TextStyle(
-                    fontSize: 12,
-                    color: AppColors.textSecondary,
-                  ),
-                ),
-              ],
-              const SizedBox(height: AppDimensions.spacingS),
-              Text(
-                l10n.catDailyTargets(
-                  cat.targetWaterMl.toStringAsFixed(0),
-                  cat.targetMealsPerDay,
-                ),
-                style: const TextStyle(
-                  fontSize: 12,
-                  color: AppColors.onSurface,
                 ),
               ),
               const SizedBox(height: AppDimensions.spacingS),
@@ -423,19 +423,6 @@ class _CatCard extends ConsumerWidget {
         return l10n.catSexUnknown;
     }
   }
-
-  static String? _formatWeightGoal(Cat cat, AppLocalizations l10n) {
-    final min = cat.weightGoalMinKg;
-    final max = cat.weightGoalMaxKg;
-    if (min == null && max == null) return null;
-    if (min != null && max != null) {
-      return l10n.catWeightGoalRange(min.toStringAsFixed(1), max.toStringAsFixed(1));
-    }
-    if (min != null) {
-      return l10n.catWeightGoalMin(min.toStringAsFixed(1));
-    }
-    return l10n.catWeightGoalMax(max!.toStringAsFixed(1));
-  }
 }
 
 class _CatHealthTrendPanel extends StatelessWidget {
@@ -449,7 +436,9 @@ class _CatHealthTrendPanel extends StatelessWidget {
     final weight = trend.weightChangeKg;
     final weightText = weight == null
         ? l10n.catTrendWeightNoData
-        : l10n.catTrendWeightChange('${weight >= 0 ? '+' : '-'}${weight.abs().toStringAsFixed(2)}');
+        : l10n.catTrendWeightChange(
+            '${weight >= 0 ? '+' : '-'}${weight.abs().toStringAsFixed(2)}',
+          );
 
     return Container(
       width: double.infinity,
@@ -463,7 +452,9 @@ class _CatHealthTrendPanel extends StatelessWidget {
         children: [
           Expanded(
             child: Text(
-              l10n.catTrend7DaysWater(trend.avgWaterPerDayMl.toStringAsFixed(0)),
+              l10n.catTrend7DaysWater(
+                trend.avgWaterPerDayMl.toStringAsFixed(0),
+              ),
               style: const TextStyle(
                 fontSize: 11,
                 color: AppColors.textSecondary,
@@ -547,10 +538,6 @@ class _CatFormScreenState extends State<_CatFormScreen> {
   final _formKey = GlobalKey<FormState>();
   late final TextEditingController _nameController;
   late final TextEditingController _breedController;
-  late final TextEditingController _waterController;
-  late final TextEditingController _mealsController;
-  late final TextEditingController _weightMinController;
-  late final TextEditingController _weightMaxController;
   DateTime? _birthDate;
   String _sex = 'unknown';
   bool _isNeutered = false;
@@ -561,18 +548,6 @@ class _CatFormScreenState extends State<_CatFormScreen> {
     final initial = widget.initial;
     _nameController = TextEditingController(text: initial?.name ?? '');
     _breedController = TextEditingController(text: initial?.breed ?? '');
-    _waterController = TextEditingController(
-      text: (initial?.targetWaterMl ?? 200).toStringAsFixed(0),
-    );
-    _mealsController = TextEditingController(
-      text: (initial?.targetMealsPerDay ?? 3).toString(),
-    );
-    _weightMinController = TextEditingController(
-      text: initial?.weightGoalMinKg?.toStringAsFixed(1) ?? '',
-    );
-    _weightMaxController = TextEditingController(
-      text: initial?.weightGoalMaxKg?.toStringAsFixed(1) ?? '',
-    );
     _birthDate = initial?.birthDate;
     _sex = initial?.sex ?? 'unknown';
     _isNeutered = initial?.isNeutered ?? false;
@@ -582,10 +557,6 @@ class _CatFormScreenState extends State<_CatFormScreen> {
   void dispose() {
     _nameController.dispose();
     _breedController.dispose();
-    _waterController.dispose();
-    _mealsController.dispose();
-    _weightMinController.dispose();
-    _weightMaxController.dispose();
     super.dispose();
   }
 
@@ -604,36 +575,6 @@ class _CatFormScreenState extends State<_CatFormScreen> {
 
   void _submit() {
     if (!_formKey.currentState!.validate()) return;
-    final l10n = AppLocalizations.of(context)!;
-
-    final water = double.tryParse(_waterController.text.trim());
-    final meals = int.tryParse(_mealsController.text.trim());
-    final weightMin = _parseOptionalDouble(_weightMinController.text);
-    final weightMax = _parseOptionalDouble(_weightMaxController.text);
-    if (water == null || water <= 0) {
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(SnackBar(content: Text(l10n.catFormInvalidWater)));
-      return;
-    }
-    if (meals == null || meals <= 0 || meals > 20) {
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(SnackBar(content: Text(l10n.catFormInvalidMeals)));
-      return;
-    }
-    if (weightMin == -1 || weightMax == -1) {
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(SnackBar(content: Text(l10n.catFormInvalidWeight)));
-      return;
-    }
-    if (weightMin != null && weightMax != null && weightMin > weightMax) {
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(SnackBar(content: Text(l10n.catFormWeightRangeError)));
-      return;
-    }
 
     Navigator.pop(
       context,
@@ -645,20 +586,8 @@ class _CatFormScreenState extends State<_CatFormScreen> {
         birthDate: _birthDate,
         sex: _sex,
         isNeutered: _isNeutered,
-        weightGoalMinKg: weightMin,
-        weightGoalMaxKg: weightMax,
-        targetWaterMl: water,
-        targetMealsPerDay: meals,
       ),
     );
-  }
-
-  double? _parseOptionalDouble(String raw) {
-    final text = raw.trim();
-    if (text.isEmpty) return null;
-    final parsed = double.tryParse(text);
-    if (parsed == null || parsed <= 0) return -1;
-    return parsed;
   }
 
   InputDecoration _formDecoration({required String hint}) {
@@ -735,7 +664,9 @@ class _CatFormScreenState extends State<_CatFormScreen> {
                     controller: _nameController,
                     decoration: _formDecoration(hint: l10n.catFormNameHint),
                     validator: (v) {
-                      if (v == null || v.trim().isEmpty) return l10n.catFormNameRequired;
+                      if (v == null || v.trim().isEmpty) {
+                        return l10n.catFormNameRequired;
+                      }
                       return null;
                     },
                   ),
@@ -755,9 +686,18 @@ class _CatFormScreenState extends State<_CatFormScreen> {
                       color: AppColors.onBackground,
                     ),
                     items: [
-                      DropdownMenuItem(value: 'unknown', child: Text(l10n.catFormSexUnknown)),
-                      DropdownMenuItem(value: 'male', child: Text(l10n.catFormSexMale)),
-                      DropdownMenuItem(value: 'female', child: Text(l10n.catFormSexFemale)),
+                      DropdownMenuItem(
+                        value: 'unknown',
+                        child: Text(l10n.catFormSexUnknown),
+                      ),
+                      DropdownMenuItem(
+                        value: 'male',
+                        child: Text(l10n.catFormSexMale),
+                      ),
+                      DropdownMenuItem(
+                        value: 'female',
+                        child: Text(l10n.catFormSexFemale),
+                      ),
                     ],
                     onChanged: (value) {
                       if (value == null) return;
@@ -813,69 +753,6 @@ class _CatFormScreenState extends State<_CatFormScreen> {
                       ],
                     ),
                   ),
-                  const SizedBox(height: AppDimensions.spacingM),
-                  Text(
-                    l10n.catFormHealthGoals,
-                    style: const TextStyle(
-                      fontSize: 14,
-                      fontWeight: FontWeight.w700,
-                      color: AppColors.textSecondary,
-                    ),
-                  ),
-                  const SizedBox(height: 12),
-                  Row(
-                    children: [
-                      Expanded(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            _fieldLabel(l10n.catFormWeightMin),
-                            TextFormField(
-                              controller: _weightMinController,
-                              keyboardType:
-                                  const TextInputType.numberWithOptions(
-                                    decimal: true,
-                                  ),
-                              decoration: _formDecoration(hint: l10n.catFormWeightMinHint),
-                            ),
-                          ],
-                        ),
-                      ),
-                      const SizedBox(width: AppDimensions.spacingS),
-                      Expanded(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            _fieldLabel(l10n.catFormWeightMax),
-                            TextFormField(
-                              controller: _weightMaxController,
-                              keyboardType:
-                                  const TextInputType.numberWithOptions(
-                                    decimal: true,
-                                  ),
-                              decoration: _formDecoration(hint: l10n.catFormWeightMaxHint),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ],
-                  ),
-                  const SizedBox(height: 12),
-                  _fieldLabel(l10n.catFormWaterTarget),
-                  TextFormField(
-                    controller: _waterController,
-                    keyboardType: const TextInputType.numberWithOptions(
-                      decimal: true,
-                    ),
-                    decoration: _formDecoration(hint: l10n.catFormWaterHint),
-                  ),
-                  const SizedBox(height: 12),
-                  _fieldLabel(l10n.catFormMealsTarget),
-                  TextFormField(
-                    controller: _mealsController,
-                    keyboardType: TextInputType.number,
-                    decoration: _formDecoration(hint: l10n.catFormMealsHint),
-                  ),
                   const SizedBox(height: AppDimensions.spacingL),
                   SizedBox(
                     width: double.infinity,
@@ -887,7 +764,9 @@ class _CatFormScreenState extends State<_CatFormScreen> {
                           borderRadius: BorderRadius.circular(999),
                         ),
                       ),
-                      child: Text(isEdit ? l10n.catFormSave : l10n.catFormCreate),
+                      child: Text(
+                        isEdit ? l10n.catFormSave : l10n.catFormCreate,
+                      ),
                     ),
                   ),
                   SizedBox(height: MediaQuery.of(context).padding.bottom + 8),
@@ -907,10 +786,6 @@ class _CatFormResult {
   final DateTime? birthDate;
   final String sex;
   final bool isNeutered;
-  final double? weightGoalMinKg;
-  final double? weightGoalMaxKg;
-  final double targetWaterMl;
-  final int targetMealsPerDay;
 
   const _CatFormResult({
     required this.name,
@@ -918,9 +793,5 @@ class _CatFormResult {
     required this.birthDate,
     required this.sex,
     required this.isNeutered,
-    required this.weightGoalMinKg,
-    required this.weightGoalMaxKg,
-    required this.targetWaterMl,
-    required this.targetMealsPerDay,
   });
 }

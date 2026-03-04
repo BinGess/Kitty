@@ -44,6 +44,18 @@ class HealthSummary {
   final int targetMeals;
   final bool isWeightOutOfGoal;
   final bool hasWeightWarning;
+  final int todayPlaySessions;
+  final int todayPlayCaptures;
+  final int playCaptureGoal;
+  final int playRewardWaterMlToday;
+  final int playRewardWaterLoggedMlToday;
+  final int playRewardWaterPendingMl;
+  final int nextPlayRewardWaterMl;
+  final int playReminderIntervalMinutes;
+  final String playReminderSuggestion;
+  final String playModeLabel;
+  final String playModeDescription;
+  final String playModeKey;
 
   const HealthSummary({
     this.latestWeight,
@@ -56,7 +68,26 @@ class HealthSummary {
     this.targetMeals = 3,
     this.isWeightOutOfGoal = false,
     this.hasWeightWarning = false,
+    this.todayPlaySessions = 0,
+    this.todayPlayCaptures = 0,
+    this.playCaptureGoal = 4,
+    this.playRewardWaterMlToday = 0,
+    this.playRewardWaterLoggedMlToday = 0,
+    this.playRewardWaterPendingMl = 0,
+    this.nextPlayRewardWaterMl = 16,
+    this.playReminderIntervalMinutes = 120,
+    this.playReminderSuggestion = '',
+    this.playModeLabel = '自动',
+    this.playModeDescription = '',
+    this.playModeKey = 'auto',
   });
+
+  bool get isPlayGoalReached => todayPlayCaptures >= playCaptureGoal;
+
+  double get playProgress {
+    if (playCaptureGoal <= 0) return 1;
+    return (todayPlayCaptures / playCaptureGoal).clamp(0, 1).toDouble();
+  }
 }
 
 /// 排泄图标/颜色辅助

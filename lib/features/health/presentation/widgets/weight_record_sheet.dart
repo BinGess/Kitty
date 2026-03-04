@@ -20,8 +20,6 @@ class _WeightRecordSheetState extends ConsumerState<WeightRecordSheet> {
   String? _mood;
   double? _lastWeight;
   int? _lastDays;
-  double? _goalMinKg;
-  double? _goalMaxKg;
 
   final _intCtrl = FixedExtentScrollController(initialItem: 4);
   final _decCtrl = FixedExtentScrollController(initialItem: 50);
@@ -50,10 +48,6 @@ class _WeightRecordSheetState extends ConsumerState<WeightRecordSheet> {
       final dao = ref.read(healthDaoProvider);
       final last = await dao.getLatestWeight(cat.id);
       if (!mounted) return;
-      setState(() {
-        _goalMinKg = cat.weightGoalMinKg;
-        _goalMaxKg = cat.weightGoalMaxKg;
-      });
       if (last != null) {
         final days = DateTime.now().difference(last.recordedAt).inDays;
         setState(() {
@@ -70,55 +64,12 @@ class _WeightRecordSheetState extends ConsumerState<WeightRecordSheet> {
 
   double get _currentWeight => _intPart + _decPart / 100.0;
 
-  bool get _isOutOfGoal {
-    if (_goalMinKg != null && _currentWeight < _goalMinKg!) return true;
-    if (_goalMaxKg != null && _currentWeight > _goalMaxKg!) return true;
-    return false;
-  }
-
-  String? _buildGoalText(AppLocalizations l10n) {
-    if (_goalMinKg == null && _goalMaxKg == null) return null;
-    if (_goalMinKg != null && _goalMaxKg != null) {
-      return l10n.weightGoalRange(
-          _goalMinKg!.toStringAsFixed(1), _goalMaxKg!.toStringAsFixed(1));
-    }
-    if (_goalMinKg != null) {
-      return l10n.weightGoalMinLimit(_goalMinKg!.toStringAsFixed(1));
-    }
-    return l10n.weightGoalMaxLimit(_goalMaxKg!.toStringAsFixed(1));
-  }
-
   Future<void> _save() async {
     final l10n = AppLocalizations.of(context)!;
     final cat = ref.read(currentCatProvider);
     if (cat == null) {
       _showError(l10n.commonNoCat);
       return;
-    }
-    if (_isOutOfGoal) {
-      final goOn = await showDialog<bool>(
-        context: context,
-        builder: (ctx) => AlertDialog(
-          title: Text(l10n.weightOutOfGoalTitle),
-          content: Text(
-            l10n.weightOutOfGoalContent(_currentWeight.toStringAsFixed(2)),
-          ),
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(20),
-          ),
-          actions: [
-            TextButton(
-              onPressed: () => Navigator.pop(ctx, false),
-              child: Text(l10n.commonCancel),
-            ),
-            TextButton(
-              onPressed: () => Navigator.pop(ctx, true),
-              child: Text(l10n.weightContinueSave),
-            ),
-          ],
-        ),
-      );
-      if (goOn != true) return;
     }
     try {
       final dao = ref.read(healthDaoProvider);
@@ -133,7 +84,9 @@ class _WeightRecordSheetState extends ConsumerState<WeightRecordSheet> {
       if (mounted) Navigator.pop(context, true);
     } catch (e) {
       if (mounted) {
-        _showError(AppLocalizations.of(context)!.commonSaveFailed(e.toString()));
+        _showError(
+          AppLocalizations.of(context)!.commonSaveFailed(e.toString()),
+        );
       }
     }
   }
@@ -141,11 +94,12 @@ class _WeightRecordSheetState extends ConsumerState<WeightRecordSheet> {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
-    final goalText = _buildGoalText(l10n);
     final diff = _lastWeight != null ? _currentWeight - _lastWeight! : null;
     final lastDateText = _lastDays == null
         ? null
-        : (_lastDays == 0 ? l10n.weightLastRecordToday : l10n.weightDaysAgo(_lastDays!));
+        : (_lastDays == 0
+              ? l10n.weightLastRecordToday
+              : l10n.weightDaysAgo(_lastDays!));
     final moodLabels = [
       l10n.weightMoodCooperative,
       l10n.weightMoodNeutral,
@@ -176,37 +130,13 @@ class _WeightRecordSheetState extends ConsumerState<WeightRecordSheet> {
               color: AppColors.onBackground,
             ),
           ),
-          if (goalText != null) ...[
-            const SizedBox(height: 8),
-            Container(
-              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
-              decoration: BoxDecoration(
-                color: _isOutOfGoal
-                    ? AppColors.warning.withValues(alpha: 0.14)
-                    : AppColors.surface,
-                borderRadius: BorderRadius.circular(999),
-                border: Border.all(
-                  color: _isOutOfGoal ? AppColors.warning : AppColors.divider,
-                ),
-              ),
-              child: Text(
-                _isOutOfGoal
-                    ? '$goalText${l10n.weightGoalExceeded}'
-                    : goalText,
-                style: TextStyle(
-                  fontSize: 12,
-                  color: _isOutOfGoal
-                      ? AppColors.warning
-                      : AppColors.textSecondary,
-                ),
-              ),
-            ),
-          ],
           if (_lastWeight != null && lastDateText != null) ...[
             const SizedBox(height: 6),
             Text(
               l10n.weightLastRecord(
-                  _lastWeight!.toStringAsFixed(2), lastDateText),
+                _lastWeight!.toStringAsFixed(2),
+                lastDateText,
+              ),
               style: const TextStyle(
                 fontSize: 12,
                 color: AppColors.textSecondary,
@@ -354,8 +284,10 @@ class _WeightRecordSheetState extends ConsumerState<WeightRecordSheet> {
               ),
               child: Text(
                 l10n.commonSave,
-                style:
-                    const TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
+                style: const TextStyle(
+                  fontSize: 16,
+                  fontWeight: FontWeight.w600,
+                ),
               ),
             ),
           ),
@@ -414,8 +346,7 @@ class _WeightRecordSheetState extends ConsumerState<WeightRecordSheet> {
         childDelegate: ListWheelChildBuilderDelegate(
           childCount: count,
           builder: (_, index) {
-            final label =
-                padZero ? index.toString().padLeft(2, '0') : '$index';
+            final label = padZero ? index.toString().padLeft(2, '0') : '$index';
             return Center(
               child: Text(
                 '$label$suffix',

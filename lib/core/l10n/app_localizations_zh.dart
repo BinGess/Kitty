@@ -39,7 +39,7 @@ class AppLocalizationsZh extends AppLocalizations {
   String get soundCategoryEmotion => '情感';
 
   @override
-  String get soundCategoryEnvironment => '环境';
+  String get soundCategoryEnvironment => '音乐';
 
   @override
   String get soundsSubtitleEmotion => '猫咪的情绪表达';
@@ -48,7 +48,16 @@ class AppLocalizationsZh extends AppLocalizations {
   String get soundsSubtitleCalling => '召唤猫咪与环境音';
 
   @override
+  String get soundsSubtitleEnvironment => '现有音乐 + 6种类型占位';
+
+  @override
   String get soundLooping => '循环中';
+
+  @override
+  String get soundPlaceholderTag => '待补充';
+
+  @override
+  String get soundPlaceholderHint => '该音乐类型已占位，等待你补充音频与图片';
 
   @override
   String get testTitle => '16喵格测试';
@@ -124,6 +133,34 @@ class AppLocalizationsZh extends AppLocalizations {
   String get testResultPoster => '生成海报';
 
   @override
+  String get testResultSaveFailed => '本次结果展示正常，但暂未成功保存到猫咪档案，请稍后重试。';
+
+  @override
+  String get testCurrentResultTitle => '当前档案结果';
+
+  @override
+  String get testViewFullReport => '查看完整报告';
+
+  @override
+  String get testNoResultYet => '当前猫咪还没有性格测试结果，先完成一次测试吧。';
+
+  @override
+  String get testStartNow => '立即开始测试';
+
+  @override
+  String testLastTestedAt(String time) {
+    return '最近测试：$time';
+  }
+
+  @override
+  String personalityRecommendationSubtitle(String code, String title) {
+    return '已根据 $code · $title 调整内容顺序';
+  }
+
+  @override
+  String get personalityRecommendedBadge => '推荐';
+
+  @override
   String get healthDashboardTitle => '猫咪健康';
 
   @override
@@ -133,10 +170,15 @@ class AppLocalizationsZh extends AppLocalizations {
   String get healthPreparing => '正在准备...';
 
   @override
-  String get healthTodayRecords => '今日记录';
+  String get healthTodayRecords => '记录时间线';
 
   @override
   String get healthSwitchCat => '切换猫咪';
+
+  @override
+  String healthPersonalityTipTitle(String code) {
+    return '性格照护提示（$code）';
+  }
 
   @override
   String get healthWeightOutOfGoalWarning => '体重已超出档案目标区间，建议近期增加称重和饮食观察。';
@@ -194,7 +236,7 @@ class AppLocalizationsZh extends AppLocalizations {
   String get healthTimelineUrine => '排尿';
 
   @override
-  String get healthTimelineEmpty => '今天还没有记录\n点击右下角 + 开始记录吧';
+  String get healthTimelineEmpty => '还没有健康记录\n点击右下角 + 开始记录吧';
 
   @override
   String get healthTimelineDeleteTitle => '确认删除';
@@ -385,10 +427,104 @@ class AppLocalizationsZh extends AppLocalizations {
   String get gameLaser => '激光点';
 
   @override
+  String get gameShadowPeek => '影子藏猫猫';
+
+  @override
   String get gameMouseHunt => '抓老鼠';
 
   @override
   String get gameRainbow => '追彩虹';
+
+  @override
+  String get gameLaserSubtitle => '经典红点追逐游戏';
+
+  @override
+  String get gameShadowPeekSubtitle => '草丛纸箱里的惊喜';
+
+  @override
+  String get gameCatchMouseSubtitle => '拟真老鼠或鱼游走，拍击即捕获';
+
+  @override
+  String get gameRainbowSubtitle => '光带会被猫爪吸引';
+
+  @override
+  String get gameLaserDescription =>
+      '模拟激光笔在屏幕上移动，吸引猫咪追逐。红色高亮光点在黑色背景上缓慢移动，偶尔加速或暂停。';
+
+  @override
+  String get gameShadowPeekDescription =>
+      '屏幕主体为草丛或纸箱，小鸟、小蛇偶尔露出一部分并伴随轻微响声。点击遮挡物，物体会迅速逃窜至下一个掩体。';
+
+  @override
+  String get gameCatchMouseDescription =>
+      '拟真的老鼠或鱼在屏幕游走，猫咪拍击即为捕获。击中时播放吱吱/水花声，物体消失并产生散开粒子特效，3秒后随机刷新。';
+
+  @override
+  String get gameRainbowDescription =>
+      '彩虹光带在屏幕上流动，触碰屏幕会吸引彩虹靠近并产生闪烁光点与波纹，适合猫咪追逐和拍打互动。';
+
+  @override
+  String get gameDifficultyEasy => '简单';
+
+  @override
+  String get gameDifficultyMedium => '中等';
+
+  @override
+  String get gameDifficultyHard => '困难';
+
+  @override
+  String get gameLaserTips => '将手机平放在地上，让猫咪自由追逐红点';
+
+  @override
+  String get gameShadowPeekTips => '点击草丛或纸箱，看看谁在躲猫猫';
+
+  @override
+  String get gameCatchMouseTips => '拍击老鼠或鱼即可捕获，享受吱吱声与粒子特效';
+
+  @override
+  String get gameRainbowTips => '轻触屏幕可引导彩虹靠近，适合互动和放松';
+
+  @override
+  String get gameScoreUnit => '次';
+
+  @override
+  String get gameRainbowTouchUnit => '互动';
+
+  @override
+  String get gameRainbowHint => '轻触屏幕，彩虹会靠近猫爪';
+
+  @override
+  String get gameShadowPeekHint => '仔细观察草丛和纸箱...';
+
+  @override
+  String gameRewardCapturedGoal(String rewardMl) {
+    return '抓到啦！+${rewardMl}ml 补水建议，今日互动目标达成';
+  }
+
+  @override
+  String gameRewardCapturedProgress(
+    String rewardMl,
+    int capturesToday,
+    int captureGoal,
+  ) {
+    return '抓到啦！+${rewardMl}ml 补水建议（$capturesToday/$captureGoal）';
+  }
+
+  @override
+  String gameRewardSessionEnd(int capturesToday, int captureGoal) {
+    return '本轮结束，今日互动 $capturesToday/$captureGoal';
+  }
+
+  @override
+  String get gameRewardCapturedNoCat => '抓到啦！休息一下再继续玩';
+
+  @override
+  String get gameRewardSessionEndNoCat => '本轮结束，建议让猫咪短暂休息';
+
+  @override
+  String gameFinalTargetBanner(int seconds) {
+    return '收尾奖励：抓住最终目标（${seconds}s）';
+  }
 
   @override
   String get gameExitHint => '长按角落3秒退出';

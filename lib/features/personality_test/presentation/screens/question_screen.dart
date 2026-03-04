@@ -4,6 +4,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import '../../../../core/constants/app_colors.dart';
 import '../../../../core/constants/app_dimensions.dart';
+import '../../../../core/l10n/app_localizations.dart';
+import '../../data/models/question.dart';
 import '../providers/test_provider.dart';
 
 class QuestionScreen extends ConsumerStatefulWidget {
@@ -49,8 +51,13 @@ class _QuestionScreenState extends ConsumerState<QuestionScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     final testState = ref.watch(testProvider);
     final question = testState.currentQuestion;
+    final modeTitle = switch (testState.mode) {
+      TestMode.basic => l10n.testBasicMode,
+      TestMode.advanced => l10n.testAdvancedMode,
+    };
 
     if (question == null) {
       return const Scaffold(body: Center(child: CircularProgressIndicator()));
@@ -70,7 +77,7 @@ class _QuestionScreenState extends ConsumerState<QuestionScreen> {
       child: Scaffold(
         appBar: AppBar(
           title: Text(
-            '${testState.mode.label} ${testState.currentIndex + 1}/${testState.questions.length}',
+            '$modeTitle ${testState.currentIndex + 1}/${testState.questions.length}',
           ),
           leading: IconButton(
             icon: const Icon(Icons.arrow_back),
@@ -99,13 +106,15 @@ class _QuestionScreenState extends ConsumerState<QuestionScreen> {
                     children: [
                       Container(
                         padding: const EdgeInsets.symmetric(
-                            horizontal: 12, vertical: 4),
+                          horizontal: 12,
+                          vertical: 4,
+                        ),
                         decoration: BoxDecoration(
                           color: AppColors.primary.withValues(alpha: 0.12),
                           borderRadius: BorderRadius.circular(12),
                         ),
                         child: Text(
-                          '${question.dimension.leftName} vs ${question.dimension.rightName}',
+                          '${question.dimension.leftName(testState.languageCode)} vs ${question.dimension.rightName(testState.languageCode)}',
                           style: const TextStyle(
                             fontSize: 12,
                             fontWeight: FontWeight.w500,
@@ -183,17 +192,11 @@ class _QuestionSwitcherState extends State<_QuestionSwitcher>
       duration: const Duration(milliseconds: 450),
     );
 
-    _opacity = CurvedAnimation(
-      parent: _ctrl,
-      curve: Curves.easeOut,
-    );
+    _opacity = CurvedAnimation(parent: _ctrl, curve: Curves.easeOut);
     _slide = Tween<Offset>(
       begin: const Offset(0.06, 0),
       end: Offset.zero,
-    ).animate(CurvedAnimation(
-      parent: _ctrl,
-      curve: Curves.easeOutCubic,
-    ));
+    ).animate(CurvedAnimation(parent: _ctrl, curve: Curves.easeOutCubic));
 
     _displayedQuestion = widget.questionNumber;
     _child = widget.child;
@@ -234,10 +237,7 @@ class _QuestionSwitcherState extends State<_QuestionSwitcher>
   Widget build(BuildContext context) {
     return FadeTransition(
       opacity: _opacity,
-      child: SlideTransition(
-        position: _slide,
-        child: _child ?? widget.child,
-      ),
+      child: SlideTransition(position: _slide, child: _child ?? widget.child),
     );
   }
 }
@@ -351,8 +351,7 @@ class _OptionButton extends StatelessWidget {
                   color: isSelected
                       ? AppColors.primaryDark
                       : AppColors.onSurface,
-                  fontWeight:
-                      isSelected ? FontWeight.w600 : FontWeight.normal,
+                  fontWeight: isSelected ? FontWeight.w600 : FontWeight.normal,
                 ),
               ),
             ),

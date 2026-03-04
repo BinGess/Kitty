@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import '../constants/app_colors.dart';
+import '../constants/app_typography.dart';
 
 class CenteredPageTitle extends StatelessWidget {
   final String title;
@@ -30,22 +30,14 @@ class CenteredPageTitle extends StatelessWidget {
             Text(
               title,
               textAlign: TextAlign.center,
-              style: const TextStyle(
-                fontSize: 18,
+              style: AppTypography.headlineSmall.copyWith(
                 fontWeight: FontWeight.w700,
-                color: AppColors.onBackground,
               ),
             ),
             if (leading != null)
-              Align(
-                alignment: Alignment.centerLeft,
-                child: leading,
-              ),
+              Align(alignment: Alignment.centerLeft, child: leading),
             if (trailing != null)
-              Align(
-                alignment: Alignment.centerRight,
-                child: trailing,
-              ),
+              Align(alignment: Alignment.centerRight, child: trailing),
           ],
         ),
       ),

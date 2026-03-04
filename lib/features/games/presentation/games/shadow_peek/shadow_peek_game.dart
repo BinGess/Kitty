@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/scheduler.dart';
 import '../../../domain/game_config.dart';
+import '../../../../../core/l10n/app_localizations.dart';
 import 'shadow_peek_logic.dart';
 
 /// 影子藏猫猫（增强版）
@@ -78,6 +79,7 @@ class _ShadowPeekGameState extends State<ShadowPeekGame> {
   Widget build(BuildContext context) {
     return LayoutBuilder(
       builder: (context, constraints) {
+        final l10n = AppLocalizations.of(context)!;
         final size = constraints.biggest;
         final overlayTop = MediaQuery.of(context).padding.top + 12;
         const overlaySize = 48.0;
@@ -97,6 +99,8 @@ class _ShadowPeekGameState extends State<ShadowPeekGame> {
             size: Size(constraints.maxWidth, constraints.maxHeight),
             painter: _ShadowPeekPainter(
               logic: _logic!,
+              scoreUnit: l10n.gameScoreUnit,
+              hintText: l10n.gameShadowPeekHint,
               overlayTop: overlayTop,
               overlaySize: overlaySize,
               overlayLeft: overlayLeft,
@@ -110,12 +114,16 @@ class _ShadowPeekGameState extends State<ShadowPeekGame> {
 
 class _ShadowPeekPainter extends CustomPainter {
   final ShadowPeekLogic logic;
+  final String scoreUnit;
+  final String hintText;
   final double overlayTop;
   final double overlaySize;
   final double overlayLeft;
 
   _ShadowPeekPainter({
     required this.logic,
+    required this.scoreUnit,
+    required this.hintText,
     required this.overlayTop,
     required this.overlaySize,
     required this.overlayLeft,
@@ -703,9 +711,9 @@ class _ShadowPeekPainter extends CustomPainter {
               letterSpacing: 2,
             ),
           ),
-          const TextSpan(
-            text: ' 次',
-            style: TextStyle(
+          TextSpan(
+            text: ' $scoreUnit',
+            style: const TextStyle(
               color: Color(0x66FFFFFF),
               fontSize: 14,
               fontWeight: FontWeight.w300,
@@ -725,7 +733,7 @@ class _ShadowPeekPainter extends CustomPainter {
   void _paintHint(Canvas canvas, Rect bounds) {
     final textPainter = TextPainter(
       text: TextSpan(
-        text: '仔细观察草丛和纸箱...',
+        text: hintText,
         style: TextStyle(
           color: Colors.white.withValues(alpha: 0.4),
           fontSize: 14,

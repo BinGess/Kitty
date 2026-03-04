@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter/services.dart';
 import '../../../domain/game_config.dart';
+import '../../../../../core/l10n/app_localizations.dart';
 
 /// 彩虹追逐（互动增强版）
 /// - 彩虹光带随时间流动
@@ -211,6 +212,7 @@ class _RainbowChaseGameState extends State<RainbowChaseGame> {
   Widget build(BuildContext context) {
     return LayoutBuilder(
       builder: (context, constraints) {
+        final l10n = AppLocalizations.of(context)!;
         final size = constraints.biggest;
         final overlayTop = MediaQuery.of(context).padding.top + 12;
         const overlaySize = 48.0;
@@ -236,6 +238,8 @@ class _RainbowChaseGameState extends State<RainbowChaseGame> {
               sparkles: _sparkles,
               ripples: _ripples,
               touchCount: _touchCount,
+              touchUnit: l10n.gameRainbowTouchUnit,
+              hintText: l10n.gameRainbowHint,
               overlayTop: overlayTop,
               overlaySize: overlaySize,
               overlayLeft: overlayLeft,
@@ -255,6 +259,8 @@ class _RainbowChasePainter extends CustomPainter {
   final List<_Sparkle> sparkles;
   final List<_Ripple> ripples;
   final int touchCount;
+  final String touchUnit;
+  final String hintText;
   final double overlayTop;
   final double overlaySize;
   final double overlayLeft;
@@ -267,6 +273,8 @@ class _RainbowChasePainter extends CustomPainter {
     required this.sparkles,
     required this.ripples,
     required this.touchCount,
+    required this.touchUnit,
+    required this.hintText,
     required this.overlayTop,
     required this.overlaySize,
     required this.overlayLeft,
@@ -406,9 +414,9 @@ class _RainbowChasePainter extends CustomPainter {
               fontWeight: FontWeight.w300,
             ),
           ),
-          const TextSpan(
-            text: ' 互动',
-            style: TextStyle(
+          TextSpan(
+            text: ' $touchUnit',
+            style: const TextStyle(
               color: Color(0x88FFFFFF),
               fontSize: 13,
               fontWeight: FontWeight.w300,
@@ -428,7 +436,7 @@ class _RainbowChasePainter extends CustomPainter {
   void _paintHint(Canvas canvas, Size size) {
     final textPainter = TextPainter(
       text: TextSpan(
-        text: '轻触屏幕，彩虹会靠近猫爪',
+        text: hintText,
         style: TextStyle(
           color: Colors.white.withValues(alpha: 0.5),
           fontSize: 12,

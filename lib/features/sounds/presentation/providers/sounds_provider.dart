@@ -1,6 +1,8 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../../core/audio/audio_service.dart';
+import '../../../personality_test/domain/cat_personality_profile.dart';
+import '../../../personality_test/presentation/providers/cat_personality_provider.dart';
 import '../../data/models/sound_item.dart';
 import '../../data/repositories/sound_repository.dart';
 
@@ -26,9 +28,62 @@ final playSoundsProvider = Provider<List<SoundItem>>((ref) {
       .toList();
 });
 
+final ambientSoundsProvider = Provider<List<SoundItem>>((ref) {
+  return SoundRepository.allSounds
+      .where((s) => s.category == SoundCategory.ambient)
+      .toList();
+});
+
+final personalityRecommendedSoundIdsProvider = Provider<Set<String>>((ref) {
+  final profile = ref.watch(currentCatPersonalityProfileProvider);
+  if (profile == null) return {};
+  return PersonalityRecommendationEngine.recommendedSoundIds(
+    profile.result.personality.code,
+  );
+});
+
+final personalizedListenSoundsProvider = Provider<List<SoundItem>>((ref) {
+  final sounds = ref.watch(listenSoundsProvider);
+  final recommendedIds = ref.watch(personalityRecommendedSoundIdsProvider);
+  return _sortSoundsByRecommendation(sounds, recommendedIds);
+});
+
+final personalizedPlaySoundsProvider = Provider<List<SoundItem>>((ref) {
+  final sounds = ref.watch(playSoundsProvider);
+  final recommendedIds = ref.watch(personalityRecommendedSoundIdsProvider);
+  return _sortSoundsByRecommendation(sounds, recommendedIds);
+});
+
+final personalizedAmbientSoundsProvider = Provider<List<SoundItem>>((ref) {
+  final sounds = ref.watch(ambientSoundsProvider);
+  final recommendedIds = ref.watch(personalityRecommendedSoundIdsProvider);
+  return _sortSoundsByRecommendation(sounds, recommendedIds);
+});
+
+List<SoundItem> _sortSoundsByRecommendation(
+  List<SoundItem> sounds,
+  Set<String> recommendedIds,
+) {
+  if (recommendedIds.isEmpty) return sounds;
+
+  final recommended = <SoundItem>[];
+  final others = <SoundItem>[];
+
+  for (final sound in sounds) {
+    if (recommendedIds.contains(sound.id)) {
+      recommended.add(sound);
+    } else {
+      others.add(sound);
+    }
+  }
+
+  return [...recommended, ...others];
+}
+
 final soundPlaybackProvider =
     NotifierProvider<SoundPlaybackNotifier, SoundPlaybackState>(
-        SoundPlaybackNotifier.new);
+      SoundPlaybackNotifier.new,
+    );
 
 class SoundPlaybackState {
   final String? playingId;
