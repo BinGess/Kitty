@@ -60,6 +60,93 @@ class AppLocalizationsZh extends AppLocalizations {
   String get soundPlaceholderHint => '该音乐类型已占位，等待你补充音频与图片';
 
   @override
+  String get soundNamePurr => '喵力引擎';
+
+  @override
+  String get soundNameMeow => '撒娇技能';
+
+  @override
+  String get soundNameHiss => '怒气值 +99';
+
+  @override
+  String get soundNameChattering => '快乐值 MAX';
+
+  @override
+  String get soundNameHungry => '供粮请求';
+
+  @override
+  String get soundNameWhimper => '快来摸我～';
+
+  @override
+  String get soundNameCanOpener => '召唤本喵现身';
+
+  @override
+  String get soundNameFoodShaking => '召唤本喵吃饭';
+
+  @override
+  String get soundNameWater => '召唤本喵喝水';
+
+  @override
+  String get soundNameWhiteNoise => '睡眠引导模式';
+
+  @override
+  String get soundNameBell => '警告：叮叮叮！';
+
+  @override
+  String get soundNameSqueakyToy => '装备：铃铛 +1';
+
+  @override
+  String get soundNameMouseSounds => '偷袭：老鼠出没';
+
+  @override
+  String get soundNamePlasticBag => '零食召唤术';
+
+  @override
+  String get soundNameBirdSounds => '喵星频道来电';
+
+  @override
+  String get soundNameCanOpen => '开罐头';
+
+  @override
+  String get soundNameComeback => '你回来了';
+
+  @override
+  String get soundNameSqueakyToys => '响纸玩具';
+
+  @override
+  String get soundNameAmbientWhiteNoise => '白噪安抚';
+
+  @override
+  String get soundNameAmbientWater => '流水氛围';
+
+  @override
+  String get soundNameAmbientBirdSounds => '轻鸟鸣';
+
+  @override
+  String get soundNameAmbientFeather => '羽毛沙沙';
+
+  @override
+  String get soundNameAmbientMouseSounds => '远处鼠声';
+
+  @override
+  String get soundNameMusicCatSpecific => '安抚音乐';
+
+  @override
+  String get soundNameMusicSlowClassical => '钢琴曲';
+
+  @override
+  String get soundNameMusicNoiseBlend => '白噪音';
+
+  @override
+  String get soundNameMusicNatureAmbience => '下雨了';
+
+  @override
+  String get soundNameMusicAmbientDrone => '小桥流水';
+
+  @override
+  String get soundNameMusicSoftInteraction => '咖啡馆';
+
+  @override
   String get testTitle => '16喵格测试';
 
   @override

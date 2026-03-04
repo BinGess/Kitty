@@ -61,6 +61,93 @@ class AppLocalizationsEn extends AppLocalizations {
       'This music type is a placeholder. Add audio and image later.';
 
   @override
+  String get soundNamePurr => 'Purr Vibes';
+
+  @override
+  String get soundNameMeow => 'Sweet Meow';
+
+  @override
+  String get soundNameHiss => 'Hiss Warning';
+
+  @override
+  String get soundNameChattering => 'Happy Chatter';
+
+  @override
+  String get soundNameHungry => 'Feeding Call';
+
+  @override
+  String get soundNameWhimper => 'Attention Meow';
+
+  @override
+  String get soundNameCanOpener => 'Can Opener Cue';
+
+  @override
+  String get soundNameFoodShaking => 'Food Shake Cue';
+
+  @override
+  String get soundNameWater => 'Water Fountain';
+
+  @override
+  String get soundNameWhiteNoise => 'Sleep White Noise';
+
+  @override
+  String get soundNameBell => 'Bell Ring';
+
+  @override
+  String get soundNameSqueakyToy => 'Squeaky Bell Toy';
+
+  @override
+  String get soundNameMouseSounds => 'Mouse Squeaks';
+
+  @override
+  String get soundNamePlasticBag => 'Treat Bag Rustle';
+
+  @override
+  String get soundNameBirdSounds => 'Bird Calls';
+
+  @override
+  String get soundNameCanOpen => 'Can Opening';
+
+  @override
+  String get soundNameComeback => 'Welcome Home';
+
+  @override
+  String get soundNameSqueakyToys => 'Crinkle Toy';
+
+  @override
+  String get soundNameAmbientWhiteNoise => 'White Noise Ambience';
+
+  @override
+  String get soundNameAmbientWater => 'Running Water';
+
+  @override
+  String get soundNameAmbientBirdSounds => 'Soft Birdsong';
+
+  @override
+  String get soundNameAmbientFeather => 'Feather Rustle';
+
+  @override
+  String get soundNameAmbientMouseSounds => 'Distant Mouse Squeaks';
+
+  @override
+  String get soundNameMusicCatSpecific => 'Cat Relaxation Music';
+
+  @override
+  String get soundNameMusicSlowClassical => 'Gentle Piano';
+
+  @override
+  String get soundNameMusicNoiseBlend => 'Noise Blend';
+
+  @override
+  String get soundNameMusicNatureAmbience => 'Rain Ambience';
+
+  @override
+  String get soundNameMusicAmbientDrone => 'Stream Ambience';
+
+  @override
+  String get soundNameMusicSoftInteraction => 'Cozy Cafe';
+
+  @override
   String get testTitle => '16 Cat Personalities';
 
   @override

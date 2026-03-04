@@ -200,6 +200,180 @@ abstract class AppLocalizations {
   /// **'该音乐类型已占位，等待你补充音频与图片'**
   String get soundPlaceholderHint;
 
+  /// No description provided for @soundNamePurr.
+  ///
+  /// In zh, this message translates to:
+  /// **'喵力引擎'**
+  String get soundNamePurr;
+
+  /// No description provided for @soundNameMeow.
+  ///
+  /// In zh, this message translates to:
+  /// **'撒娇技能'**
+  String get soundNameMeow;
+
+  /// No description provided for @soundNameHiss.
+  ///
+  /// In zh, this message translates to:
+  /// **'怒气值 +99'**
+  String get soundNameHiss;
+
+  /// No description provided for @soundNameChattering.
+  ///
+  /// In zh, this message translates to:
+  /// **'快乐值 MAX'**
+  String get soundNameChattering;
+
+  /// No description provided for @soundNameHungry.
+  ///
+  /// In zh, this message translates to:
+  /// **'供粮请求'**
+  String get soundNameHungry;
+
+  /// No description provided for @soundNameWhimper.
+  ///
+  /// In zh, this message translates to:
+  /// **'快来摸我～'**
+  String get soundNameWhimper;
+
+  /// No description provided for @soundNameCanOpener.
+  ///
+  /// In zh, this message translates to:
+  /// **'召唤本喵现身'**
+  String get soundNameCanOpener;
+
+  /// No description provided for @soundNameFoodShaking.
+  ///
+  /// In zh, this message translates to:
+  /// **'召唤本喵吃饭'**
+  String get soundNameFoodShaking;
+
+  /// No description provided for @soundNameWater.
+  ///
+  /// In zh, this message translates to:
+  /// **'召唤本喵喝水'**
+  String get soundNameWater;
+
+  /// No description provided for @soundNameWhiteNoise.
+  ///
+  /// In zh, this message translates to:
+  /// **'睡眠引导模式'**
+  String get soundNameWhiteNoise;
+
+  /// No description provided for @soundNameBell.
+  ///
+  /// In zh, this message translates to:
+  /// **'警告：叮叮叮！'**
+  String get soundNameBell;
+
+  /// No description provided for @soundNameSqueakyToy.
+  ///
+  /// In zh, this message translates to:
+  /// **'装备：铃铛 +1'**
+  String get soundNameSqueakyToy;
+
+  /// No description provided for @soundNameMouseSounds.
+  ///
+  /// In zh, this message translates to:
+  /// **'偷袭：老鼠出没'**
+  String get soundNameMouseSounds;
+
+  /// No description provided for @soundNamePlasticBag.
+  ///
+  /// In zh, this message translates to:
+  /// **'零食召唤术'**
+  String get soundNamePlasticBag;
+
+  /// No description provided for @soundNameBirdSounds.
+  ///
+  /// In zh, this message translates to:
+  /// **'喵星频道来电'**
+  String get soundNameBirdSounds;
+
+  /// No description provided for @soundNameCanOpen.
+  ///
+  /// In zh, this message translates to:
+  /// **'开罐头'**
+  String get soundNameCanOpen;
+
+  /// No description provided for @soundNameComeback.
+  ///
+  /// In zh, this message translates to:
+  /// **'你回来了'**
+  String get soundNameComeback;
+
+  /// No description provided for @soundNameSqueakyToys.
+  ///
+  /// In zh, this message translates to:
+  /// **'响纸玩具'**
+  String get soundNameSqueakyToys;
+
+  /// No description provided for @soundNameAmbientWhiteNoise.
+  ///
+  /// In zh, this message translates to:
+  /// **'白噪安抚'**
+  String get soundNameAmbientWhiteNoise;
+
+  /// No description provided for @soundNameAmbientWater.
+  ///
+  /// In zh, this message translates to:
+  /// **'流水氛围'**
+  String get soundNameAmbientWater;
+
+  /// No description provided for @soundNameAmbientBirdSounds.
+  ///
+  /// In zh, this message translates to:
+  /// **'轻鸟鸣'**
+  String get soundNameAmbientBirdSounds;
+
+  /// No description provided for @soundNameAmbientFeather.
+  ///
+  /// In zh, this message translates to:
+  /// **'羽毛沙沙'**
+  String get soundNameAmbientFeather;
+
+  /// No description provided for @soundNameAmbientMouseSounds.
+  ///
+  /// In zh, this message translates to:
+  /// **'远处鼠声'**
+  String get soundNameAmbientMouseSounds;
+
+  /// No description provided for @soundNameMusicCatSpecific.
+  ///
+  /// In zh, this message translates to:
+  /// **'安抚音乐'**
+  String get soundNameMusicCatSpecific;
+
+  /// No description provided for @soundNameMusicSlowClassical.
+  ///
+  /// In zh, this message translates to:
+  /// **'钢琴曲'**
+  String get soundNameMusicSlowClassical;
+
+  /// No description provided for @soundNameMusicNoiseBlend.
+  ///
+  /// In zh, this message translates to:
+  /// **'白噪音'**
+  String get soundNameMusicNoiseBlend;
+
+  /// No description provided for @soundNameMusicNatureAmbience.
+  ///
+  /// In zh, this message translates to:
+  /// **'下雨了'**
+  String get soundNameMusicNatureAmbience;
+
+  /// No description provided for @soundNameMusicAmbientDrone.
+  ///
+  /// In zh, this message translates to:
+  /// **'小桥流水'**
+  String get soundNameMusicAmbientDrone;
+
+  /// No description provided for @soundNameMusicSoftInteraction.
+  ///
+  /// In zh, this message translates to:
+  /// **'咖啡馆'**
+  String get soundNameMusicSoftInteraction;
+
   /// No description provided for @testTitle.
   ///
   /// In zh, this message translates to:

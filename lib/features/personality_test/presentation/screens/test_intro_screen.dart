@@ -343,12 +343,16 @@ class _ModeCard extends StatelessWidget {
                 children: [
                   Row(
                     children: [
-                      Text(
-                        modeTitle,
-                        style: const TextStyle(
-                          fontSize: 17,
-                          fontWeight: FontWeight.w600,
-                          color: AppColors.onBackground,
+                      Expanded(
+                        child: Text(
+                          modeTitle,
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                          style: const TextStyle(
+                            fontSize: 17,
+                            fontWeight: FontWeight.w600,
+                            color: AppColors.onBackground,
+                          ),
                         ),
                       ),
                       const SizedBox(width: 8),

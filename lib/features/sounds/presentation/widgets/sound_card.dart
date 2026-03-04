@@ -119,7 +119,7 @@ class SoundCard extends ConsumerWidget {
             ),
             const SizedBox(height: AppDimensions.spacingXS),
             Text(
-              sound.label,
+              sound.localizedLabel(l10n),
               textAlign: TextAlign.center,
               maxLines: 1,
               overflow: TextOverflow.ellipsis,
